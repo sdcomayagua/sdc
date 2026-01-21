@@ -17,6 +17,14 @@ window.SDC_UTILS = (() => {
 
   const money = (n, currency) => `${currency}. ${Number(n||0).toFixed(2)}`;
 
+  const fallbackImg = () =>
+    "data:image/svg+xml;charset=utf-8," + encodeURIComponent(
+      `<svg xmlns='http://www.w3.org/2000/svg' width='800' height='800'>
+        <rect width='100%' height='100%' fill='#0a0f17'/>
+        <text x='50%' y='50%' fill='#9fb0c6' font-size='28' text-anchor='middle' dominant-baseline='middle'>Sin imagen</text>
+      </svg>`
+    );
+
   const fileToBase64 = (file) => new Promise((resolve, reject) => {
     const r = new FileReader();
     r.onload = () => resolve(r.result);
@@ -24,5 +32,5 @@ window.SDC_UTILS = (() => {
     r.readAsDataURL(file);
   });
 
-  return { $, esc, escAttr, toast, money, fileToBase64 };
+  return { $, esc, escAttr, toast, money, fallbackImg, fileToBase64 };
 })();
