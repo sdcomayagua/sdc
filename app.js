@@ -9,6 +9,13 @@
     if (tb) tb.onclick = () => window.SDC_THEME.toggle();
     if (btb) btb.onclick = () => window.SDC_THEME.toggle();
 
+    // Motion + UX
+    window.SDC_MOTION?.observe?.();
+    window.SDC_UX?.initToTop?.();
+
+    // Skeleton antes de cargar
+    window.SDC_CATALOG_UI?.renderSkeletonGrid?.(10);
+
     // Buscar
     const q = U.$("q");
     if (q) q.addEventListener("input", () => window.SDC_CATALOG.renderGrid());
