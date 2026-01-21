@@ -60,7 +60,7 @@ window.SDC_CATALOG_UI = (() => {
       return copy;
     }
 
-    // "relevancia" (tu orden actual: stock>0, orden, nombre)
+    // "relevancia" (tu orden actual)
     copy.sort((a,b)=>{
       const sa = (Number(a.stock)>0)?0:1;
       const sb = (Number(b.stock)>0)?0:1;
@@ -72,9 +72,27 @@ window.SDC_CATALOG_UI = (() => {
     return copy;
   }
 
-  function renderFeatured() {
-    const all = S.getProducts();
+  // ✅ solo mostrar secciones cuando estamos en “Todas/Todas”
+  function shouldShowTopSections(){
+    return S.getActiveCat() === "Todas" && S.getActiveSub() === "Todas";
+  }
 
+  function hideTopSections(){
+    const fs = U.$("featuredSection");
+    const os = U.$("offersSection");
+    if (fs) fs.style.display = "none";
+    if (os) os.style.display = "none";
+    const fr = U.$("featuredRow"); if (fr) fr.innerHTML = "";
+    const or = U.$("offersRow"); if (or) or.innerHTML = "";
+  }
+
+  function renderFeatured() {
+    if (!shouldShowTopSections()){
+      hideTopSections();
+      return;
+    }
+
+    const all = S.getProducts();
     const featured = all.filter(p => toBool(p.destacado));
     const offers = all.filter(p => toBool(p.oferta) || (Number(p.precio_anterior||0) > Number(p.precio||0)));
 
@@ -139,7 +157,7 @@ window.SDC_CATALOG_UI = (() => {
         S.setActiveSub("Todas");
         renderTabs();
         renderSubTabs();
-        renderGrid();
+        renderGrid(); // renderGrid se encarga de mostrar/ocultar secciones
       };
       el.appendChild(d);
     });
@@ -170,14 +188,14 @@ window.SDC_CATALOG_UI = (() => {
       d.onclick = () => {
         S.setActiveSub(s);
         renderSubTabs();
-        renderGrid();
+        renderGrid(); // renderGrid se encarga de mostrar/ocultar secciones
       };
       el.appendChild(d);
     });
   }
 
   function renderGrid() {
-    // B) render filas especiales (no dependen del filtro actual)
+    // ✅ Muestra u oculta Destacados/Ofertas según categoría/subcategoría
     renderFeatured();
 
     const q = (U.$("q").value || "").trim().toLowerCase();
@@ -195,7 +213,6 @@ window.SDC_CATALOG_UI = (() => {
       (p.modelo || "").toLowerCase().includes(q)
     );
 
-    // C) ordenar segun selector
     list = sortList(list);
 
     const el = U.$("grid");
