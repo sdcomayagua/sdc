@@ -16,6 +16,18 @@ window.SDC_CATALOG_UI = (() => {
     return v === true || s === "1" || s === "true" || s === "si" || s === "sí" || s === "yes";
   }
 
+  function isOffer(p){
+    return toBool(p.oferta) || (Number(p.precio_anterior||0) > Number(p.precio||0));
+  }
+
+  function filterQuick(list){
+    const mode = window.SDC_FILTERS?.getMode?.() || "all";
+    if (mode === "stock") return list.filter(p => Number(p.stock||0) > 0);
+    if (mode === "offers") return list.filter(p => isOffer(p));
+    if (mode === "featured") return list.filter(p => toBool(p.destacado));
+    return list;
+  }
+
   function getSortMode(){
     const sel = U.$("sortSel");
     return sel ? (sel.value || "relevancia") : "relevancia";
@@ -23,58 +35,42 @@ window.SDC_CATALOG_UI = (() => {
 
   function sortList(list){
     const mode = getSortMode();
-
     const withStockFirst = (a,b) => {
       const sa = (Number(a.stock)>0)?0:1;
       const sb = (Number(b.stock)>0)?0:1;
       if(sa!==sb) return sa-sb;
       return 0;
     };
-
     const byOrderThenName = (a,b) => {
       const oa = Number(a.orden||0), ob = Number(b.orden||0);
       if(oa!==ob) return oa-ob;
       return String(a.nombre||"").localeCompare(String(b.nombre||""));
     };
-
     const byPriceAsc = (a,b) => Number(a.precio||0) - Number(b.precio||0);
     const byPriceDesc = (a,b) => Number(b.precio||0) - Number(a.precio||0);
     const byOrderDesc = (a,b) => Number(b.orden||0) - Number(a.orden||0);
 
     const copy = list.slice();
-
-    if (mode === "precio_asc") {
-      copy.sort((a,b)=>{ const s=withStockFirst(a,b); return s!==0?s:byPriceAsc(a,b); });
-      return copy;
-    }
-    if (mode === "precio_desc") {
-      copy.sort((a,b)=>{ const s=withStockFirst(a,b); return s!==0?s:byPriceDesc(a,b); });
-      return copy;
-    }
-    if (mode === "orden_desc") {
-      copy.sort((a,b)=>{ const s=withStockFirst(a,b); return s!==0?s:byOrderDesc(a,b); });
-      return copy;
-    }
-    if (mode === "stock_first") {
-      copy.sort((a,b)=>{ const s=withStockFirst(a,b); return s!==0?s:byOrderThenName(a,b); });
-      return copy;
-    }
+    if (mode === "precio_asc") { copy.sort((a,b)=>{ const s=withStockFirst(a,b); return s!==0?s:byPriceAsc(a,b); }); return copy; }
+    if (mode === "precio_desc"){ copy.sort((a,b)=>{ const s=withStockFirst(a,b); return s!==0?s:byPriceDesc(a,b); }); return copy; }
+    if (mode === "orden_desc") { copy.sort((a,b)=>{ const s=withStockFirst(a,b); return s!==0?s:byOrderDesc(a,b); }); return copy; }
+    if (mode === "stock_first"){ copy.sort((a,b)=>{ const s=withStockFirst(a,b); return s!==0?s:byOrderThenName(a,b); }); return copy; }
 
     // relevancia
     copy.sort((a,b)=>{
-      const sa = (Number(a.stock)>0)?0:1;
-      const sb = (Number(b.stock)>0)?0:1;
+      const sa=(Number(a.stock)>0)?0:1, sb=(Number(b.stock)>0)?0:1;
       if(sa!==sb) return sa-sb;
-      const oa = Number(a.orden||0), ob = Number(b.orden||0);
+      const oa=Number(a.orden||0), ob=Number(b.orden||0);
       if(oa!==ob) return oa-ob;
       return String(a.nombre||"").localeCompare(String(b.nombre||""));
     });
     return copy;
   }
 
-  // ✅ solo mostrar secciones cuando estamos en “Todas/Todas”
   function shouldShowTopSections(){
-    return S.getActiveCat() === "Todas" && S.getActiveSub() === "Todas";
+    // solo en Todas/Todas y sin filtro activo
+    const mode = window.SDC_FILTERS?.getMode?.() || "all";
+    return (S.getActiveCat() === "Todas" && S.getActiveSub() === "Todas" && mode === "all");
   }
 
   function hideTopSections(){
@@ -91,11 +87,9 @@ window.SDC_CATALOG_UI = (() => {
       hideTopSections();
       return;
     }
-
     const all = S.getProducts();
     const featured = all.filter(p => toBool(p.destacado));
-    const offers = all.filter(p => toBool(p.oferta) || (Number(p.precio_anterior||0) > Number(p.precio||0)));
-
+    const offers = all.filter(p => isOffer(p));
     renderHRow("featuredSection", "featuredRow", featured);
     renderHRow("offersSection", "offersRow", offers);
   }
@@ -122,11 +116,16 @@ window.SDC_CATALOG_UI = (() => {
       card.className = "hCard" + (!inStock ? " outCard" : "");
       card.onclick = () => PM.open(p, { setHash:true });
 
+      const imgWrap = document.createElement("div");
+      imgWrap.className = "imgWrap";
+
       const img = document.createElement("img");
       img.src = p.imagen || "";
       img.alt = p.nombre || "";
       img.loading = "lazy";
       img.onerror = () => img.src = fallbackSvg;
+
+      imgWrap.appendChild(img);
 
       const box = document.createElement("div");
       box.className = "hp";
@@ -136,13 +135,13 @@ window.SDC_CATALOG_UI = (() => {
         <div class="hprice">${U.money(p.precio, CFG.CURRENCY)}</div>
       `;
 
-      card.appendChild(img);
+      card.appendChild(imgWrap);
       card.appendChild(box);
       row.appendChild(card);
     });
   }
 
-  // ✅ Skeleton grid mientras carga
+  // Skeleton
   function renderSkeletonGrid(count = 10){
     hideTopSections();
     const el = U.$("grid");
@@ -224,8 +223,14 @@ window.SDC_CATALOG_UI = (() => {
 
     let list = S.getProducts();
 
+    // categoria/sub
     if (activeCat !== "Todas") list = list.filter(p => p.categoria === activeCat);
     if (activeSub !== "Todas") list = list.filter(p => p.subcategoria === activeSub);
+
+    // filtros rápidos
+    list = filterQuick(list);
+
+    // búsqueda
     if (q) list = list.filter(p =>
       (p.nombre || "").toLowerCase().includes(q) ||
       (p.tags || "").toLowerCase().includes(q) ||
@@ -233,6 +238,7 @@ window.SDC_CATALOG_UI = (() => {
       (p.modelo || "").toLowerCase().includes(q)
     );
 
+    // ordenar
     list = sortList(list);
 
     const el = U.$("grid");
