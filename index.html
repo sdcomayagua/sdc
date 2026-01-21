@@ -1,667 +1,604 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Soluciones Digitales Comayagua | Catálogo</title>
+
+  <!-- =========================
+       STYLE (CSS)
+  ========================== -->
   <style>
-    :root { --bg:#0b0f14; --card:#121823; --txt:#e8eef7; --mut:#9fb0c6; --acc:#25D366; --line:#1f2a3a; --warn:#ffcc66; }
-    *{box-sizing:border-box} body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto; background:var(--bg); color:var(--txt)}
+    :root{--bg:#0b0f14;--card:#121823;--txt:#e8eef7;--mut:#9fb0c6;--acc:#25D366;--line:#1f2a3a;--warn:#ffcc66}
+    *{box-sizing:border-box}
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto;background:var(--bg);color:var(--txt)}
     header{position:sticky;top:0;z-index:50;background:rgba(11,15,20,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
-    .wrap{max-width:1200px;margin:0 auto;padding:14px 14px}
+    .wrap{max-width:1200px;margin:0 auto;padding:14px}
     .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-    .brand{font-weight:800;font-size:16px;letter-spacing:.2px}
-    .pill{padding:8px 10px;border:1px solid var(--line);border-radius:999px;color:var(--mut);background:transparent}
+    .brand{font-weight:900}
+    .pill{padding:8px 10px;border:1px solid var(--line);border-radius:999px;color:var(--mut)}
     .btn{padding:10px 12px;border:0;border-radius:12px;background:#1a2433;color:var(--txt);cursor:pointer}
-    .btn.acc{background:var(--acc);color:#05210f;font-weight:800}
-    .btn.warn{background:var(--warn);color:#2b1a00;font-weight:800}
-    .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+    .btn.acc{background:var(--acc);color:#05210f;font-weight:900}
+    .btn.warn{background:var(--warn);color:#2b1a00;font-weight:900}
+    .search{flex:1;min-width:220px}
+    input,select,textarea{width:100%;padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:#0f1520;color:var(--txt);outline:none}
+    textarea{min-height:80px;resize:vertical}
+    .tabs{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+    .tab{padding:8px 10px;border-radius:999px;border:1px solid var(--line);cursor:pointer;color:var(--mut)}
+    .tab.active{background:#1a2433;color:var(--txt)}
+    .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:12px}
     @media (max-width:980px){.grid{grid-template-columns:repeat(3,1fr)}}
     @media (max-width:720px){.grid{grid-template-columns:repeat(2,1fr)}}
     @media (max-width:440px){.grid{grid-template-columns:1fr}}
     .card{background:var(--card);border:1px solid var(--line);border-radius:18px;overflow:hidden}
-    .card .p{padding:12px}
     .img{width:100%;aspect-ratio:1/1;object-fit:cover;background:#0a0f17}
-    .name{font-weight:800;line-height:1.15}
+    .p{padding:12px}
+    .name{font-weight:900;line-height:1.1}
     .mut{color:var(--mut);font-size:12px}
-    .price{font-weight:900;margin-top:6px}
-    .strike{text-decoration:line-through;color:var(--mut);font-weight:600;margin-left:8px;font-size:12px}
+    .price{font-weight:1000;margin-top:6px}
     .badge{display:inline-block;font-size:11px;padding:4px 8px;border-radius:999px;border:1px solid var(--line);color:var(--mut);margin-top:8px}
     .badge.off{border-color:#2c3a28;color:#a9ffbf}
     .badge.out{border-color:#3a2a2a;color:#ffb3b3}
-    .tabs{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
-    .tab{padding:8px 10px;border-radius:999px;border:1px solid var(--line);cursor:pointer;color:var(--mut)}
-    .tab.active{background:#1a2433;color:var(--txt)}
-    .search{flex:1;min-width:220px}
-    input,select,textarea{width:100%;padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:#0f1520;color:var(--txt);outline:none}
-    textarea{min-height:80px;resize:vertical}
-    .section{margin-top:14px}
-    .h{font-weight:900;font-size:14px;margin:12px 0 8px}
+
     .modal{position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;align-items:flex-end;justify-content:center;z-index:100}
     .modal.open{display:flex}
     .sheet{width:min(980px,100%);max-height:92vh;overflow:auto;background:var(--card);border:1px solid var(--line);border-radius:18px 18px 0 0}
     .sheet .head{position:sticky;top:0;background:rgba(18,24,35,.95);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);padding:12px}
     .sheet .body{padding:12px}
+    .h{font-weight:1000;margin:12px 0 8px}
+    .two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    @media (max-width:720px){.two{grid-template-columns:1fr}}
+    .note{font-size:12px;color:var(--mut);line-height:1.35}
+    .hr{height:1px;background:var(--line);margin:12px 0}
     .cartItem{display:flex;gap:10px;border:1px solid var(--line);border-radius:16px;padding:10px;margin-bottom:10px;align-items:center}
     .cartItem img{width:62px;height:62px;border-radius:12px;object-fit:cover;background:#0a0f17}
     .qty{display:flex;gap:6px;align-items:center}
     .mini{padding:6px 10px;border-radius:10px;border:1px solid var(--line);background:#0f1520;color:var(--txt);cursor:pointer}
     .sum{display:flex;justify-content:space-between;margin:8px 0;color:var(--mut)}
     .total{font-size:18px;font-weight:1000}
-    .two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-    @media (max-width:720px){.two{grid-template-columns:1fr}}
-    .note{font-size:12px;color:var(--mut);line-height:1.35}
-    .hr{height:1px;background:var(--line);margin:12px 0}
     .toast{position:fixed;bottom:14px;left:50%;transform:translateX(-50%);background:#0f1520;border:1px solid var(--line);color:var(--txt);
       padding:10px 12px;border-radius:12px;display:none;z-index:120}
     .toast.show{display:block}
   </style>
 </head>
+
 <body>
-<header>
-  <div class="wrap">
-    <div class="row">
-      <div class="brand">Soluciones Digitales Comayagua</div>
-      <div class="pill" id="statusPill">Cargando catálogo...</div>
-      <div class="search"><input id="q" placeholder="Buscar producto..." /></div>
-      <button class="btn" id="adminBtn">Admin</button>
-      <button class="btn acc" id="cartBtn">Carrito (<span id="cartCount">0</span>)</button>
+  <!-- =========================
+       HEADER
+  ========================== -->
+  <header>
+    <div class="wrap">
+      <div class="row">
+        <div class="brand">Soluciones Digitales Comayagua</div>
+        <div class="pill" id="statusPill">Cargando catálogo...</div>
+        <div class="search"><input id="q" placeholder="Buscar producto..." /></div>
+        <button class="btn" id="adminBtn" style="display:none">Admin</button>
+        <button class="btn acc" id="cartBtn">Carrito (<span id="cartCount">0</span>)</button>
+      </div>
+      <div class="tabs" id="catTabs"></div>
+      <div class="tabs" id="subTabs"></div>
     </div>
-    <div class="tabs" id="catTabs"></div>
-    <div class="tabs" id="subTabs"></div>
-  </div>
-</header>
+  </header>
 
-<main class="wrap">
-  <div class="section">
+  <!-- =========================
+       MAIN
+  ========================== -->
+  <main class="wrap">
     <div class="grid" id="grid"></div>
-  </div>
-</main>
+  </main>
 
-<div class="toast" id="toast"></div>
+  <div class="toast" id="toast"></div>
 
-<!-- CART MODAL -->
-<div class="modal" id="cartModal">
-  <div class="sheet">
-    <div class="head row" style="justify-content:space-between">
-      <div style="font-weight:1000">Carrito</div>
-      <button class="btn" id="closeCart">Cerrar</button>
-    </div>
-    <div class="body">
-      <div id="cartItems"></div>
+  <!-- =========================
+       CART MODAL
+  ========================== -->
+  <div class="modal" id="cartModal">
+    <div class="sheet">
+      <div class="head row" style="justify-content:space-between">
+        <div style="font-weight:1000">Carrito</div>
+        <button class="btn" id="closeCart">Cerrar</button>
+      </div>
 
-      <div class="hr"></div>
-      <div class="h">Entrega</div>
+      <div class="body">
+        <div id="cartItems"></div>
 
-      <div class="two">
-        <div>
-          <label class="mut">Departamento</label>
-          <select id="dep"></select>
+        <div class="hr"></div>
+        <div class="h">Entrega</div>
+
+        <div class="two">
+          <div>
+            <label class="mut">Departamento</label>
+            <select id="dep"></select>
+          </div>
+          <div>
+            <label class="mut">Municipio</label>
+            <select id="mun"></select>
+          </div>
         </div>
-        <div>
-          <label class="mut">Municipio</label>
-          <select id="mun"></select>
+
+        <div class="two" style="margin-top:10px">
+          <div>
+            <label class="mut">Tipo de entrega</label>
+            <select id="deliveryType"></select>
+            <div class="note" id="deliveryNote" style="margin-top:6px"></div>
+          </div>
+          <div>
+            <label class="mut">Forma de pago</label>
+            <select id="payType">
+              <option value="pagar_al_recibir">PAGAR AL RECIBIR</option>
+              <option value="prepago">PREPAGO (depósito)</option>
+            </select>
+            <div class="note" id="payNote" style="margin-top:6px"></div>
+          </div>
+        </div>
+
+        <div id="cashBox" style="display:none;margin-top:10px">
+          <label class="mut">¿Con cuánto pagará? (para calcular cambio)</label>
+          <input id="cashAmount" inputmode="numeric" placeholder="Ej: 500" />
+        </div>
+
+        <div class="hr"></div>
+        <div class="h">Datos del cliente</div>
+
+        <div class="two">
+          <div><label class="mut">Nombre</label><input id="name" placeholder="Tu nombre" /></div>
+          <div><label class="mut">Teléfono</label><input id="phone" placeholder="Ej: 9xxx-xxxx" /></div>
+        </div>
+
+        <div style="margin-top:10px">
+          <label class="mut">Dirección / Referencia</label>
+          <textarea id="addr" placeholder="Colonia, barrio, referencias..."></textarea>
+        </div>
+
+        <div class="hr"></div>
+        <div id="summary"></div>
+
+        <button class="btn acc" id="sendWA" style="width:100%;margin-top:10px">Enviar pedido por WhatsApp</button>
+        <div class="note" style="margin-top:8px">
+          Nota: Si es envío nacional, el cliente paga a la empresa (contra entrega) o deposita (prepago).
         </div>
       </div>
-
-      <div class="two" style="margin-top:10px">
-        <div>
-          <label class="mut">Tipo de entrega (se ajusta automático según cobertura)</label>
-          <select id="deliveryType"></select>
-          <div class="note" id="deliveryNote" style="margin-top:6px"></div>
-        </div>
-        <div>
-          <label class="mut">Forma de pago</label>
-          <select id="payType">
-            <option value="pagar_al_recibir">PAGAR AL RECIBIR</option>
-            <option value="prepago">PREPAGO (depósito)</option>
-          </select>
-          <div class="note" id="payNote" style="margin-top:6px"></div>
-        </div>
-      </div>
-
-      <div id="cashBox" style="display:none;margin-top:10px">
-        <label class="mut">¿Con cuánto pagará? (para calcular cambio)</label>
-        <input id="cashAmount" inputmode="numeric" placeholder="Ej: 500" />
-      </div>
-
-      <div class="hr"></div>
-      <div class="h">Datos del cliente</div>
-      <div class="two">
-        <div><label class="mut">Nombre</label><input id="name" placeholder="Tu nombre" /></div>
-        <div><label class="mut">Teléfono</label><input id="phone" placeholder="Ej: 9xxx-xxxx" /></div>
-      </div>
-      <div style="margin-top:10px">
-        <label class="mut">Dirección / Referencia</label>
-        <textarea id="addr" placeholder="Colonia, barrio, referencias..."></textarea>
-      </div>
-
-      <div class="hr"></div>
-      <div id="summary"></div>
-
-      <button class="btn acc" id="sendWA" style="width:100%;margin-top:10px">Enviar pedido por WhatsApp</button>
-      <div class="note" style="margin-top:8px">
-        Nota: Si es envío nacional, el cliente paga a la empresa (contra entrega) o deposita (prepago).
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ADMIN MODAL -->
-<div class="modal" id="adminModal">
-  <div class="sheet">
-    <div class="head row" style="justify-content:space-between">
-      <div style="font-weight:1000">Admin - Subir imagen</div>
-      <button class="btn" id="closeAdmin">Cerrar</button>
-    </div>
-    <div class="body">
-      <div class="note">Esto sube la imagen a Google Drive y te devuelve el link para pegarlo en la hoja <b>productos</b> (columna <b>imagen</b> o <b>galeria</b>).</div>
-      <div style="margin-top:10px">
-        <label class="mut">Clave Admin</label>
-        <input id="adminKey" placeholder="Tu clave (ADMIN_KEY)" />
-      </div>
-      <div style="margin-top:10px">
-        <input type="file" id="fileUp" accept="image/*" />
-      </div>
-      <button class="btn warn" id="uploadBtn" style="margin-top:10px">Subir imagen</button>
-      <div class="hr"></div>
-      <div class="h">Resultado</div>
-      <div class="note">Link directo (descarga):</div>
-      <input id="outUrl" readonly />
-      <div class="note" style="margin-top:10px">Link de Drive (vista):</div>
-      <input id="outView" readonly />
     </div>
   </div>
-</div>
 
-<script>
-/** =========================
- * CONFIG
- * ========================= */
-const API_URL = "https://script.google.com/macros/s/AKfycbwlFERNjVdvr_1v02B2ObBKUElng-kaoyn8f86qCwV9SJwjZDQVQlFVxde8UCX-nx5aGw/exec";
-const DEFAULT_WHATSAPP = "+50431517755";
-const CURRENCY = "Lps";
-
-const NATIONAL_PREPAGO = 110;
-const NATIONAL_CONTRA_ENTREGA = 160;
-
-const LOCAL_ALLOW = new Set([
-  "Comayagua|Comayagua",
-  "Comayagua|Ajuterique",
-  "Comayagua|Lejamaní",
-  "Comayagua|Lejamani",
-  "Comayagua|Flores",
-  "Comayagua|Villa de San Antonio",
-  "Comayagua|Palmerola",
-  "Comayagua|El Pajonal",
-]);
-
-/** =========================
- * STATE
- * ========================= */
-let DATA = null;
-let products = [];
-let categories = [];
-let subcatsByCat = new Map();
-let cart = new Map(); // id -> {p, qty}
-let activeCat = "Todas";
-let activeSub = "Todas";
-
-const $ = (id) => document.getElementById(id);
-const toast = (msg) => { const t=$("toast"); t.textContent=msg; t.classList.add("show"); setTimeout(()=>t.classList.remove("show"), 1800); };
-function money(n){ return `${CURRENCY}. ${Number(n||0).toFixed(2)}`; }
-
-function escapeHtml(s){return String(s).replace(/[&<>"']/g,m=>({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;" }[m]));}
-function escapeAttr(s){return String(s).replace(/"/g,'&quot;');}
-
-/** =========================
- * LOAD
- * ========================= */
-async function load() {
-  $("statusPill").textContent = "Cargando catálogo...";
-  const res = await fetch(`${API_URL}?action=catalog`, { cache:"no-store" });
-  const json = await res.json();
-  if(!json.ok) throw new Error(json.error || "No se pudo cargar");
-  DATA = json;
-
-  products = (json.productos || []).filter(p => p && p.nombre && p.categoria);
-  products.sort((a,b)=>{
-    const sa = (Number(a.stock)>0)?0:1;
-    const sb = (Number(b.stock)>0)?0:1;
-    if(sa!==sb) return sa-sb;
-    const oa = Number(a.orden||0), ob = Number(b.orden||0);
-    if(oa!==ob) return oa-ob;
-    return String(a.nombre).localeCompare(String(b.nombre));
-  });
-
-  const cats = new Set(products.map(p=>p.categoria||""));
-  categories = ["Todas", ...Array.from(cats).filter(Boolean).sort((a,b)=>a.localeCompare(b))];
-
-  subcatsByCat = new Map();
-  for(const p of products){
-    const c = p.categoria || "";
-    const s = p.subcategoria || "";
-    if(!subcatsByCat.has(c)) subcatsByCat.set(c, new Set());
-    if(s) subcatsByCat.get(c).add(s);
-  }
-
-  renderTabs();
-  renderSubTabs();
-  renderGrid();
-  initLocationSelectors();
-
-  $("statusPill").textContent = `Catálogo listo (${products.length} productos)`;
-}
-
-function renderTabs() {
-  const el = $("catTabs");
-  el.innerHTML = "";
-  categories.forEach(c=>{
-    const d = document.createElement("div");
-    d.className = "tab" + (c===activeCat?" active":"");
-    d.textContent = c;
-    d.onclick = ()=>{ activeCat=c; activeSub="Todas"; renderTabs(); renderSubTabs(); renderGrid(); };
-    el.appendChild(d);
-  });
-}
-function renderSubTabs() {
-  const el = $("subTabs");
-  el.innerHTML = "";
-  let subs = [];
-  if(activeCat==="Todas"){
-    const all = new Set();
-    for(const set of subcatsByCat.values()) for(const s of set) all.add(s);
-    subs = ["Todas", ...Array.from(all).sort((a,b)=>a.localeCompare(b))];
-  } else {
-    const set = subcatsByCat.get(activeCat) || new Set();
-    subs = ["Todas", ...Array.from(set).sort((a,b)=>a.localeCompare(b))];
-  }
-  subs.forEach(s=>{
-    const d = document.createElement("div");
-    d.className = "tab" + (s===activeSub?" active":"");
-    d.textContent = s;
-    d.onclick = ()=>{ activeSub=s; renderSubTabs(); renderGrid(); };
-    el.appendChild(d);
-  });
-}
-
-function renderGrid() {
-  const q = $("q").value.trim().toLowerCase();
-  let list = products;
-
-  if(activeCat!=="Todas") list = list.filter(p=>p.categoria===activeCat);
-  if(activeSub!=="Todas") list = list.filter(p=>p.subcategoria===activeSub);
-  if(q) list = list.filter(p => (p.nombre||"").toLowerCase().includes(q) || (p.tags||"").toLowerCase().includes(q));
-
-  const el = $("grid");
-  el.innerHTML = "";
-  list.forEach(p=>{
-    const card = document.createElement("div");
-    card.className = "card";
-    const img = document.createElement("img");
-    img.className="img";
-    img.loading="lazy";
-    img.src = p.imagen || "";
-    img.alt = p.nombre || "";
-    img.onerror = ()=>{ img.src = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(`<svg xmlns='http://www.w3.org/2000/svg' width='800' height='800'><rect width='100%' height='100%' fill='#0a0f17'/><text x='50%' y='50%' fill='#9fb0c6' font-size='28' text-anchor='middle' dominant-baseline='middle'>Sin imagen</text></svg>`); };
-    const box = document.createElement("div");
-    box.className="p";
-
-    const name = document.createElement("div");
-    name.className="name";
-    name.textContent = p.nombre;
-
-    const mut = document.createElement("div");
-    mut.className="mut";
-    mut.textContent = `${p.categoria}${p.subcategoria?(" • "+p.subcategoria):""}`;
-
-    const price = document.createElement("div");
-    price.className="price";
-    price.innerHTML = `${money(p.precio)}${(Number(p.precio_anterior)>0 && Number(p.precio_anterior)>Number(p.precio))?`<span class="strike">${money(p.precio_anterior)}</span>`:""}`;
-
-    const badge = document.createElement("div");
-    const inStock = Number(p.stock||0) > 0;
-    badge.className = "badge " + (inStock ? "off" : "out");
-    badge.textContent = inStock ? `Stock: ${Number(p.stock)}` : "AGOTADO";
-
-    const btn = document.createElement("button");
-    btn.className="btn acc";
-    btn.style.width="100%";
-    btn.style.marginTop="10px";
-    btn.textContent = inStock ? "Añadir al carrito" : "No disponible";
-    btn.disabled = !inStock;
-    btn.onclick = ()=> addToCart(p);
-
-    box.appendChild(name);
-    box.appendChild(mut);
-    box.appendChild(price);
-    box.appendChild(badge);
-    box.appendChild(btn);
-
-    card.appendChild(img);
-    card.appendChild(box);
-    el.appendChild(card);
-  });
-}
-
-function addToCart(p){
-  const id = p.id || p.nombre;
-  const current = cart.get(id);
-  const stock = Number(p.stock||0);
-  const nextQty = (current?current.qty:0)+1;
-  if(nextQty>stock){ toast("No hay stock suficiente"); return; }
-  cart.set(id, { p, qty: nextQty });
-  updateCartCount();
-  toast("Agregado al carrito");
-}
-
-function updateCartCount(){
-  let count=0;
-  for(const it of cart.values()) count += it.qty;
-  $("cartCount").textContent = count;
-}
-
-/** =========================
- * CART UI
- * ========================= */
-function openCart(){ $("cartModal").classList.add("open"); renderCart(); computeSummary(); }
-function closeCart(){ $("cartModal").classList.remove("open"); }
-
-function renderCart(){
-  const el = $("cartItems");
-  el.innerHTML = "";
-  if(cart.size===0){
-    el.innerHTML = `<div class="note">Tu carrito está vacío.</div>`;
-    return;
-  }
-  for(const [id, it] of cart.entries()){
-    const p = it.p;
-    const row = document.createElement("div");
-    row.className = "cartItem";
-    row.innerHTML = `
-      <img src="${(p.imagen||"")}" alt="">
-      <div style="flex:1">
-        <div style="font-weight:900">${escapeHtml(p.nombre||"")}</div>
-        <div class="mut">${escapeHtml(p.categoria||"")}${p.subcategoria?(" • "+escapeHtml(p.subcategoria)):""}</div>
-        <div style="margin-top:6px;font-weight:900">${money(p.precio)} <span class="mut">x ${it.qty}</span></div>
+  <!-- =========================
+       ADMIN MODAL
+  ========================== -->
+  <div class="modal" id="adminModal">
+    <div class="sheet">
+      <div class="head row" style="justify-content:space-between">
+        <div style="font-weight:1000">Admin - Subir imagen</div>
+        <button class="btn" id="closeAdmin">Cerrar</button>
       </div>
-      <div class="qty">
-        <button class="mini" data-act="minus" data-id="${escapeAttr(id)}">-</button>
-        <div style="min-width:22px;text-align:center;font-weight:900">${it.qty}</div>
-        <button class="mini" data-act="plus" data-id="${escapeAttr(id)}">+</button>
-        <button class="mini" data-act="del" data-id="${escapeAttr(id)}">🗑</button>
+
+      <div class="body">
+        <div class="note">Sube imagen a Drive y te devuelve el link para pegar en la hoja <b>productos</b> (columna <b>imagen</b>).</div>
+
+        <div style="margin-top:10px">
+          <label class="mut">Clave Admin</label>
+          <input id="adminKey" placeholder="Tu clave (ADMIN_KEY)" />
+        </div>
+
+        <div style="margin-top:10px">
+          <input type="file" id="fileUp" accept="image/*" />
+        </div>
+
+        <button class="btn warn" id="uploadBtn" style="margin-top:10px">Subir imagen</button>
+
+        <div class="hr"></div>
+        <div class="h">Resultado</div>
+
+        <div class="note">Link directo (descarga)</div>
+        <input id="outUrl" readonly />
+
+        <div class="note" style="margin-top:10px">Link de Drive (vista)</div>
+        <input id="outView" readonly />
       </div>
-    `;
-    row.querySelectorAll("button").forEach(b=>{
-      b.onclick = ()=>{
-        const act = b.getAttribute("data-act");
-        const pid = b.getAttribute("data-id");
-        const item = cart.get(pid);
-        if(!item) return;
-        const stock = Number(item.p.stock||0);
-        if(act==="minus"){ item.qty = Math.max(1, item.qty-1); cart.set(pid,item); }
-        if(act==="plus"){
-          if(item.qty+1>stock){ toast("No hay stock suficiente"); return; }
-          item.qty += 1; cart.set(pid,item);
-        }
-        if(act==="del"){ cart.delete(pid); }
-        updateCartCount();
-        renderCart();
-        computeSummary();
-      };
+    </div>
+  </div>
+
+  <!-- =========================
+       SCRIPT (JS)
+  ========================== -->
+  <script>
+    /** CONFIG */
+    const API_URL = "https://script.google.com/macros/s/AKfycbxx07ynQmhXH0FB7JeJFPfxYhcXxszggv3oK8TEPy5wv2_zM6kYYIcdi2YEj_DrFzKImw/exec";
+    const DEFAULT_WHATSAPP = "+50431517755";
+    const CURRENCY = "Lps";
+    const NATIONAL_PREPAGO = 110;
+    const NATIONAL_CONTRA_ENTREGA = 160;
+
+    // Admin oculto, solo visible si entras con ?admin=1
+    if (new URLSearchParams(location.search).get("admin") === "1") {
+      document.getElementById("adminBtn").style.display = "inline-block";
+    }
+
+    // Local permitido (si luego quieres, lo leemos desde tu sheet cobertura_entrega)
+    const LOCAL_ALLOW = new Set([
+      "Comayagua|Comayagua",
+      "Comayagua|Ajuterique",
+      "Comayagua|Lejamaní",
+      "Comayagua|Lejamani",
+      "Comayagua|Flores",
+      "Comayagua|Villa de San Antonio",
+      "Comayagua|Palmerola",
+      "Comayagua|El Pajonal",
+    ]);
+
+    /** STATE */
+    let DATA=null, products=[], categories=[], subcatsByCat=new Map();
+    let cart=new Map(); // id -> {p, qty}
+    let activeCat="Todas", activeSub="Todas";
+
+    /** HELPERS */
+    const $=id=>document.getElementById(id);
+    const toast=msg=>{const t=$("toast");t.textContent=msg;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),1800);};
+    const money=n=>`${CURRENCY}. ${Number(n||0).toFixed(2)}`;
+    const esc=s=>String(s).replace(/[&<>"']/g,m=>({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;" }[m]));
+    const escAttr=s=>String(s).replace(/"/g,'&quot;');
+    const isLocal=(dep,mun)=>LOCAL_ALLOW.has(`${dep}|${mun}`);
+
+    /** LOAD */
+    async function load(){
+      $("statusPill").textContent="Cargando catálogo...";
+      const res=await fetch(`${API_URL}?action=catalog`,{cache:"no-store"});
+      const json=await res.json();
+      if(!json.ok) throw new Error(json.error||"No se pudo cargar");
+      DATA=json;
+
+      products=(json.productos||[]).filter(p=>p&&p.nombre&&p.categoria);
+      products.sort((a,b)=>{
+        const sa=(Number(a.stock)>0)?0:1, sb=(Number(b.stock)>0)?0:1;
+        if(sa!==sb) return sa-sb;
+        const oa=Number(a.orden||0), ob=Number(b.orden||0);
+        if(oa!==ob) return oa-ob;
+        return String(a.nombre).localeCompare(String(b.nombre));
+      });
+
+      const cats=new Set(products.map(p=>p.categoria||""));
+      categories=["Todas",...Array.from(cats).filter(Boolean).sort((a,b)=>a.localeCompare(b))];
+
+      subcatsByCat=new Map();
+      for(const p of products){
+        const c=p.categoria||"", s=p.subcategoria||"";
+        if(!subcatsByCat.has(c)) subcatsByCat.set(c,new Set());
+        if(s) subcatsByCat.get(c).add(s);
+      }
+
+      renderTabs(); renderSubTabs(); renderGrid(); initLocationSelectors();
+      $("statusPill").textContent=`Catálogo listo (${products.length} productos)`;
+    }
+
+    /** TABS */
+    function renderTabs(){
+      const el=$("catTabs"); el.innerHTML="";
+      categories.forEach(c=>{
+        const d=document.createElement("div");
+        d.className="tab"+(c===activeCat?" active":"");
+        d.textContent=c;
+        d.onclick=()=>{activeCat=c;activeSub="Todas";renderTabs();renderSubTabs();renderGrid();};
+        el.appendChild(d);
+      });
+    }
+    function renderSubTabs(){
+      const el=$("subTabs"); el.innerHTML="";
+      let subs=[];
+      if(activeCat==="Todas"){
+        const all=new Set();
+        for(const set of subcatsByCat.values()) for(const s of set) all.add(s);
+        subs=["Todas",...Array.from(all).sort((a,b)=>a.localeCompare(b))];
+      } else {
+        const set=subcatsByCat.get(activeCat)||new Set();
+        subs=["Todas",...Array.from(set).sort((a,b)=>a.localeCompare(b))];
+      }
+      subs.forEach(s=>{
+        const d=document.createElement("div");
+        d.className="tab"+(s===activeSub?" active":"");
+        d.textContent=s;
+        d.onclick=()=>{activeSub=s;renderSubTabs();renderGrid();};
+        el.appendChild(d);
+      });
+    }
+
+    /** GRID */
+    function renderGrid(){
+      const q=$("q").value.trim().toLowerCase();
+      let list=products;
+      if(activeCat!=="Todas") list=list.filter(p=>p.categoria===activeCat);
+      if(activeSub!=="Todas") list=list.filter(p=>p.subcategoria===activeSub);
+      if(q) list=list.filter(p=>(p.nombre||"").toLowerCase().includes(q)||(p.tags||"").toLowerCase().includes(q));
+
+      const el=$("grid"); el.innerHTML="";
+      list.forEach(p=>{
+        const card=document.createElement("div"); card.className="card";
+
+        const img=document.createElement("img");
+        img.className="img"; img.loading="lazy"; img.src=p.imagen||""; img.alt=p.nombre||"";
+        img.onerror=()=>{img.src="data:image/svg+xml;charset=utf-8,"+encodeURIComponent(`<svg xmlns='http://www.w3.org/2000/svg' width='800' height='800'><rect width='100%' height='100%' fill='#0a0f17'/><text x='50%' y='50%' fill='#9fb0c6' font-size='28' text-anchor='middle' dominant-baseline='middle'>Sin imagen</text></svg>`);};
+
+        const box=document.createElement("div"); box.className="p";
+        box.innerHTML=`
+          <div class="name">${esc(p.nombre||"")}</div>
+          <div class="mut">${esc(p.categoria||"")}${p.subcategoria?(" • "+esc(p.subcategoria)):""}</div>
+          <div class="price">${money(p.precio)}</div>
+        `;
+
+        const inStock=Number(p.stock||0)>0;
+        const badge=document.createElement("div");
+        badge.className="badge "+(inStock?"off":"out");
+        badge.textContent=inStock?`Stock: ${Number(p.stock)}`:"AGOTADO";
+
+        const btn=document.createElement("button");
+        btn.className="btn acc"; btn.style.width="100%"; btn.style.marginTop="10px";
+        btn.textContent=inStock?"Añadir al carrito":"No disponible";
+        btn.disabled=!inStock;
+        btn.onclick=()=>addToCart(p);
+
+        box.appendChild(badge);
+        box.appendChild(btn);
+        card.appendChild(img);
+        card.appendChild(box);
+        el.appendChild(card);
+      });
+    }
+
+    function addToCart(p){
+      const id=p.id||p.nombre;
+      const cur=cart.get(id);
+      const stock=Number(p.stock||0);
+      const next=(cur?cur.qty:0)+1;
+      if(next>stock){toast("No hay stock suficiente");return;}
+      cart.set(id,{p,qty:next});
+      updateCartCount(); toast("Agregado al carrito");
+    }
+    function updateCartCount(){
+      let count=0; for(const it of cart.values()) count+=it.qty;
+      $("cartCount").textContent=count;
+    }
+
+    /** CART */
+    function openCart(){ $("cartModal").classList.add("open"); renderCart(); computeSummary(); }
+    function closeCart(){ $("cartModal").classList.remove("open"); }
+
+    function renderCart(){
+      const el=$("cartItems"); el.innerHTML="";
+      if(cart.size===0){ el.innerHTML=`<div class="note">Tu carrito está vacío.</div>`; return; }
+      for(const [id,it] of cart.entries()){
+        const p=it.p;
+        const row=document.createElement("div"); row.className="cartItem";
+        row.innerHTML=`
+          <img src="${escAttr(p.imagen||"")}" alt="">
+          <div style="flex:1">
+            <div style="font-weight:900">${esc(p.nombre||"")}</div>
+            <div class="mut">${esc(p.categoria||"")}${p.subcategoria?(" • "+esc(p.subcategoria)):""}</div>
+            <div style="margin-top:6px;font-weight:900">${money(p.precio)} <span class="mut">x ${it.qty}</span></div>
+          </div>
+          <div class="qty">
+            <button class="mini" data-act="minus" data-id="${escAttr(id)}">-</button>
+            <div style="min-width:22px;text-align:center;font-weight:900">${it.qty}</div>
+            <button class="mini" data-act="plus" data-id="${escAttr(id)}">+</button>
+            <button class="mini" data-act="del" data-id="${escAttr(id)}">🗑</button>
+          </div>
+        `;
+        row.querySelectorAll("button").forEach(b=>{
+          b.onclick=()=>{
+            const act=b.getAttribute("data-act");
+            const pid=b.getAttribute("data-id");
+            const item=cart.get(pid); if(!item) return;
+            const stock=Number(item.p.stock||0);
+            if(act==="minus"){ item.qty=Math.max(1,item.qty-1); cart.set(pid,item); }
+            if(act==="plus"){ if(item.qty+1>stock){toast("No hay stock suficiente");return;} item.qty+=1; cart.set(pid,item); }
+            if(act==="del"){ cart.delete(pid); }
+            updateCartCount(); renderCart(); computeSummary();
+          };
+        });
+        el.appendChild(row);
+      }
+    }
+
+    /** LOCATION / DELIVERY */
+    function initLocationSelectors(){
+      const deps=new Set((DATA.municipios||[]).map(x=>x.departamento).filter(Boolean));
+      const depSel=$("dep"); depSel.innerHTML="";
+      Array.from(deps).sort((a,b)=>a.localeCompare(b)).forEach(d=>{
+        const o=document.createElement("option"); o.value=d; o.textContent=d; depSel.appendChild(o);
+      });
+      depSel.onchange=fillMunicipios;
+      $("mun").onchange=updateDeliveryOptions;
+      $("deliveryType").onchange=computeSummary;
+      $("payType").onchange=()=>{toggleCashBox();computeSummary();};
+      $("cashAmount").oninput=computeSummary;
+      fillMunicipios();
+    }
+
+    function fillMunicipios(){
+      const dep=$("dep").value;
+      const munSel=$("mun"); munSel.innerHTML="";
+      const list=(DATA.municipios||[]).filter(x=>x.departamento===dep).map(x=>x.municipio);
+      list.sort((a,b)=>a.localeCompare(b)).forEach(m=>{
+        const o=document.createElement("option"); o.value=m; o.textContent=m; munSel.appendChild(o);
+      });
+      updateDeliveryOptions();
+    }
+
+    function updateDeliveryOptions(){
+      const dep=$("dep").value, mun=$("mun").value;
+      const local=isLocal(dep,mun);
+      const sel=$("deliveryType"); sel.innerHTML="";
+      if(local){
+        const o=document.createElement("option");
+        o.value="local"; o.textContent="ENTREGA LOCAL (Comayagua y alrededores)";
+        sel.appendChild(o);
+        $("deliveryNote").textContent="Entrega local: pagar al recibir.";
+        $("payType").value="pagar_al_recibir";
+      } else {
+        const o=document.createElement("option");
+        o.value="empresa"; o.textContent="ENVÍO NACIONAL (C807 / Cargo Expreso / Forza)";
+        sel.appendChild(o);
+        $("deliveryNote").textContent="Envío nacional: contra entrega o prepago.";
+      }
+      toggleCashBox(); computeSummary();
+    }
+
+    function toggleCashBox(){
+      const dep=$("dep").value, mun=$("mun").value;
+      const local=isLocal(dep,mun);
+      const pay=$("payType").value;
+      $("cashBox").style.display = (local && pay==="pagar_al_recibir") ? "block" : "none";
+
+      if(local){
+        $("payNote").textContent="PAGAR AL RECIBIR: se confirma monto para cambio.";
+      } else {
+        $("payNote").textContent = pay==="prepago"
+          ? `PREPAGO: deposita producto + envío (${money(NATIONAL_PREPAGO)}).`
+          : `CONTRA ENTREGA: paga a la empresa producto + envío (${money(NATIONAL_CONTRA_ENTREGA)}).`;
+      }
+    }
+
+    /** SUMMARY + WHATSAPP */
+    function computeSummary(){
+      const sum=$("summary");
+      if(cart.size===0){ sum.innerHTML=`<div class="note">Agrega productos para ver el total.</div>`; return; }
+
+      const dep=$("dep").value, mun=$("mun").value;
+      const local=isLocal(dep,mun);
+      const pay=$("payType").value;
+
+      let subtotal=0;
+      for(const it of cart.values()) subtotal += Number(it.p.precio||0)*it.qty;
+
+      let shipping=0, shippingText="";
+      if(local){
+        shipping=0;
+        shippingText="Entrega local: se coordina (tarifa según zona si aplica).";
+        $("payType").value="pagar_al_recibir";
+      } else {
+        shipping = (pay==="prepago") ? NATIONAL_PREPAGO : NATIONAL_CONTRA_ENTREGA;
+        shippingText = pay==="prepago"
+          ? `Envío nacional PREPAGO: ${money(shipping)}`
+          : `Envío nacional CONTRA ENTREGA: ${money(shipping)} (pagado a la empresa)`;
+      }
+
+      const totalNow = subtotal + ( (!local && pay==="prepago") ? shipping : 0 );
+      const cash = Number(($("cashAmount").value||"").replace(/[^\d.]/g,"")||0);
+      const change = (local && pay==="pagar_al_recibir" && cash>0) ? Math.max(0, cash - subtotal) : 0;
+
+      let html = `
+        <div class="sum"><div>Subtotal</div><div>${money(subtotal)}</div></div>
+        <div class="sum"><div>Envío</div><div>${(!local && pay==="prepago") ? money(shipping) : "Se paga a empresa / coordina"}</div></div>
+        <div class="sum total"><div>Total a pagar ahora</div><div>${money(totalNow)}</div></div>
+        <div class="note" style="margin-top:8px">${esc(shippingText)}</div>
+      `;
+      if(local && pay==="pagar_al_recibir"){
+        html += cash>0
+          ? `<div class="note" style="margin-top:8px">Paga con: ${money(cash)} → Cambio estimado: ${money(change)}</div>`
+          : `<div class="note" style="margin-top:8px">Para calcular cambio, escribe “¿con cuánto pagará?”</div>`;
+      }
+      sum.innerHTML = html;
+    }
+
+    function buildWhatsAppMessage(){
+      const dep=$("dep").value, mun=$("mun").value;
+      const local=isLocal(dep,mun);
+      const pay=$("payType").value;
+
+      const name=$("name").value.trim();
+      const phone=$("phone").value.trim();
+      const addr=$("addr").value.trim();
+
+      const lines=[];
+      lines.push("🛒 *PEDIDO - Soluciones Digitales Comayagua*");
+      lines.push(`📍 *Ubicación:* ${dep} - ${mun}`);
+      lines.push(`🚚 *Entrega:* ${local ? "Entrega Local" : "Envío Nacional (Empresa)"}`);
+      lines.push(`💳 *Pago:* ${pay==="prepago" ? "PREPAGO" : "PAGAR AL RECIBIR"}`);
+
+      if(local && pay==="pagar_al_recibir"){
+        const cash=($("cashAmount").value||"").trim();
+        if(cash) lines.push(`💵 *Paga con:* ${cash}`);
+      } else if(!local){
+        lines.push("📦 *Empresa:* C807 / Cargo Expreso / Forza");
+        lines.push(`💰 *Envío:* ${pay==="prepago" ? money(NATIONAL_PREPAGO) : money(NATIONAL_CONTRA_ENTREGA)} (${pay==="prepago" ? "incluido en depósito" : "pagado a empresa"})`);
+      }
+
+      lines.push("");
+      lines.push("🧾 *Productos:*");
+      let subtotal=0;
+      for(const it of cart.values()){
+        const line=Number(it.p.precio||0)*it.qty;
+        subtotal+=line;
+        lines.push(`• ${it.qty} x ${it.p.nombre} — ${money(line)}`);
+      }
+      lines.push(`Subtotal: ${money(subtotal)}`);
+
+      if(!local && pay==="prepago") lines.push(`Total a depositar: ${money(subtotal + NATIONAL_PREPAGO)}`);
+      else lines.push(`Total producto: ${money(subtotal)}`);
+
+      lines.push("");
+      lines.push("👤 *Cliente:*");
+      if(name) lines.push(`Nombre: ${name}`);
+      if(phone) lines.push(`Tel: ${phone}`);
+      if(addr) lines.push(`Dirección: ${addr}`);
+
+      return lines.join("\n");
+    }
+
+    function sendWhatsApp(){
+      if(cart.size===0){ toast("Carrito vacío"); return; }
+      const msg=buildWhatsAppMessage();
+      const phone = (DATA && DATA.whatsapp) ? DATA.whatsapp : DEFAULT_WHATSAPP;
+      const wa="https://wa.me/"+phone.replace(/[^\d]/g,"")+"?text="+encodeURIComponent(msg);
+      window.open(wa,"_blank");
+    }
+
+    /** ADMIN UPLOAD */
+    async function uploadImage(){
+      const key=$("adminKey").value.trim();
+      const file=$("fileUp").files[0];
+      if(!key){toast("Falta clave Admin");return;}
+      if(!file){toast("Selecciona una imagen");return;}
+
+      const base64=await fileToBase64(file);
+      const payload={filename:file.name,contentType:file.type||"image/jpeg",base64};
+
+      const res=await fetch(`${API_URL}?action=upload&key=${encodeURIComponent(key)}`,{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify(payload)
+      });
+      const json=await res.json();
+      if(!json.ok){toast(json.error||"Error subiendo");return;}
+      $("outUrl").value=json.url||"";
+      $("outView").value=json.viewUrl||"";
+      toast("Imagen subida");
+    }
+    function fileToBase64(file){
+      return new Promise((resolve,reject)=>{
+        const r=new FileReader();
+        r.onload=()=>resolve(r.result);
+        r.onerror=reject;
+        r.readAsDataURL(file);
+      });
+    }
+
+    /** EVENTS */
+    $("q").addEventListener("input", renderGrid);
+    $("cartBtn").onclick=openCart;
+    $("closeCart").onclick=closeCart;
+    $("cartModal").onclick=e=>{ if(e.target.id==="cartModal") closeCart(); };
+    $("sendWA").onclick=sendWhatsApp;
+
+    $("adminBtn").onclick=()=>$("adminModal").classList.add("open");
+    $("closeAdmin").onclick=()=>$("adminModal").classList.remove("open");
+    $("adminModal").onclick=e=>{ if(e.target.id==="adminModal") $("adminModal").classList.remove("open"); };
+    $("uploadBtn").onclick=uploadImage;
+
+    window.addEventListener("keydown",e=>{ if(e.key==="Escape"){ closeCart(); $("adminModal").classList.remove("open"); } });
+
+    load().catch(err=>{
+      console.error(err);
+      $("statusPill").textContent="Error cargando catálogo";
+      toast("Error: "+(err.message||err));
     });
-    el.appendChild(row);
-  }
-}
-
-/** =========================
- * LOCATION / DELIVERY
- * ========================= */
-function initLocationSelectors(){
-  const deps = new Set((DATA.municipios||[]).map(x=>x.departamento).filter(Boolean));
-  const depSel = $("dep");
-  depSel.innerHTML = "";
-  Array.from(deps).sort((a,b)=>a.localeCompare(b)).forEach(d=>{
-    const o=document.createElement("option"); o.value=d; o.textContent=d; depSel.appendChild(o);
-  });
-
-  depSel.onchange = ()=> fillMunicipios();
-  $("mun").onchange = ()=> updateDeliveryOptions();
-  $("deliveryType").onchange = ()=> computeSummary();
-  $("payType").onchange = ()=> { toggleCashBox(); computeSummary(); };
-
-  $("cashAmount").oninput = ()=> computeSummary();
-  fillMunicipios();
-}
-
-function fillMunicipios(){
-  const dep = $("dep").value;
-  const munSel = $("mun");
-  munSel.innerHTML="";
-  const list = (DATA.municipios||[]).filter(x=>x.departamento===dep).map(x=>x.municipio);
-  list.sort((a,b)=>a.localeCompare(b)).forEach(m=>{
-    const o=document.createElement("option"); o.value=m; o.textContent=m; munSel.appendChild(o);
-  });
-  updateDeliveryOptions();
-}
-
-function coverageFor(dep, mun){
-  const c = (DATA.cobertura||[]).find(x=>x.departamento===dep && x.municipio===mun);
-  return c || null;
-}
-
-function isLocalAllowed(dep, mun){
-  return LOCAL_ALLOW.has(`${dep}|${mun}`);
-}
-
-function updateDeliveryOptions(){
-  const dep = $("dep").value;
-  const mun = $("mun").value;
-
-  const cov = coverageFor(dep, mun);
-  const localAllowed = isLocalAllowed(dep, mun);
-
-  const sel = $("deliveryType");
-  sel.innerHTML = "";
-
-  if(localAllowed){
-    const o1=document.createElement("option"); o1.value="local_entrega"; o1.textContent="ENTREGA LOCAL (Comayagua y alrededores)";
-    sel.appendChild(o1);
-    $("deliveryNote").textContent = "Entrega local: pagar al recibir.";
-    $("payType").value = "pagar_al_recibir";
-    $("payType").disabled = false;
-  } else {
-    const o2=document.createElement("option"); o2.value="empresa_envio"; o2.textContent="ENVÍO NACIONAL (C807 / Cargo Expreso / Forza)";
-    sel.appendChild(o2);
-    $("deliveryNote").textContent = "Envío nacional: se gestiona por empresa. El costo depende si es contra entrega o prepago.";
-  }
-
-  if(cov && cov.nota) $("deliveryNote").textContent = cov.nota;
-
-  toggleCashBox();
-  computeSummary();
-}
-
-function toggleCashBox(){
-  const pay = $("payType").value;
-  const dep = $("dep").value;
-  const mun = $("mun").value;
-  const localAllowed = isLocalAllowed(dep, mun);
-
-  const show = localAllowed && pay === "pagar_al_recibir";
-  $("cashBox").style.display = show ? "block" : "none";
-
-  if(localAllowed){
-    $("payNote").textContent = "PAGAR AL RECIBIR: se confirma monto para cambio.";
-  } else {
-    $("payNote").textContent = pay==="prepago"
-      ? `PREPAGO: deposita producto + envío (${money(NATIONAL_PREPAGO)}).`
-      : `CONTRA ENTREGA: paga a la empresa producto + envío (${money(NATIONAL_CONTRA_ENTREGA)}).`;
-  }
-}
-
-/** =========================
- * SUMMARY + WHATSAPP
- * ========================= */
-function computeSummary(){
-  const sum = $("summary");
-  const dep = $("dep").value;
-  const mun = $("mun").value;
-  const pay = $("payType").value;
-  const localAllowed = isLocalAllowed(dep, mun);
-
-  let subtotal = 0;
-  for(const it of cart.values()) subtotal += Number(it.p.precio||0) * it.qty;
-
-  let shipping = 0;
-  let shippingText = "";
-  if(cart.size===0){
-    sum.innerHTML = `<div class="note">Agrega productos para ver el total.</div>`;
-    return;
-  }
-
-  if(localAllowed){
-    shipping = 0;
-    shippingText = "Entrega local: se coordina (tarifa según zona si aplica).";
-    $("payType").value = "pagar_al_recibir";
-  } else {
-    shipping = (pay==="prepago") ? NATIONAL_PREPAGO : NATIONAL_CONTRA_ENTREGA;
-    shippingText = (pay==="prepago")
-      ? `Envío nacional PREPAGO: ${money(shipping)}`
-      : `Envío nacional CONTRA ENTREGA: ${money(shipping)} (pagado a la empresa)`;
-  }
-
-  const total = subtotal + (pay==="prepago" ? shipping : 0);
-  const cash = Number(($("cashAmount").value||"").replace(/[^\d.]/g,"")||0);
-  const change = (localAllowed && pay==="pagar_al_recibir" && cash>0) ? Math.max(0, cash - subtotal) : 0;
-
-  let html = `
-    <div class="sum"><div>Subtotal</div><div>${money(subtotal)}</div></div>
-    <div class="sum"><div>Envío</div><div>${pay==="prepago"?money(shipping):"Se paga a empresa / coordina"}</div></div>
-    <div class="sum total"><div>Total a pagar ahora</div><div>${money(total)}</div></div>
-    <div class="note" style="margin-top:8px">${escapeHtml(shippingText)}</div>
-  `;
-  if(localAllowed && pay==="pagar_al_recibir"){
-    if(cash>0) html += `<div class="note" style="margin-top:8px">Paga con: ${money(cash)} → Cambio estimado: ${money(change)}</div>`;
-    else html += `<div class="note" style="margin-top:8px">Para calcular cambio, escribe “¿con cuánto pagará?”</div>`;
-  }
-
-  sum.innerHTML = html;
-}
-
-function buildWhatsAppMessage(){
-  const dep = $("dep").value;
-  const mun = $("mun").value;
-  const pay = $("payType").value;
-  const name = $("name").value.trim();
-  const phone = $("phone").value.trim();
-  const addr = $("addr").value.trim();
-  const localAllowed = isLocalAllowed(dep, mun);
-
-  let lines = [];
-  lines.push("🛒 *PEDIDO - Soluciones Digitales Comayagua*");
-  lines.push(`📍 *Ubicación:* ${dep} - ${mun}`);
-  lines.push(`🚚 *Entrega:* ${localAllowed ? "Entrega Local" : "Envío Nacional (Empresa)"}`);
-  lines.push(`💳 *Pago:* ${pay==="prepago" ? "PREPAGO" : "PAGAR AL RECIBIR"}`);
-
-  if(localAllowed && pay==="pagar_al_recibir"){
-    const cash = ($("cashAmount").value||"").trim();
-    if(cash) lines.push(`💵 *Paga con:* ${cash}`);
-  } else if(!localAllowed){
-    lines.push(`📦 *Empresa:* C807 / Cargo Expreso / Forza`);
-    lines.push(`💰 *Envío:* ${pay==="prepago" ? money(NATIONAL_PREPAGO) : money(NATIONAL_CONTRA_ENTREGA)} (${pay==="prepago" ? "incluido en depósito" : "pagado a empresa"})`);
-  }
-
-  lines.push("");
-  lines.push("🧾 *Productos:*");
-  let subtotal = 0;
-  for(const it of cart.values()){
-    const p = it.p;
-    const lineTotal = Number(p.precio||0) * it.qty;
-    subtotal += lineTotal;
-    lines.push(`• ${it.qty} x ${p.nombre} — ${money(lineTotal)}`);
-  }
-  lines.push(`Subtotal: ${money(subtotal)}`);
-
-  if(pay==="prepago" && !localAllowed){
-    lines.push(`Total a depositar: ${money(subtotal + NATIONAL_PREPAGO)}`);
-  } else {
-    lines.push(`Total producto: ${money(subtotal)}`);
-  }
-
-  lines.push("");
-  lines.push("👤 *Cliente:*");
-  if(name) lines.push(`Nombre: ${name}`);
-  if(phone) lines.push(`Tel: ${phone}`);
-  if(addr) lines.push(`Dirección: ${addr}`);
-
-  return lines.join("\n");
-}
-
-function sendWhatsApp(){
-  if(cart.size===0){ toast("Carrito vacío"); return; }
-  const msg = buildWhatsAppMessage();
-  const phone = (DATA && DATA.whatsapp) ? DATA.whatsapp : DEFAULT_WHATSAPP;
-  const wa = "https://wa.me/" + phone.replace(/[^\d]/g,"") + "?text=" + encodeURIComponent(msg);
-  window.open(wa, "_blank");
-}
-
-/** =========================
- * ADMIN UPLOAD (requiere Code.gs con doPost upload)
- * ========================= */
-async function uploadImage(){
-  const key = $("adminKey").value.trim();
-  const file = $("fileUp").files[0];
-  if(!key){ toast("Falta clave Admin"); return; }
-  if(!file){ toast("Selecciona una imagen"); return; }
-
-  const base64 = await fileToBase64(file);
-  const payload = { filename: file.name, contentType: file.type || "image/jpeg", base64 };
-
-  const res = await fetch(`${API_URL}?action=upload&key=${encodeURIComponent(key)}`, {
-    method:"POST",
-    headers:{ "Content-Type":"application/json" },
-    body: JSON.stringify(payload)
-  });
-  const json = await res.json();
-  if(!json.ok){ toast(json.error || "Error subiendo"); return; }
-  $("outUrl").value = json.url || "";
-  $("outView").value = json.viewUrl || "";
-  toast("Imagen subida");
-}
-
-function fileToBase64(file){
-  return new Promise((resolve,reject)=>{
-    const r=new FileReader();
-    r.onload=()=>resolve(r.result);
-    r.onerror=reject;
-    r.readAsDataURL(file);
-  });
-}
-
-/** =========================
- * EVENTS
- * ========================= */
-$("q").addEventListener("input", renderGrid);
-
-$("cartBtn").onclick = openCart;
-$("closeCart").onclick = closeCart;
-$("cartModal").onclick = (e)=>{ if(e.target.id==="cartModal") closeCart(); };
-
-$("sendWA").onclick = sendWhatsApp;
-
-$("adminBtn").onclick = ()=> $("adminModal").classList.add("open");
-$("closeAdmin").onclick = ()=> $("adminModal").classList.remove("open");
-$("adminModal").onclick = (e)=>{ if(e.target.id==="adminModal") $("adminModal").classList.remove("open"); };
-$("uploadBtn").onclick = uploadImage;
-
-window.addEventListener("keydown",(e)=>{ if(e.key==="Escape"){ closeCart(); $("adminModal").classList.remove("open"); } });
-
-load().catch(err=>{
-  console.error(err);
-  $("statusPill").textContent = "Error cargando catálogo";
-  toast("Error: " + (err.message||err));
-});
-</script>
+  </script>
 </body>
 </html>
