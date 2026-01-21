@@ -28,7 +28,7 @@
         </select>
       </div>
 
-      <!-- ✅ Modo Día/Noche -->
+      <!-- Modo Día/Noche -->
       <button class="btn ghost themeBtn" id="themeBtn" type="button">
         <span class="tIcon">🌙</span><span class="tText">Modo: Noche</span>
       </button>
@@ -38,8 +38,16 @@
 
     <div class="tabs" id="catTabs"></div>
     <div class="tabs" id="subTabs"></div>
+
+    <!-- ✅ Filtros rápidos -->
+    <div class="filtersBar" id="quickFilters"></div>
   </div>
 </header>
+
+<!-- ✅ Banner superior -->
+<div class="wrap" style="padding-top:10px;padding-bottom:0">
+  <div id="topBanner"></div>
+</div>
 
 <main class="wrap">
   <!-- Destacados -->
@@ -66,7 +74,7 @@
 
 <div class="toast" id="toast"></div>
 
-<!-- ✅ Botón “Ir arriba” -->
+<!-- Botón “Ir arriba” -->
 <button class="toTop" id="toTop" type="button" aria-label="Ir arriba">↑</button>
 
 <!-- MODAL: PRODUCTO -->
@@ -85,6 +93,8 @@
 
         <div>
           <div class="pmName" id="pmName"></div>
+          <div class="pmChips" id="pmChips"></div>
+
           <div class="mut" id="pmCat"></div>
           <div class="pmPrice" id="pmPrice"></div>
 
@@ -93,13 +103,13 @@
             <span class="badge out" id="pmStockOut" style="display:none">AGOTADO</span>
           </div>
 
+          <!-- botones video + compartir -->
+          <div class="pmActions" id="pmActions"></div>
+
           <div class="pmDesc" id="pmDesc"></div>
 
-          <div class="pmVideoRow" id="pmVideoRow" style="display:none">
-            <a class="btn" id="pmTiktok" target="_blank" rel="noopener" style="display:none">Ver en TikTok</a>
-            <a class="btn" id="pmYoutube" target="_blank" rel="noopener" style="display:none">Ver en YouTube</a>
-            <!-- Facebook + Compartir se crean automáticamente -->
-          </div>
+          <!-- specs en tarjetas -->
+          <div class="pmSpecs" id="pmSpecs" style="display:none"></div>
 
           <div class="pmQtyRow">
             <div class="pmQty">
@@ -128,14 +138,12 @@
     <div class="body">
       <div class="cartLayout">
 
-        <!-- IZQUIERDA -->
         <div class="panel">
           <div class="panelTitle">Productos</div>
           <div id="cartItems"></div>
           <div class="note" id="cartEmptyNote" style="display:none">Tu carrito está vacío.</div>
         </div>
 
-        <!-- DERECHA -->
         <div class="panel">
           <div class="panelTitle">Entrega y pago</div>
 
@@ -199,11 +207,9 @@
 <!-- BARRA INFERIOR MÓVIL -->
 <div class="mobileBar" id="mobileBar">
   <button class="btn" id="bottomCartBtn">Carrito <span class="miniCount" id="bottomCartCount">0</span></button>
-
   <button class="btn ghost themeBtn" id="bottomThemeBtn" type="button">
     <span class="tIcon">🌙</span><span class="tText">Modo: Noche</span>
   </button>
-
   <button class="btn acc" id="bottomSendBtn">WhatsApp</button>
 </div>
 
@@ -213,8 +219,12 @@
 <script src="theme.js"></script>
 <script src="motion.js"></script>
 <script src="ux.js"></script>
-<script src="store.js"></script>
 
+<script src="banner.js"></script>
+<script src="filters.js"></script>
+<script src="product_modal_ui.js"></script>
+
+<script src="store.js"></script>
 <script src="media.js"></script>
 <script src="gallery.js"></script>
 <script src="share.js"></script>
