@@ -3,22 +3,23 @@
 
   async function init() {
     // Tema
-    if (window.SDC_THEME?.init) window.SDC_THEME.init("dark");
-    const tb = U.$("themeBtn");
-    const btb = U.$("bottomThemeBtn");
-    if (tb) tb.onclick = () => window.SDC_THEME.toggle();
-    if (btb) btb.onclick = () => window.SDC_THEME.toggle();
+    window.SDC_THEME?.init?.("dark");
+    U.$("themeBtn")?.addEventListener("click", () => window.SDC_THEME.toggle());
+    U.$("bottomThemeBtn")?.addEventListener("click", () => window.SDC_THEME.toggle());
 
     // Motion + UX
     window.SDC_MOTION?.observe?.();
     window.SDC_UX?.initToTop?.();
 
+    // Banner + filtros
+    window.SDC_BANNER?.init?.();
+    window.SDC_FILTERS?.init?.();
+
     // Skeleton antes de cargar
     window.SDC_CATALOG_UI?.renderSkeletonGrid?.(10);
 
     // Buscar
-    const q = U.$("q");
-    if (q) q.addEventListener("input", () => window.SDC_CATALOG.renderGrid());
+    U.$("q")?.addEventListener("input", () => window.SDC_CATALOG.renderGrid());
 
     // Binds
     window.SDC_CART.bindEvents();
@@ -44,8 +45,7 @@
 
   init().catch(err => {
     console.error(err);
-    const s = U.$("statusPill");
-    if (s) s.textContent = "Error cargando catálogo";
+    U.$("statusPill") && (U.$("statusPill").textContent = "Error cargando catálogo");
     U.toast("Error: " + (err?.message || err));
   });
 })();
