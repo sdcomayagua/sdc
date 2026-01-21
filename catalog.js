@@ -1,17 +1,34 @@
 window.SDC_CATALOG = (() => {
   const CFG = window.SDC_CONFIG;
   const U = window.SDC_UTILS;
-  const ST = window.SDC_STORE;
+  const S = window.SDC_STORE;
+
+  const fallbackSvg = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(
+    `<svg xmlns='http://www.w3.org/2000/svg' width='800' height='800'>
+      <rect width='100%' height='100%' fill='#0a0f17'/>
+      <text x='50%' y='50%' fill='#9fb0c6' font-size='28' text-anchor='middle' dominant-baseline='middle'>Sin imagen</text>
+    </svg>`
+  );
+
+  // Modal producto state
+  let currentProduct = null;
+  let pmQty = 1;
+  let pmImages = [];
+  let pmMainIndex = 0;
 
   async function load() {
     U.$("statusPill").textContent = "Cargando catálogo...";
     const res = await fetch(`${CFG.API_URL}?action=catalog`, { cache: "no-store" });
     const json = await res.json();
     if (!json.ok) throw new Error(json.error || "No se pudo cargar");
-    ST.DATA = json;
 
-    ST.products = (json.productos || []).filter(p => p && p.nombre && p.categoria);
-    ST.products.sort((a, b) => {
+    S.setData(json);
+
+    // productos
+    let products = (json.productos || []).filter(p => p && p.nombre && p.categoria);
+
+    // ordenar: stock>0 primero, luego orden, luego nombre
+    products.sort((a, b) => {
       const sa = (Number(a.stock) > 0) ? 0 : 1;
       const sb = (Number(b.stock) > 0) ? 0 : 1;
       if (sa !== sb) return sa - sb;
@@ -20,32 +37,45 @@ window.SDC_CATALOG = (() => {
       return String(a.nombre).localeCompare(String(b.nombre));
     });
 
-    const cats = new Set(ST.products.map(p => p.categoria || ""));
-    ST.categories = ["Todas", ...Array.from(cats).filter(Boolean).sort((a, b) => a.localeCompare(b))];
+    S.setProducts(products);
 
-    ST.subcatsByCat = new Map();
-    for (const p of ST.products) {
+    const cats = new Set(products.map(p => p.categoria || ""));
+    const categories = ["Todas", ...Array.from(cats).filter(Boolean).sort((a,b)=>a.localeCompare(b))];
+    S.setCats(categories);
+
+    const sub = new Map();
+    for (const p of products) {
       const c = p.categoria || "";
       const s = p.subcategoria || "";
-      if (!ST.subcatsByCat.has(c)) ST.subcatsByCat.set(c, new Set());
-      if (s) ST.subcatsByCat.get(c).add(s);
+      if (!sub.has(c)) sub.set(c, new Set());
+      if (s) sub.get(c).add(s);
     }
+    S.setSubcatsMap(sub);
 
     renderTabs();
     renderSubTabs();
     renderGrid();
 
-    U.$("statusPill").textContent = `Catálogo listo (${ST.products.length} productos)`;
+    U.$("statusPill").textContent = `Catálogo listo (${products.length} productos)`;
   }
 
   function renderTabs() {
     const el = U.$("catTabs");
     el.innerHTML = "";
-    ST.categories.forEach(c => {
+    const categories = S.getCats();
+    const activeCat = S.getActiveCat();
+
+    categories.forEach(c => {
       const d = document.createElement("div");
-      d.className = "tab" + (c === ST.activeCat ? " active" : "");
+      d.className = "tab" + (c === activeCat ? " active" : "");
       d.textContent = c;
-      d.onclick = () => { ST.activeCat = c; ST.activeSub = "Todas"; renderTabs(); renderSubTabs(); renderGrid(); };
+      d.onclick = () => {
+        S.setActiveCat(c);
+        S.setActiveSub("Todas");
+        renderTabs();
+        renderSubTabs();
+        renderGrid();
+      };
       el.appendChild(d);
     });
   }
@@ -53,34 +83,51 @@ window.SDC_CATALOG = (() => {
   function renderSubTabs() {
     const el = U.$("subTabs");
     el.innerHTML = "";
+
+    const activeCat = S.getActiveCat();
+    const activeSub = S.getActiveSub();
+    const subcatsByCat = S.getSubcatsMap();
+
     let subs = [];
-    if (ST.activeCat === "Todas") {
+    if (activeCat === "Todas") {
       const all = new Set();
-      for (const set of ST.subcatsByCat.values()) for (const s of set) all.add(s);
-      subs = ["Todas", ...Array.from(all).sort((a, b) => a.localeCompare(b))];
+      for (const set of subcatsByCat.values()) for (const s of set) all.add(s);
+      subs = ["Todas", ...Array.from(all).sort((a,b)=>a.localeCompare(b))];
     } else {
-      const set = ST.subcatsByCat.get(ST.activeCat) || new Set();
-      subs = ["Todas", ...Array.from(set).sort((a, b) => a.localeCompare(b))];
+      const set = subcatsByCat.get(activeCat) || new Set();
+      subs = ["Todas", ...Array.from(set).sort((a,b)=>a.localeCompare(b))];
     }
+
     subs.forEach(s => {
       const d = document.createElement("div");
-      d.className = "tab" + (s === ST.activeSub ? " active" : "");
+      d.className = "tab" + (s === activeSub ? " active" : "");
       d.textContent = s;
-      d.onclick = () => { ST.activeSub = s; renderSubTabs(); renderGrid(); };
+      d.onclick = () => {
+        S.setActiveSub(s);
+        renderSubTabs();
+        renderGrid();
+      };
       el.appendChild(d);
     });
   }
 
   function renderGrid() {
     const q = (U.$("q").value || "").trim().toLowerCase();
-    let list = ST.products;
+    const activeCat = S.getActiveCat();
+    const activeSub = S.getActiveSub();
 
-    if (ST.activeCat !== "Todas") list = list.filter(p => p.categoria === ST.activeCat);
-    if (ST.activeSub !== "Todas") list = list.filter(p => p.subcategoria === ST.activeSub);
-    if (q) list = list.filter(p => (p.nombre || "").toLowerCase().includes(q) || (p.tags || "").toLowerCase().includes(q));
+    let list = S.getProducts();
+
+    if (activeCat !== "Todas") list = list.filter(p => p.categoria === activeCat);
+    if (activeSub !== "Todas") list = list.filter(p => p.subcategoria === activeSub);
+    if (q) list = list.filter(p =>
+      (p.nombre || "").toLowerCase().includes(q) ||
+      (p.tags || "").toLowerCase().includes(q)
+    );
 
     const el = U.$("grid");
     el.innerHTML = "";
+
     list.forEach(p => {
       const inStock = Number(p.stock || 0) > 0;
 
@@ -93,7 +140,7 @@ window.SDC_CATALOG = (() => {
       img.loading = "lazy";
       img.src = p.imagen || "";
       img.alt = p.nombre || "";
-      img.onerror = () => { img.src = U.fallbackImg(); };
+      img.onerror = () => img.src = fallbackSvg;
 
       const box = document.createElement("div");
       box.className = "p";
@@ -114,10 +161,7 @@ window.SDC_CATALOG = (() => {
       btn.textContent = inStock ? "Añadir al carrito" : "No disponible";
       btn.disabled = !inStock;
 
-      btn.onclick = (ev) => {
-        ev.stopPropagation();
-        window.SDC_CART.add(p, 1);
-      };
+      btn.onclick = (ev) => { ev.stopPropagation(); S.addToCart(p, 1); };
 
       box.appendChild(badge);
       box.appendChild(btn);
@@ -128,20 +172,19 @@ window.SDC_CATALOG = (() => {
     });
   }
 
-  // ======== PRODUCT MODAL
   function parseGallery(p) {
     const imgs = [];
     if (p.imagen) imgs.push(String(p.imagen).trim());
 
     if (Array.isArray(p.galeria)) {
-      p.galeria.forEach(u => { const s=String(u||"").trim(); if(s) imgs.push(s); });
+      p.galeria.forEach(u => { const s=String(u||"").trim(); if (s) imgs.push(s); });
     } else if (p.galeria) {
-      String(p.galeria).split(",").forEach(u => { const s=String(u||"").trim(); if(s) imgs.push(s); });
+      String(p.galeria).split(",").forEach(u => { const s=String(u||"").trim(); if (s) imgs.push(s); });
     }
 
-    for (let i=1;i<=8;i++){
-      const k="galeria_"+i;
-      if (p[k]) { const s=String(p[k]).trim(); if(s) imgs.push(s); }
+    for (let i=1; i<=8; i++) {
+      const k = "galeria_" + i;
+      if (p[k]) { const s = String(p[k]).trim(); if (s) imgs.push(s); }
     }
 
     const unique = [];
@@ -157,10 +200,10 @@ window.SDC_CATALOG = (() => {
   }
 
   function openProductModal(p) {
-    ST.productModal.product = p;
-    ST.productModal.qty = 1;
-    ST.productModal.mainIndex = 0;
-    ST.productModal.images = parseGallery(p);
+    currentProduct = p;
+    pmQty = 1;
+    pmMainIndex = 0;
+    pmImages = parseGallery(p);
 
     U.$("pmTitle").textContent = p.nombre || "Producto";
     U.$("pmName").textContent = p.nombre || "";
@@ -172,86 +215,76 @@ window.SDC_CATALOG = (() => {
     U.$("pmStockOut").style.display = stock > 0 ? "none" : "inline-block";
     if (stock > 0) U.$("pmStockOk").textContent = `Stock: ${stock}`;
 
-    const desc = String(p.descripcion || "").trim();
-    U.$("pmDesc").textContent = desc ? desc : "Sin descripción por ahora.";
+    U.$("pmDesc").textContent = (p.descripcion || "").trim() ? String(p.descripcion) : "Sin descripción por ahora.";
 
-    const tik = String(p.tiktok_url || p.tiktok || p.video_tiktok || "").trim();
-    const you = String(p.youtube_url || p.youtube || p.video_youtube || "").trim();
-
-    const hasTik = !!tik;
-    const hasYou = !!you;
+    const tiktok = String(p.tiktok_url || p.tiktok || p.video_tiktok || "").trim();
+    const youtube = String(p.youtube_url || p.youtube || p.video_youtube || "").trim();
+    const hasTik = !!tiktok;
+    const hasYou = !!youtube;
 
     U.$("pmVideoRow").style.display = (hasTik || hasYou) ? "flex" : "none";
     U.$("pmTiktok").style.display = hasTik ? "inline-block" : "none";
     U.$("pmYoutube").style.display = hasYou ? "inline-block" : "none";
-    if (hasTik) U.$("pmTiktok").href = tik;
-    if (hasYou) U.$("pmYoutube").href = you;
+    if (hasTik) U.$("pmTiktok").href = tiktok;
+    if (hasYou) U.$("pmYoutube").href = youtube;
 
-    U.$("pmQtyNum").textContent = "1";
+    renderProductImages();
+
+    U.$("pmQtyNum").textContent = String(pmQty);
     U.$("pmAddBtn").disabled = stock <= 0;
     U.$("pmNote").textContent = stock > 0 ? "Selecciona cantidad y añade al carrito." : "Este producto está agotado.";
 
-    renderProductImages();
     U.$("productModal").classList.add("open");
   }
 
   function renderProductImages() {
-    const p = ST.productModal.product;
-    const imgs = ST.productModal.images;
-    const idx = ST.productModal.mainIndex;
-
     const main = U.$("pmMainImg");
     const thumbs = U.$("pmThumbs");
     thumbs.innerHTML = "";
 
-    const src = imgs[idx] || (p?.imagen || "");
-    main.src = src || U.fallbackImg();
-    main.alt = p?.nombre || "Producto";
-    main.onerror = () => { main.src = U.fallbackImg(); };
+    const src = pmImages[pmMainIndex] || (currentProduct?.imagen || "");
+    main.src = src || fallbackSvg;
+    main.alt = currentProduct?.nombre || "Producto";
+    main.onerror = () => main.src = fallbackSvg;
 
-    imgs.forEach((u, i) => {
+    pmImages.forEach((u, idx) => {
       const t = document.createElement("img");
-      t.className = "pmThumb" + (i===idx ? " active" : "");
+      t.className = "pmThumb" + (idx === pmMainIndex ? " active" : "");
       t.src = u;
       t.alt = "mini";
-      t.onerror = () => { t.src = U.fallbackImg(); };
-      t.onclick = () => { ST.productModal.mainIndex = i; renderProductImages(); };
+      t.onerror = () => t.src = fallbackSvg;
+      t.onclick = () => { pmMainIndex = idx; renderProductImages(); };
       thumbs.appendChild(t);
     });
   }
 
   function closeProductModal() {
     U.$("productModal").classList.remove("open");
-    ST.productModal.product = null;
+    currentProduct = null;
   }
 
-  function pmMinus() {
-    ST.productModal.qty = Math.max(1, ST.productModal.qty - 1);
-    U.$("pmQtyNum").textContent = String(ST.productModal.qty);
+  function bindProductModalEvents() {
+    U.$("pmClose").onclick = closeProductModal;
+    U.$("productModal").onclick = (e) => { if (e.target.id === "productModal") closeProductModal(); };
+
+    U.$("pmMinus").onclick = () => {
+      pmQty = Math.max(1, pmQty - 1);
+      U.$("pmQtyNum").textContent = String(pmQty);
+    };
+
+    U.$("pmPlus").onclick = () => {
+      const stock = Number(currentProduct?.stock || 0);
+      pmQty = pmQty + 1;
+      if (stock > 0) pmQty = Math.min(pmQty, stock);
+      U.$("pmQtyNum").textContent = String(pmQty);
+    };
+
+    U.$("pmAddBtn").onclick = () => {
+      if (!currentProduct) return;
+      const ok = S.addToCart(currentProduct, pmQty);
+      if (ok) closeProductModal();
+    };
   }
 
-  function pmPlus() {
-    const p = ST.productModal.product;
-    const stock = Number(p?.stock || 0);
-    ST.productModal.qty = Math.min(ST.productModal.qty + 1, stock > 0 ? stock : ST.productModal.qty + 1);
-    U.$("pmQtyNum").textContent = String(ST.productModal.qty);
-  }
-
-  function pmAddToCart() {
-    const p = ST.productModal.product;
-    if (!p) return;
-    const ok = window.SDC_CART.add(p, ST.productModal.qty);
-    if (ok) closeProductModal();
-  }
-
-  return {
-    load,
-    renderGrid,
-    openProductModal,
-    closeProductModal,
-    pmMinus,
-    pmPlus,
-    pmAddToCart,
-    renderProductImages
-  };
+  return { load, renderGrid, renderTabs, renderSubTabs, bindProductModalEvents, closeProductModal };
 })();
