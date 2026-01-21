@@ -60,7 +60,7 @@ window.SDC_CATALOG_UI = (() => {
       return copy;
     }
 
-    // "relevancia" (tu orden actual)
+    // relevancia
     copy.sort((a,b)=>{
       const sa = (Number(a.stock)>0)?0:1;
       const sb = (Number(b.stock)>0)?0:1;
@@ -119,7 +119,7 @@ window.SDC_CATALOG_UI = (() => {
       const inStock = Number(p.stock||0) > 0;
 
       const card = document.createElement("div");
-      card.className = "hCard";
+      card.className = "hCard" + (!inStock ? " outCard" : "");
       card.onclick = () => PM.open(p, { setHash:true });
 
       const img = document.createElement("img");
@@ -142,6 +142,27 @@ window.SDC_CATALOG_UI = (() => {
     });
   }
 
+  // ✅ Skeleton grid mientras carga
+  function renderSkeletonGrid(count = 10){
+    hideTopSections();
+    const el = U.$("grid");
+    if (!el) return;
+    el.innerHTML = "";
+    for (let i=0;i<count;i++){
+      const sk = document.createElement("div");
+      sk.className = "skCard skShimmer";
+      sk.innerHTML = `
+        <div class="skImg"></div>
+        <div class="skBody">
+          <div class="skLine lg"></div>
+          <div class="skLine md"></div>
+          <div class="skLine sm"></div>
+        </div>
+      `;
+      el.appendChild(sk);
+    }
+  }
+
   function renderTabs() {
     const el = U.$("catTabs");
     el.innerHTML = "";
@@ -157,7 +178,7 @@ window.SDC_CATALOG_UI = (() => {
         S.setActiveSub("Todas");
         renderTabs();
         renderSubTabs();
-        renderGrid(); // renderGrid se encarga de mostrar/ocultar secciones
+        renderGrid();
       };
       el.appendChild(d);
     });
@@ -188,14 +209,13 @@ window.SDC_CATALOG_UI = (() => {
       d.onclick = () => {
         S.setActiveSub(s);
         renderSubTabs();
-        renderGrid(); // renderGrid se encarga de mostrar/ocultar secciones
+        renderGrid();
       };
       el.appendChild(d);
     });
   }
 
   function renderGrid() {
-    // ✅ Muestra u oculta Destacados/Ofertas según categoría/subcategoría
     renderFeatured();
 
     const q = (U.$("q").value || "").trim().toLowerCase();
@@ -222,8 +242,11 @@ window.SDC_CATALOG_UI = (() => {
       const inStock = Number(p.stock || 0) > 0;
 
       const card = document.createElement("div");
-      card.className = "card";
+      card.className = "card" + (!inStock ? " outCard" : "");
       card.onclick = () => PM.open(p, { setHash: true });
+
+      const imgWrap = document.createElement("div");
+      imgWrap.className = "imgWrap";
 
       const img = document.createElement("img");
       img.className = "img";
@@ -231,6 +254,8 @@ window.SDC_CATALOG_UI = (() => {
       img.src = p.imagen || "";
       img.alt = p.nombre || "";
       img.onerror = () => img.src = fallbackSvg;
+
+      imgWrap.appendChild(img);
 
       const box = document.createElement("div");
       box.className = "p";
@@ -255,7 +280,7 @@ window.SDC_CATALOG_UI = (() => {
       box.appendChild(badge);
       box.appendChild(btn);
 
-      card.appendChild(img);
+      card.appendChild(imgWrap);
       card.appendChild(box);
       el.appendChild(card);
     });
@@ -267,5 +292,5 @@ window.SDC_CATALOG_UI = (() => {
     sel.onchange = () => renderGrid();
   }
 
-  return { renderTabs, renderSubTabs, renderGrid, bindSort };
+  return { renderTabs, renderSubTabs, renderGrid, bindSort, renderSkeletonGrid };
 })();
