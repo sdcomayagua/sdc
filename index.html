@@ -1,3 +1,145 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Soluciones Digitales Comayagua | Catálogo</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="row">
+      <div class="brand">Soluciones Digitales Comayagua</div>
+      <div class="pill" id="statusPill">Cargando catálogo...</div>
+      <div class="search"><input id="q" placeholder="Buscar producto..." /></div>
+      <button class="btn acc" id="cartBtn">Carrito (<span id="cartCount">0</span>)</button>
+    </div>
+    <div class="tabs" id="catTabs"></div>
+    <div class="tabs" id="subTabs"></div>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="grid" id="grid"></div>
+</main>
+
+<div class="toast" id="toast"></div>
+
+<!-- MODAL: PRODUCTO -->
+<div class="modal" id="productModal">
+  <div class="sheet">
+    <div class="head row" style="justify-content:space-between">
+      <div style="font-weight:1000" id="pmTitle">Producto</div>
+      <button class="btn" id="pmClose">Cerrar</button>
+    </div>
+    <div class="body">
+      <div class="pmWrap">
+        <div>
+          <img id="pmMainImg" class="pmMainImg" alt="">
+          <div id="pmThumbs" class="pmThumbs"></div>
+        </div>
+
+        <div>
+          <div class="pmName" id="pmName"></div>
+          <div class="mut" id="pmCat"></div>
+          <div class="pmPrice" id="pmPrice"></div>
+
+          <div class="pmBadges">
+            <span class="badge off" id="pmStockOk" style="display:none"></span>
+            <span class="badge out" id="pmStockOut" style="display:none">AGOTADO</span>
+          </div>
+
+          <div class="pmDesc" id="pmDesc"></div>
+
+          <div class="pmVideoRow" id="pmVideoRow" style="display:none">
+            <a class="btn" id="pmTiktok" target="_blank" rel="noopener" style="display:none">Ver en TikTok</a>
+            <a class="btn" id="pmYoutube" target="_blank" rel="noopener" style="display:none">Ver en YouTube</a>
+            <!-- Facebook se crea automáticamente si hace falta -->
+          </div>
+
+          <div class="pmQtyRow">
+            <div class="pmQty">
+              <button class="mini" id="pmMinus">-</button>
+              <div class="pmQtyNum" id="pmQtyNum">1</div>
+              <button class="mini" id="pmPlus">+</button>
+            </div>
+            <button class="btn acc" id="pmAddBtn" style="flex:1">Añadir al carrito</button>
+          </div>
+
+          <div class="note" id="pmNote" style="margin-top:10px"></div>
+          <!-- Botón Compartir se crea automáticamente -->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: CARRITO -->
+<div class="modal" id="cartModal">
+  <div class="sheet">
+    <div class="head row" style="justify-content:space-between">
+      <div style="font-weight:1000">Carrito</div>
+      <button class="btn" id="closeCart">Cerrar</button>
+    </div>
+    <div class="body">
+      <div id="cartItems"></div>
+
+      <div class="hr"></div>
+      <div class="h">Entrega</div>
+
+      <div class="two">
+        <div><label class="mut">Departamento</label><select id="dep"></select></div>
+        <div><label class="mut">Municipio</label><select id="mun"></select></div>
+      </div>
+
+      <div class="two" style="margin-top:10px">
+        <div>
+          <label class="mut">Tipo de entrega</label>
+          <select id="deliveryType"></select>
+          <div class="note" id="deliveryNote" style="margin-top:6px"></div>
+        </div>
+        <div>
+          <label class="mut">Forma de pago</label>
+          <select id="payType">
+            <option value="pagar_al_recibir">PAGAR AL RECIBIR</option>
+            <option value="prepago">PREPAGO (depósito)</option>
+          </select>
+          <div class="note" id="payNote" style="margin-top:6px"></div>
+        </div>
+      </div>
+
+      <div id="cashBox" style="display:none;margin-top:10px">
+        <label class="mut">¿Con cuánto pagará? (para calcular cambio)</label>
+        <input id="cashAmount" inputmode="numeric" placeholder="Ej: 500" />
+      </div>
+
+      <div class="hr"></div>
+      <div class="h">Datos del cliente</div>
+
+      <div class="two">
+        <div><label class="mut">Nombre</label><input id="name" placeholder="Tu nombre" /></div>
+        <div><label class="mut">Teléfono</label><input id="phone" placeholder="Ej: 9xxx-xxxx" /></div>
+      </div>
+
+      <div style="margin-top:10px">
+        <label class="mut">Dirección / Referencia</label>
+        <textarea id="addr" placeholder="Colonia, barrio, referencias..."></textarea>
+      </div>
+
+      <div class="hr"></div>
+      <div id="summary"></div>
+
+      <button class="btn acc" id="sendWA" style="width:100%;margin-top:10px">Enviar pedido por WhatsApp</button>
+      <div class="note" style="margin-top:8px">
+        Envío nacional: contra entrega (L 160) o prepago (L 110).
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SCRIPTS -->
 <script src="config.js"></script>
 <script src="utils.js"></script>
 <script src="store.js"></script>
@@ -14,3 +156,6 @@
 <script src="delivery.js"></script>
 <script src="wa.js"></script>
 <script src="app.js"></script>
+
+</body>
+</html>
