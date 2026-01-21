@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+
 <header>
   <div class="wrap">
     <div class="row" style="justify-content:space-between">
@@ -18,19 +19,16 @@
 
 <main class="wrap">
   <div class="card">
-    <div class="p">
+    <div class="p" id="adminBox" style="display:none">
       <div class="h">Subir imagen a Drive</div>
-      <div class="note">Esto requiere tu clave ADMIN_KEY. Si alguien no la tiene, no podrá subir nada.</div>
+      <div class="note">Necesitas: PIN local + ADMIN_KEY (Apps Script).</div>
 
       <div style="margin-top:10px">
-        <label class="mut">Clave Admin</label>
-        <input id="adminKey" placeholder="Tu clave (ADMIN_KEY)" />
+        <label class="mut">Clave Admin (ADMIN_KEY)</label>
+        <input id="adminKey" placeholder="Tu ADMIN_KEY" />
       </div>
 
-      <div style="margin-top:10px">
-        <input type="file" id="fileUp" accept="image/*" />
-      </div>
-
+      <div style="margin-top:10px"><input type="file" id="fileUp" accept="image/*" /></div>
       <button class="btn warn" id="uploadBtn" style="margin-top:10px">Subir imagen</button>
 
       <div class="hr"></div>
@@ -41,49 +39,23 @@
 
       <div class="note" style="margin-top:10px">Link de Drive (vista)</div>
       <input id="outView" readonly />
+    </div>
 
-      <div class="note" style="margin-top:10px">Tip: pega el link en la columna <b>imagen</b> de tu hoja <b>productos</b>.</div>
+    <div class="p" id="pinBox">
+      <div class="h">PIN</div>
+      <div class="note">Ingresa tu PIN local para abrir el panel.</div>
+      <div class="two" style="margin-top:10px">
+        <div><input id="pinInput" type="password" placeholder="PIN" /></div>
+        <div><button class="btn acc" id="pinBtn" style="width:100%">Entrar</button></div>
+      </div>
+      <div class="note" style="margin-top:10px">Tip: este PIN solo oculta el panel. La seguridad real es tu ADMIN_KEY.</div>
     </div>
   </div>
 
   <div class="toast" id="toast"></div>
 </main>
 
-<script>
-const API_URL = "https://script.google.com/macros/s/AKfycbxx07ynQmhXH0FB7JeJFPfxYhcXxszggv3oK8TEPy5wv2_zM6kYYIcdi2YEj_DrFzKImw/exec";
-const $=id=>document.getElementById(id);
-const toast=msg=>{const t=$("toast");t.textContent=msg;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),1800);};
-
-$("uploadBtn").onclick = async () => {
-  const key = $("adminKey").value.trim();
-  const file = $("fileUp").files[0];
-  if(!key){ toast("Falta clave Admin"); return; }
-  if(!file){ toast("Selecciona una imagen"); return; }
-
-  const base64 = await fileToBase64(file);
-  const payload = { filename:file.name, contentType:file.type||"image/jpeg", base64 };
-
-  const res = await fetch(`${API_URL}?action=upload&key=${encodeURIComponent(key)}`,{
-    method:"POST",
-    headers:{ "Content-Type":"application/json" },
-    body: JSON.stringify(payload)
-  });
-  const json = await res.json();
-  if(!json.ok){ toast(json.error || "Error subiendo"); return; }
-
-  $("outUrl").value = json.url || "";
-  $("outView").value = json.viewUrl || "";
-  toast("Imagen subida");
-};
-
-function fileToBase64(file){
-  return new Promise((resolve,reject)=>{
-    const r=new FileReader();
-    r.onload=()=>resolve(r.result);
-    r.onerror=reject;
-    r.readAsDataURL(file);
-  });
-}
-</script>
+<script src="config.js"></script>
+<script src="admin.js"></script>
 </body>
 </html>
