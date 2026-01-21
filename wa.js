@@ -1,15 +1,14 @@
 window.SDC_WA = (() => {
   const CFG = window.SDC_CONFIG;
   const U = window.SDC_UTILS;
-  const ST = window.SDC_STORE;
+  const S = window.SDC_STORE;
 
-  const LOCAL = new Set(CFG.LOCAL_ALLOW || []);
-  const isLocal = (dep, mun) => LOCAL.has(`${dep}|${mun}`);
+  function buildMessage() {
+    const cart = S.getCart();
 
-  function build() {
     const dep = U.$("dep").value;
     const mun = U.$("mun").value;
-    const local = isLocal(dep, mun);
+    const local = S.isLocalAllowed(dep, mun);
     const pay = U.$("payType").value;
 
     const name = U.$("name").value.trim();
@@ -32,9 +31,8 @@ window.SDC_WA = (() => {
 
     lines.push("");
     lines.push("🧾 *Productos:*");
-
     let subtotal = 0;
-    for (const it of ST.cart.values()) {
+    for (const it of cart.values()) {
       const line = Number(it.p.precio || 0) * it.qty;
       subtotal += line;
       lines.push(`• ${it.qty} x ${it.p.nombre} — ${U.money(line, CFG.CURRENCY)}`);
@@ -54,11 +52,16 @@ window.SDC_WA = (() => {
   }
 
   function send() {
-    if (ST.cart.size === 0) { U.toast("Carrito vacío"); return; }
-    const msg = build();
-    const phone = (ST.DATA && ST.DATA.whatsapp) ? ST.DATA.whatsapp : CFG.DEFAULT_WHATSAPP;
-    window.open("https://wa.me/" + phone.replace(/[^\d]/g, "") + "?text=" + encodeURIComponent(msg), "_blank");
+    if (S.getCart().size === 0) { U.toast("Carrito vacío"); return; }
+    const msg = buildMessage();
+    const phone = S.getWhatsapp();
+    const url = "https://wa.me/" + phone.replace(/[^\d]/g, "") + "?text=" + encodeURIComponent(msg);
+    window.open(url, "_blank");
   }
 
-  return { send };
+  function bind() {
+    U.$("sendWA").onclick = send;
+  }
+
+  return { buildMessage, send, bind };
 })();
