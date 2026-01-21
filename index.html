@@ -178,15 +178,13 @@
 /** =========================
  * CONFIG
  * ========================= */
-const API_URL = "PEGA_AQUI_TU_URL_WEBAPP"; // <-- Cambia esto
+const API_URL = "https://script.google.com/macros/s/AKfycbwlFERNjVdvr_1v02B2ObBKUElng-kaoyn8f86qCwV9SJwjZDQVQlFVxde8UCX-nx5aGw/exec";
 const DEFAULT_WHATSAPP = "+50431517755";
 const CURRENCY = "Lps";
 
-// Tarifas (si quieres, las puedes leer del sheet empresas_envio; aquí lo forzamos a lo que pediste)
 const NATIONAL_PREPAGO = 110;
 const NATIONAL_CONTRA_ENTREGA = 160;
 
-// Lista local que pediste (si tu cobertura_entrega ya lo trae, igual funciona)
 const LOCAL_ALLOW = new Set([
   "Comayagua|Comayagua",
   "Comayagua|Ajuterique",
@@ -211,8 +209,10 @@ let activeSub = "Todas";
 
 const $ = (id) => document.getElementById(id);
 const toast = (msg) => { const t=$("toast"); t.textContent=msg; t.classList.add("show"); setTimeout(()=>t.classList.remove("show"), 1800); };
-
 function money(n){ return `${CURRENCY}. ${Number(n||0).toFixed(2)}`; }
+
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,m=>({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;" }[m]));}
+function escapeAttr(s){return String(s).replace(/"/g,'&quot;');}
 
 /** =========================
  * LOAD
@@ -225,7 +225,6 @@ async function load() {
   DATA = json;
 
   products = (json.productos || []).filter(p => p && p.nombre && p.categoria);
-  // ordenar: stock>0 primero, luego orden asc, luego nombre
   products.sort((a,b)=>{
     const sa = (Number(a.stock)>0)?0:1;
     const sb = (Number(b.stock)>0)?0:1;
@@ -235,7 +234,6 @@ async function load() {
     return String(a.nombre).localeCompare(String(b.nombre));
   });
 
-  // categories/subcategories
   const cats = new Set(products.map(p=>p.categoria||""));
   categories = ["Todas", ...Array.from(cats).filter(Boolean).sort((a,b)=>a.localeCompare(b))];
 
@@ -416,9 +414,6 @@ function renderCart(){
   }
 }
 
-function escapeHtml(s){return String(s).replace(/[&<>"']/g,m=>({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;" }[m]));}
-function escapeAttr(s){return String(s).replace(/"/g,'&quot;');}
-
 /** =========================
  * LOCATION / DELIVERY
  * ========================= */
@@ -466,25 +461,21 @@ function updateDeliveryOptions(){
   const cov = coverageFor(dep, mun);
   const localAllowed = isLocalAllowed(dep, mun);
 
-  // Build delivery types
   const sel = $("deliveryType");
   sel.innerHTML = "";
 
-  // Si es local permitido -> entrega propia (domicilio/punto)
   if(localAllowed){
     const o1=document.createElement("option"); o1.value="local_entrega"; o1.textContent="ENTREGA LOCAL (Comayagua y alrededores)";
     sel.appendChild(o1);
-    $("deliveryNote").textContent = "Entrega local: pagar al recibir. (Si aplica domicilio o punto depende de cobertura/zonas)";
+    $("deliveryNote").textContent = "Entrega local: pagar al recibir.";
     $("payType").value = "pagar_al_recibir";
     $("payType").disabled = false;
   } else {
-    // nacional por empresa
     const o2=document.createElement("option"); o2.value="empresa_envio"; o2.textContent="ENVÍO NACIONAL (C807 / Cargo Expreso / Forza)";
     sel.appendChild(o2);
     $("deliveryNote").textContent = "Envío nacional: se gestiona por empresa. El costo depende si es contra entrega o prepago.";
   }
 
-  // Si tu sheet cobertura dice fuera_cobertura, igual dejamos empresa_envio
   if(cov && cov.nota) $("deliveryNote").textContent = cov.nota;
 
   toggleCashBox();
@@ -497,7 +488,6 @@ function toggleCashBox(){
   const mun = $("mun").value;
   const localAllowed = isLocalAllowed(dep, mun);
 
-  // Solo pedir “¿con cuánto pagará?” cuando sea local y pagar al recibir
   const show = localAllowed && pay === "pagar_al_recibir";
   $("cashBox").style.display = show ? "block" : "none";
 
@@ -531,20 +521,17 @@ function computeSummary(){
   }
 
   if(localAllowed){
-    // local: (si quieres, aquí puedes leer tarifas_entrega_propia por zona; por ahora 0 y se coordina)
     shipping = 0;
     shippingText = "Entrega local: se coordina (tarifa según zona si aplica).";
-    // Forzar pagar_al_recibir
     $("payType").value = "pagar_al_recibir";
   } else {
-    // nacional por empresa
     shipping = (pay==="prepago") ? NATIONAL_PREPAGO : NATIONAL_CONTRA_ENTREGA;
     shippingText = (pay==="prepago")
       ? `Envío nacional PREPAGO: ${money(shipping)}`
       : `Envío nacional CONTRA ENTREGA: ${money(shipping)} (pagado a la empresa)`;
   }
 
-  const total = subtotal + (pay==="prepago" ? shipping : 0); // si contra entrega: cliente paga envío a empresa, tú cobras solo producto
+  const total = subtotal + (pay==="prepago" ? shipping : 0);
   const cash = Number(($("cashAmount").value||"").replace(/[^\d.]/g,"")||0);
   const change = (localAllowed && pay==="pagar_al_recibir" && cash>0) ? Math.max(0, cash - subtotal) : 0;
 
@@ -581,7 +568,7 @@ function buildWhatsAppMessage(){
     const cash = ($("cashAmount").value||"").trim();
     if(cash) lines.push(`💵 *Paga con:* ${cash}`);
   } else if(!localAllowed){
-    lines.push(`📦 *Empresa sugerida:* C807 / Cargo Expreso / Forza`);
+    lines.push(`📦 *Empresa:* C807 / Cargo Expreso / Forza`);
     lines.push(`💰 *Envío:* ${pay==="prepago" ? money(NATIONAL_PREPAGO) : money(NATIONAL_CONTRA_ENTREGA)} (${pay==="prepago" ? "incluido en depósito" : "pagado a empresa"})`);
   }
 
@@ -620,7 +607,7 @@ function sendWhatsApp(){
 }
 
 /** =========================
- * ADMIN UPLOAD
+ * ADMIN UPLOAD (requiere Code.gs con doPost upload)
  * ========================= */
 async function uploadImage(){
   const key = $("adminKey").value.trim();
@@ -629,11 +616,7 @@ async function uploadImage(){
   if(!file){ toast("Selecciona una imagen"); return; }
 
   const base64 = await fileToBase64(file);
-  const payload = {
-    filename: file.name,
-    contentType: file.type || "image/jpeg",
-    base64
-  };
+  const payload = { filename: file.name, contentType: file.type || "image/jpeg", base64 };
 
   const res = await fetch(`${API_URL}?action=upload&key=${encodeURIComponent(key)}`, {
     method:"POST",
