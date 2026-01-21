@@ -27,6 +27,54 @@
 
 <div class="toast" id="toast"></div>
 
+<!-- MODAL PRODUCTO -->
+<div class="modal" id="productModal">
+  <div class="sheet">
+    <div class="head row" style="justify-content:space-between">
+      <div style="font-weight:1000" id="pmTitle">Producto</div>
+      <button class="btn" id="pmClose">Cerrar</button>
+    </div>
+    <div class="body">
+      <div class="pmWrap">
+        <div>
+          <img id="pmMainImg" class="pmMainImg" alt="">
+          <div id="pmThumbs" class="pmThumbs"></div>
+        </div>
+
+        <div>
+          <div class="pmName" id="pmName"></div>
+          <div class="mut" id="pmCat"></div>
+          <div class="pmPrice" id="pmPrice"></div>
+
+          <div class="pmBadges">
+            <span class="badge off" id="pmStockOk" style="display:none"></span>
+            <span class="badge out" id="pmStockOut" style="display:none">AGOTADO</span>
+          </div>
+
+          <div class="pmDesc" id="pmDesc"></div>
+
+          <div class="pmVideoRow" id="pmVideoRow" style="display:none">
+            <a class="btn" id="pmTiktok" target="_blank" rel="noopener" style="display:none">Ver en TikTok</a>
+            <a class="btn" id="pmYoutube" target="_blank" rel="noopener" style="display:none">Ver en YouTube</a>
+          </div>
+
+          <div class="pmQtyRow">
+            <div class="pmQty">
+              <button class="mini" id="pmMinus">-</button>
+              <div class="pmQtyNum" id="pmQtyNum">1</div>
+              <button class="mini" id="pmPlus">+</button>
+            </div>
+            <button class="btn acc" id="pmAddBtn" style="flex:1">Añadir al carrito</button>
+          </div>
+
+          <div class="note" id="pmNote" style="margin-top:10px"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL CARRITO -->
 <div class="modal" id="cartModal">
   <div class="sheet">
     <div class="head row" style="justify-content:space-between">
@@ -82,15 +130,18 @@
       <div id="summary"></div>
 
       <button class="btn acc" id="sendWA" style="width:100%;margin-top:10px">Enviar pedido por WhatsApp</button>
-      <div class="note" style="margin-top:8px">
-        Envío nacional: contra entrega (L 160) o prepago (L 110).
-      </div>
+      <div class="note" style="margin-top:8px">Envío nacional: contra entrega (L 160) o prepago (L 110).</div>
     </div>
   </div>
 </div>
 
 <script src="config.js"></script>
 <script src="utils.js"></script>
+<script src="store.js"></script>
+<script src="catalog.js"></script>
+<script src="cart.js"></script>
+<script src="delivery.js"></script>
+<script src="wa.js"></script>
 <script src="app.js"></script>
 </body>
 </html>
