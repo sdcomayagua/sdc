@@ -55,6 +55,11 @@ window.SDC_CATALOG = (() => {
     renderGrid();
 
     U.$("statusPill").textContent = `Catálogo listo (${products.length} productos)`;
+
+    // Si llegaron con #p=..., abre el producto
+    openFromHash_();
+    // Si cambia el hash, también
+    window.addEventListener("hashchange", openFromHash_);
   }
 
   function renderTabs() {
@@ -133,7 +138,7 @@ window.SDC_CATALOG = (() => {
 
       const card = document.createElement("div");
       card.className = "card";
-      card.onclick = () => openProductModal(p);
+      card.onclick = () => openProductModal(p, { setHash: true });
 
       const img = document.createElement("img");
       img.className = "img";
@@ -161,7 +166,6 @@ window.SDC_CATALOG = (() => {
       btn.textContent = inStock ? "Añadir al carrito" : "No disponible";
       btn.disabled = !inStock;
 
-      // botón no abre modal, solo agrega 1
       btn.onclick = (ev) => { ev.stopPropagation(); S.addToCart(p, 1); };
 
       box.appendChild(badge);
@@ -173,7 +177,7 @@ window.SDC_CATALOG = (() => {
     });
   }
 
-  // ===== Video helpers (para links compartidos)
+  // ===== Video helpers
   function normalizeUrl_(url) {
     const s = String(url || "").trim();
     if (!s) return "";
@@ -192,16 +196,11 @@ window.SDC_CATALOG = (() => {
   }
 
   function bestVideo(p) {
-    // columnas reales
     const tiktok = normalizeUrl_(p.video_tiktok || "");
     const youtube = normalizeUrl_(p.video_youtube || "");
     const facebook = normalizeUrl_(p.video_facebook || "");
+    const generic = normalizeUrl_(p.video_url || p.video || "");
 
-    // genéricos
-    const genericRaw = p.video_url || p.video || "";
-    const generic = normalizeUrl_(genericRaw);
-
-    // si no están específicos pero sí hay genérico => detecta plataforma
     if (!tiktok && !youtube && !facebook && generic) {
       const plat = detectPlatform_(generic);
       if (plat === "tiktok") return { tiktok: generic, youtube: "", facebook: "", generic: "" };
@@ -210,13 +209,12 @@ window.SDC_CATALOG = (() => {
       return { tiktok: "", youtube: "", facebook: "", generic };
     }
 
-    return { tiktok, youtube, facebook, generic: generic || "" };
+    return { tiktok, youtube, facebook, generic };
   }
 
   // ===== Galería
   function parseGallery(p) {
     const imgs = [];
-
     if (p.imagen) imgs.push(String(p.imagen).trim());
 
     if (p.galeria) {
@@ -243,34 +241,123 @@ window.SDC_CATALOG = (() => {
       unique.push(u);
       if (unique.length >= 8) break;
     }
-
-    // Si no hay ninguna imagen, devolvemos vacío y el modal usa fallback
     return unique;
   }
 
-  function buildExtraInfo(p){
+  // ===== Chips + extra info
+  function ensureChipsRow_(){
+    if (U.$("pmChips")) return;
+    const nameEl = U.$("pmName");
+    if (!nameEl) return;
+
+    const chips = document.createElement("div");
+    chips.id = "pmChips";
+    chips.style.display = "flex";
+    chips.style.flexWrap = "wrap";
+    chips.style.gap = "8px";
+    chips.style.margin = "10px 0 0 0";
+
+    // inserta justo después del nombre
+    nameEl.insertAdjacentElement("afterend", chips);
+  }
+
+  function setChips_(p){
+    ensureChipsRow_();
+    const chips = U.$("pmChips");
+    if (!chips) return;
+    chips.innerHTML = "";
+
+    const addChip = (text) => {
+      const s = String(text || "").trim();
+      if (!s) return;
+      const span = document.createElement("span");
+      span.className = "badge";
+      span.style.cursor = "default";
+      span.textContent = s;
+      chips.appendChild(span);
+    };
+
+    // ✅ Chips principales (marca/modelo)
+    addChip(p.marca ? `Marca: ${p.marca}` : "");
+    addChip(p.modelo ? `Modelo: ${p.modelo}` : "");
+
+    // chips opcionales
+    addChip(p.garantia ? `Garantía: ${p.garantia}` : "");
+    addChip(p.condicion ? `Condición: ${p.condicion}` : "");
+  }
+
+  function buildExtraInfo_(p){
     const lines = [];
     const add = (label, value) => {
       const s = String(value || "").trim();
       if (s) lines.push(`${label}: ${s}`);
     };
-    add("Marca", p.marca);
-    add("Modelo", p.modelo);
     add("Compatibilidad", p.compatibilidad);
-    add("Garantía", p.garantia);
-    add("Condición", p.condicion);
+    // (marca/modelo/garantía/condición ya están en chips; pero también se pueden repetir si quieres)
     return lines.join("\n");
   }
 
-  // ===== MODAL PRODUCTO
-  function openProductModal(p) {
+  // ===== Share button
+  function ensureShareBtn_(){
+    if (U.$("pmShare")) return;
+    const note = U.$("pmNote");
+    if (!note) return;
+
+    const btn = document.createElement("button");
+    btn.id = "pmShare";
+    btn.className = "btn";
+    btn.style.width = "100%";
+    btn.style.marginTop = "10px";
+    btn.textContent = "Compartir producto";
+
+    note.insertAdjacentElement("afterend", btn);
+  }
+
+  function shareLinkFor_(p){
+    const base = window.location.origin + window.location.pathname; // sin #, sin query
+    const id = encodeURIComponent(String(p.id || p.nombre || "").trim());
+    return `${base}#p=${id}`;
+  }
+
+  async function copyToClipboard_(text){
+    try {
+      await navigator.clipboard.writeText(text);
+      return true;
+    } catch {
+      // fallback
+      try {
+        const ta = document.createElement("textarea");
+        ta.value = text;
+        ta.style.position = "fixed";
+        ta.style.left = "-9999px";
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand("copy");
+        document.body.removeChild(ta);
+        return true;
+      } catch {
+        return false;
+      }
+    }
+  }
+
+  // ===== Modal producto
+  function openProductModal(p, opts = {}) {
     currentProduct = p;
     pmQty = 1;
     pmMainIndex = 0;
     pmImages = parseGallery(p);
 
+    // set hash para compartir
+    if (opts.setHash) {
+      const id = encodeURIComponent(String(p.id || p.nombre || "").trim());
+      if (id) window.location.hash = `p=${id}`;
+    }
+
     U.$("pmTitle").textContent = p.nombre || "Producto";
     U.$("pmName").textContent = p.nombre || "";
+    setChips_(p);
+
     U.$("pmCat").textContent = `${p.categoria || ""}${p.subcategoria ? (" • " + p.subcategoria) : ""}`;
     U.$("pmPrice").textContent = U.money(p.precio, CFG.CURRENCY);
 
@@ -280,10 +367,11 @@ window.SDC_CATALOG = (() => {
     if (stock > 0) U.$("pmStockOk").textContent = `Stock: ${stock}`;
 
     const desc = String(p.descripcion || "").trim();
-    const extra = buildExtraInfo(p);
+    const extra = buildExtraInfo_(p);
     U.$("pmDesc").textContent = (desc ? desc : "Sin descripción por ahora.") + (extra ? ("\n\n" + extra) : "");
 
-    // videos: TikTok / YouTube / Facebook / genérico
+    // videos
+    ensureFacebookBtn_();
     const v = bestVideo(p);
     const hasTik = !!v.tiktok;
     const hasYou = !!v.youtube;
@@ -299,11 +387,14 @@ window.SDC_CATALOG = (() => {
       U.$("pmTiktok").href = v.tiktok;
     }
 
-    // YouTube (o genérico si aplica)
-    U.$("pmYoutube").style.display = (hasYou || (!hasYou && hasGen && detectPlatform_(v.generic) === "youtube") || (!hasYou && hasGen && detectPlatform_(v.generic) === "generic")) ? "inline-block" : "none";
+    // YouTube
+    U.$("pmYoutube").style.display = hasYou ? "inline-block" : "none";
+    if (hasYou) {
+      U.$("pmYoutube").textContent = "Ver en YouTube";
+      U.$("pmYoutube").href = v.youtube;
+    }
 
-    // Facebook (si no existe id en html, lo creamos)
-    ensureFacebookBtn_();
+    // Facebook
     const fbBtn = U.$("pmFacebook");
     fbBtn.style.display = hasFb ? "inline-block" : "none";
     if (hasFb) {
@@ -311,33 +402,26 @@ window.SDC_CATALOG = (() => {
       fbBtn.href = v.facebook;
     }
 
-    if (hasYou) {
-      U.$("pmYoutube").textContent = "Ver en YouTube";
-      U.$("pmYoutube").href = v.youtube;
-    } else if (!hasYou && hasGen) {
+    // Genérico: si no hay específicos, usa uno según plataforma
+    if (!hasTik && !hasYou && !hasFb && hasGen) {
       const plat = detectPlatform_(v.generic);
       if (plat === "youtube") {
+        U.$("pmYoutube").style.display = "inline-block";
         U.$("pmYoutube").textContent = "Ver en YouTube";
         U.$("pmYoutube").href = v.generic;
       } else if (plat === "facebook") {
-        // si el genérico era facebook y no venía en video_facebook
         fbBtn.style.display = "inline-block";
         fbBtn.textContent = "Ver en Facebook";
         fbBtn.href = v.generic;
-        U.$("pmYoutube").style.display = "none";
       } else if (plat === "tiktok") {
         U.$("pmTiktok").style.display = "inline-block";
         U.$("pmTiktok").textContent = "Ver en TikTok";
         U.$("pmTiktok").href = v.generic;
-        U.$("pmYoutube").style.display = "none";
       } else {
-        // genérico
+        U.$("pmYoutube").style.display = "inline-block";
         U.$("pmYoutube").textContent = "Ver video";
         U.$("pmYoutube").href = v.generic;
       }
-    } else {
-      // no videos
-      U.$("pmYoutube").style.display = "none";
     }
 
     renderProductImages();
@@ -346,11 +430,19 @@ window.SDC_CATALOG = (() => {
     U.$("pmAddBtn").disabled = stock <= 0;
     U.$("pmNote").textContent = stock > 0 ? "Selecciona cantidad y añade al carrito." : "Este producto está agotado.";
 
+    ensureShareBtn_();
+    const shareBtn = U.$("pmShare");
+    shareBtn.onclick = async () => {
+      if (!currentProduct) return;
+      const link = shareLinkFor_(currentProduct);
+      const ok = await copyToClipboard_(link);
+      U.toast(ok ? "Link copiado ✅" : "No se pudo copiar");
+    };
+
     U.$("productModal").classList.add("open");
   }
 
   function ensureFacebookBtn_() {
-    // Creamos botón si no existe (para no pedirte tocar index.html)
     if (U.$("pmFacebook")) return;
     const row = U.$("pmVideoRow");
     if (!row) return;
@@ -362,7 +454,6 @@ window.SDC_CATALOG = (() => {
     a.rel = "noopener";
     a.style.display = "none";
     a.textContent = "Ver en Facebook";
-
     row.appendChild(a);
   }
 
@@ -390,6 +481,12 @@ window.SDC_CATALOG = (() => {
   function closeProductModal() {
     U.$("productModal").classList.remove("open");
     currentProduct = null;
+
+    // opcional: limpiar hash al cerrar para que no se quede pegado
+    // (si quieres mantenerlo, comenta esta línea)
+    if (String(window.location.hash || "").startsWith("#p=")) {
+      history.replaceState(null, "", window.location.pathname);
+    }
   }
 
   function bindProductModalEvents() {
@@ -413,6 +510,22 @@ window.SDC_CATALOG = (() => {
       const ok = S.addToCart(currentProduct, pmQty);
       if (ok) closeProductModal();
     };
+  }
+
+  // ===== Deep link (#p=ID)
+  function openFromHash_(){
+    const h = String(window.location.hash || "");
+    const m = h.match(/^#p=(.+)$/);
+    if (!m) return;
+    const id = decodeURIComponent(m[1] || "").trim();
+    if (!id) return;
+
+    const list = S.getProducts();
+    const p = list.find(x => String(x.id || "").trim() === id) || list.find(x => String(x.nombre||"").trim() === id);
+    if (!p) return;
+
+    // abre modal sin reescribir hash
+    openProductModal(p, { setHash: false });
   }
 
   return {
