@@ -6,7 +6,6 @@ window.SDC_CONFIG = {
   NATIONAL_PREPAGO: 110,
   NATIONAL_CONTRA_ENTREGA: 160,
 
-  // PINs (y también serán el key invisible para subir)
   ADMIN_PINS: ["199311", "202528"],
 
   LOCAL_ALLOW: [
