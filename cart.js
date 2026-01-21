@@ -1,52 +1,29 @@
 window.SDC_CART = (() => {
   const CFG = window.SDC_CONFIG;
   const U = window.SDC_UTILS;
-  const ST = window.SDC_STORE;
+  const S = window.SDC_STORE;
 
-  function updateCount() {
-    let count = 0;
-    for (const it of ST.cart.values()) count += it.qty;
-    U.$("cartCount").textContent = count;
-  }
-
-  function add(p, qty) {
-    const id = p.id || p.nombre;
-    const stock = Number(p.stock || 0);
-    const cur = ST.cart.get(id);
-    const currentQty = cur ? cur.qty : 0;
-    const addQty = Math.max(1, Number(qty || 1));
-    const next = currentQty + addQty;
-
-    if (next > stock) {
-      U.toast("No hay stock suficiente");
-      return false;
-    }
-
-    ST.cart.set(id, { p, qty: next });
-    updateCount();
-    U.toast("Agregado al carrito");
-    return true;
-  }
-
-  function open() {
+  function openCart() {
     U.$("cartModal").classList.add("open");
-    render();
-    window.SDC_DELIVERY.compute();
+    renderCart();
+    computeSummary();
   }
 
-  function close() {
+  function closeCart() {
     U.$("cartModal").classList.remove("open");
   }
 
-  function render() {
+  function renderCart() {
     const el = U.$("cartItems");
+    const cart = S.getCart();
     el.innerHTML = "";
-    if (ST.cart.size === 0) {
+
+    if (cart.size === 0) {
       el.innerHTML = `<div class="note">Tu carrito está vacío.</div>`;
       return;
     }
 
-    for (const [id, it] of ST.cart.entries()) {
+    for (const [id, it] of cart.entries()) {
       const p = it.p;
       const row = document.createElement("div");
       row.className = "cartItem";
@@ -69,28 +46,24 @@ window.SDC_CART = (() => {
         b.onclick = () => {
           const act = b.getAttribute("data-act");
           const pid = b.getAttribute("data-id");
-          const item = ST.cart.get(pid);
+          const item = cart.get(pid);
           if (!item) return;
 
           const stock = Number(item.p.stock || 0);
 
-          if (act === "minus") item.qty = Math.max(1, item.qty - 1);
+          if (act === "minus") {
+            S.setCartQty(pid, Math.max(1, item.qty - 1));
+          }
           if (act === "plus") {
             if (item.qty + 1 > stock) { U.toast("No hay stock suficiente"); return; }
-            item.qty += 1;
+            S.setCartQty(pid, item.qty + 1);
           }
           if (act === "del") {
-            ST.cart.delete(pid);
-            updateCount();
-            render();
-            window.SDC_DELIVERY.compute();
-            return;
+            S.delFromCart(pid);
           }
 
-          ST.cart.set(pid, item);
-          updateCount();
-          render();
-          window.SDC_DELIVERY.compute();
+          renderCart();
+          computeSummary();
         };
       });
 
@@ -98,5 +71,46 @@ window.SDC_CART = (() => {
     }
   }
 
-  return { add, open, close, render, updateCount };
+  function computeSummary() {
+    const sum = U.$("summary");
+    const cart = S.getCart();
+
+    if (cart.size === 0) {
+      sum.innerHTML = `<div class="note">Agrega productos para ver el total.</div>`;
+      return;
+    }
+
+    const dep = U.$("dep").value;
+    const mun = U.$("mun").value;
+    const local = S.isLocalAllowed(dep, mun);
+    const pay = U.$("payType").value;
+
+    let subtotal = 0;
+    for (const it of cart.values()) subtotal += Number(it.p.precio || 0) * it.qty;
+
+    let shipping = 0;
+    if (!local) shipping = (pay === "prepago") ? CFG.NATIONAL_PREPAGO : CFG.NATIONAL_CONTRA_ENTREGA;
+
+    const totalNow = subtotal + ((!local && pay === "prepago") ? shipping : 0);
+
+    const cash = Number((U.$("cashAmount").value || "").replace(/[^\d.]/g, "") || 0);
+    const change = (local && pay === "pagar_al_recibir" && cash > 0) ? Math.max(0, cash - subtotal) : 0;
+
+    sum.innerHTML = `
+      <div class="sum"><div>Subtotal</div><div>${U.money(subtotal, CFG.CURRENCY)}</div></div>
+      <div class="sum"><div>Envío</div><div>${(!local && pay === "prepago") ? U.money(shipping, CFG.CURRENCY) : "Se paga a empresa / coordina"}</div></div>
+      <div class="sum total"><div>Total a pagar ahora</div><div>${U.money(totalNow, CFG.CURRENCY)}</div></div>
+      ${local && pay === "pagar_al_recibir" ? (cash > 0
+        ? `<div class="note" style="margin-top:8px">Paga con: ${U.money(cash, CFG.CURRENCY)} → Cambio estimado: ${U.money(change, CFG.CURRENCY)}</div>`
+        : `<div class="note" style="margin-top:8px">Para calcular cambio, escribe “¿con cuánto pagará?”</div>`) : ""}
+    `;
+  }
+
+  function bindEvents() {
+    U.$("cartBtn").onclick = openCart;
+    U.$("closeCart").onclick = closeCart;
+    U.$("cartModal").onclick = (e) => { if (e.target.id === "cartModal") closeCart(); };
+  }
+
+  return { openCart, closeCart, renderCart, computeSummary, bindEvents };
 })();
