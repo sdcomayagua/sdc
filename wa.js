@@ -61,6 +61,10 @@ window.SDC_WA = (() => {
 
   function bind() {
     U.$("sendWA").onclick = send;
+
+    // A) Barra inferior
+    const b = U.$("bottomSendBtn");
+    if (b) b.onclick = send;
   }
 
   return { buildMessage, send, bind };
