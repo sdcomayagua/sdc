@@ -173,13 +173,52 @@ window.SDC_CATALOG = (() => {
     });
   }
 
-  // ===== MODAL PRODUCTO =====
+  // ===== Video helpers (para links compartidos)
+  function normalizeUrl_(url) {
+    const s = String(url || "").trim();
+    if (!s) return "";
+    if (/^https?:\/\//i.test(s)) return s;
+    if (s.startsWith("//")) return "https:" + s;
+    return "https://" + s;
+  }
+
+  function detectPlatform_(url) {
+    const u = String(url || "").toLowerCase();
+    if (!u) return "generic";
+    if (u.includes("tiktok.com")) return "tiktok";
+    if (u.includes("youtu.be") || u.includes("youtube.com")) return "youtube";
+    if (u.includes("facebook.com") || u.includes("fb.watch")) return "facebook";
+    return "generic";
+  }
+
+  function bestVideo(p) {
+    // columnas reales
+    const tiktok = normalizeUrl_(p.video_tiktok || "");
+    const youtube = normalizeUrl_(p.video_youtube || "");
+    const facebook = normalizeUrl_(p.video_facebook || "");
+
+    // genéricos
+    const genericRaw = p.video_url || p.video || "";
+    const generic = normalizeUrl_(genericRaw);
+
+    // si no están específicos pero sí hay genérico => detecta plataforma
+    if (!tiktok && !youtube && !facebook && generic) {
+      const plat = detectPlatform_(generic);
+      if (plat === "tiktok") return { tiktok: generic, youtube: "", facebook: "", generic: "" };
+      if (plat === "youtube") return { tiktok: "", youtube: generic, facebook: "", generic: "" };
+      if (plat === "facebook") return { tiktok: "", youtube: "", facebook: generic, generic: "" };
+      return { tiktok: "", youtube: "", facebook: "", generic };
+    }
+
+    return { tiktok, youtube, facebook, generic: generic || "" };
+  }
+
+  // ===== Galería
   function parseGallery(p) {
     const imgs = [];
 
     if (p.imagen) imgs.push(String(p.imagen).trim());
 
-    // galeria: puede ser string de links separados por coma
     if (p.galeria) {
       String(p.galeria).split(",").forEach(u => {
         const s = String(u || "").trim();
@@ -187,7 +226,6 @@ window.SDC_CATALOG = (() => {
       });
     }
 
-    // galeria_1..galeria_8
     for (let i = 1; i <= 8; i++) {
       const k = "galeria_" + i;
       if (p[k]) {
@@ -196,7 +234,6 @@ window.SDC_CATALOG = (() => {
       }
     }
 
-    // únicas y máximo 8
     const unique = [];
     const seen = new Set();
     for (const u of imgs) {
@@ -206,20 +243,26 @@ window.SDC_CATALOG = (() => {
       unique.push(u);
       if (unique.length >= 8) break;
     }
+
+    // Si no hay ninguna imagen, devolvemos vacío y el modal usa fallback
     return unique;
   }
 
-  function bestVideo(p) {
-    // tus columnas reales
-    const tiktok = String(p.video_tiktok || "").trim();
-    const youtube = String(p.video_youtube || "").trim();
-
-    // si usan video_url o video, lo tratamos como genérico
-    const generic = String(p.video_url || p.video || "").trim();
-
-    return { tiktok, youtube, generic };
+  function buildExtraInfo(p){
+    const lines = [];
+    const add = (label, value) => {
+      const s = String(value || "").trim();
+      if (s) lines.push(`${label}: ${s}`);
+    };
+    add("Marca", p.marca);
+    add("Modelo", p.modelo);
+    add("Compatibilidad", p.compatibilidad);
+    add("Garantía", p.garantia);
+    add("Condición", p.condicion);
+    return lines.join("\n");
   }
 
+  // ===== MODAL PRODUCTO
   function openProductModal(p) {
     currentProduct = p;
     pmQty = 1;
@@ -236,32 +279,65 @@ window.SDC_CATALOG = (() => {
     U.$("pmStockOut").style.display = stock > 0 ? "none" : "inline-block";
     if (stock > 0) U.$("pmStockOk").textContent = `Stock: ${stock}`;
 
-    // descripción + extras (opcional)
     const desc = String(p.descripcion || "").trim();
     const extra = buildExtraInfo(p);
     U.$("pmDesc").textContent = (desc ? desc : "Sin descripción por ahora.") + (extra ? ("\n\n" + extra) : "");
 
-    // videos
+    // videos: TikTok / YouTube / Facebook / genérico
     const v = bestVideo(p);
     const hasTik = !!v.tiktok;
     const hasYou = !!v.youtube;
+    const hasFb  = !!v.facebook;
     const hasGen = !!v.generic;
 
-    U.$("pmVideoRow").style.display = (hasTik || hasYou || hasGen) ? "flex" : "none";
+    U.$("pmVideoRow").style.display = (hasTik || hasYou || hasFb || hasGen) ? "flex" : "none";
 
-    // TikTok / YouTube
+    // TikTok
     U.$("pmTiktok").style.display = hasTik ? "inline-block" : "none";
-    U.$("pmYoutube").style.display = hasYou ? "inline-block" : "none";
-    if (hasTik) U.$("pmTiktok").href = v.tiktok;
-    if (hasYou) U.$("pmYoutube").href = v.youtube;
+    if (hasTik) {
+      U.$("pmTiktok").textContent = "Ver en TikTok";
+      U.$("pmTiktok").href = v.tiktok;
+    }
 
-    // si no hay TikTok/Youtube, mostramos YouTube como genérico si existe
-    if (!hasYou && hasGen) {
-      U.$("pmYoutube").style.display = "inline-block";
-      U.$("pmYoutube").textContent = "Ver video";
-      U.$("pmYoutube").href = v.generic;
-    } else {
+    // YouTube (o genérico si aplica)
+    U.$("pmYoutube").style.display = (hasYou || (!hasYou && hasGen && detectPlatform_(v.generic) === "youtube") || (!hasYou && hasGen && detectPlatform_(v.generic) === "generic")) ? "inline-block" : "none";
+
+    // Facebook (si no existe id en html, lo creamos)
+    ensureFacebookBtn_();
+    const fbBtn = U.$("pmFacebook");
+    fbBtn.style.display = hasFb ? "inline-block" : "none";
+    if (hasFb) {
+      fbBtn.textContent = "Ver en Facebook";
+      fbBtn.href = v.facebook;
+    }
+
+    if (hasYou) {
       U.$("pmYoutube").textContent = "Ver en YouTube";
+      U.$("pmYoutube").href = v.youtube;
+    } else if (!hasYou && hasGen) {
+      const plat = detectPlatform_(v.generic);
+      if (plat === "youtube") {
+        U.$("pmYoutube").textContent = "Ver en YouTube";
+        U.$("pmYoutube").href = v.generic;
+      } else if (plat === "facebook") {
+        // si el genérico era facebook y no venía en video_facebook
+        fbBtn.style.display = "inline-block";
+        fbBtn.textContent = "Ver en Facebook";
+        fbBtn.href = v.generic;
+        U.$("pmYoutube").style.display = "none";
+      } else if (plat === "tiktok") {
+        U.$("pmTiktok").style.display = "inline-block";
+        U.$("pmTiktok").textContent = "Ver en TikTok";
+        U.$("pmTiktok").href = v.generic;
+        U.$("pmYoutube").style.display = "none";
+      } else {
+        // genérico
+        U.$("pmYoutube").textContent = "Ver video";
+        U.$("pmYoutube").href = v.generic;
+      }
+    } else {
+      // no videos
+      U.$("pmYoutube").style.display = "none";
     }
 
     renderProductImages();
@@ -273,21 +349,21 @@ window.SDC_CATALOG = (() => {
     U.$("productModal").classList.add("open");
   }
 
-  function buildExtraInfo(p){
-    // muestra solo lo que exista
-    const lines = [];
-    const add = (label, value) => {
-      const s = String(value || "").trim();
-      if (s) lines.push(`${label}: ${s}`);
-    };
+  function ensureFacebookBtn_() {
+    // Creamos botón si no existe (para no pedirte tocar index.html)
+    if (U.$("pmFacebook")) return;
+    const row = U.$("pmVideoRow");
+    if (!row) return;
 
-    add("Marca", p.marca);
-    add("Modelo", p.modelo);
-    add("Compatibilidad", p.compatibilidad);
-    add("Garantía", p.garantia);
-    add("Condición", p.condicion);
+    const a = document.createElement("a");
+    a.className = "btn";
+    a.id = "pmFacebook";
+    a.target = "_blank";
+    a.rel = "noopener";
+    a.style.display = "none";
+    a.textContent = "Ver en Facebook";
 
-    return lines.join("\n");
+    row.appendChild(a);
   }
 
   function renderProductImages() {
