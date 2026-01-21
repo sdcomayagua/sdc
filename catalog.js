@@ -7,14 +7,13 @@ window.SDC_CATALOG = (() => {
     await DATA.load();
     UI.renderTabs();
     UI.renderSubTabs();
+    UI.bindSort();
     UI.renderGrid();
     PM.openFromHash();
   }
 
   function renderGrid() { UI.renderGrid(); }
-
   function bindProductModalEvents() { PM.bindEvents(); }
-
   function closeProductModal() { PM.close(); }
 
   return { load, renderGrid, bindProductModalEvents, closeProductModal };
