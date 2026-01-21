@@ -10,7 +10,7 @@ window.SDC_CATALOG = (() => {
     </svg>`
   );
 
-  // Modal producto state
+  // Modal state
   let currentProduct = null;
   let pmQty = 1;
   let pmImages = [];
@@ -24,7 +24,6 @@ window.SDC_CATALOG = (() => {
 
     S.setData(json);
 
-    // productos
     let products = (json.productos || []).filter(p => p && p.nombre && p.categoria);
 
     // ordenar: stock>0 primero, luego orden, luego nombre
@@ -40,8 +39,7 @@ window.SDC_CATALOG = (() => {
     S.setProducts(products);
 
     const cats = new Set(products.map(p => p.categoria || ""));
-    const categories = ["Todas", ...Array.from(cats).filter(Boolean).sort((a,b)=>a.localeCompare(b))];
-    S.setCats(categories);
+    S.setCats(["Todas", ...Array.from(cats).filter(Boolean).sort((a,b)=>a.localeCompare(b))]);
 
     const sub = new Map();
     for (const p of products) {
@@ -122,7 +120,9 @@ window.SDC_CATALOG = (() => {
     if (activeSub !== "Todas") list = list.filter(p => p.subcategoria === activeSub);
     if (q) list = list.filter(p =>
       (p.nombre || "").toLowerCase().includes(q) ||
-      (p.tags || "").toLowerCase().includes(q)
+      (p.tags || "").toLowerCase().includes(q) ||
+      (p.marca || "").toLowerCase().includes(q) ||
+      (p.modelo || "").toLowerCase().includes(q)
     );
 
     const el = U.$("grid");
@@ -161,6 +161,7 @@ window.SDC_CATALOG = (() => {
       btn.textContent = inStock ? "Añadir al carrito" : "No disponible";
       btn.disabled = !inStock;
 
+      // botón no abre modal, solo agrega 1
       btn.onclick = (ev) => { ev.stopPropagation(); S.addToCart(p, 1); };
 
       box.appendChild(badge);
@@ -172,21 +173,30 @@ window.SDC_CATALOG = (() => {
     });
   }
 
+  // ===== MODAL PRODUCTO =====
   function parseGallery(p) {
     const imgs = [];
+
     if (p.imagen) imgs.push(String(p.imagen).trim());
 
-    if (Array.isArray(p.galeria)) {
-      p.galeria.forEach(u => { const s=String(u||"").trim(); if (s) imgs.push(s); });
-    } else if (p.galeria) {
-      String(p.galeria).split(",").forEach(u => { const s=String(u||"").trim(); if (s) imgs.push(s); });
+    // galeria: puede ser string de links separados por coma
+    if (p.galeria) {
+      String(p.galeria).split(",").forEach(u => {
+        const s = String(u || "").trim();
+        if (s) imgs.push(s);
+      });
     }
 
-    for (let i=1; i<=8; i++) {
+    // galeria_1..galeria_8
+    for (let i = 1; i <= 8; i++) {
       const k = "galeria_" + i;
-      if (p[k]) { const s = String(p[k]).trim(); if (s) imgs.push(s); }
+      if (p[k]) {
+        const s = String(p[k]).trim();
+        if (s) imgs.push(s);
+      }
     }
 
+    // únicas y máximo 8
     const unique = [];
     const seen = new Set();
     for (const u of imgs) {
@@ -197,6 +207,17 @@ window.SDC_CATALOG = (() => {
       if (unique.length >= 8) break;
     }
     return unique;
+  }
+
+  function bestVideo(p) {
+    // tus columnas reales
+    const tiktok = String(p.video_tiktok || "").trim();
+    const youtube = String(p.video_youtube || "").trim();
+
+    // si usan video_url o video, lo tratamos como genérico
+    const generic = String(p.video_url || p.video || "").trim();
+
+    return { tiktok, youtube, generic };
   }
 
   function openProductModal(p) {
@@ -215,18 +236,33 @@ window.SDC_CATALOG = (() => {
     U.$("pmStockOut").style.display = stock > 0 ? "none" : "inline-block";
     if (stock > 0) U.$("pmStockOk").textContent = `Stock: ${stock}`;
 
-    U.$("pmDesc").textContent = (p.descripcion || "").trim() ? String(p.descripcion) : "Sin descripción por ahora.";
+    // descripción + extras (opcional)
+    const desc = String(p.descripcion || "").trim();
+    const extra = buildExtraInfo(p);
+    U.$("pmDesc").textContent = (desc ? desc : "Sin descripción por ahora.") + (extra ? ("\n\n" + extra) : "");
 
-    const tiktok = String(p.tiktok_url || p.tiktok || p.video_tiktok || "").trim();
-    const youtube = String(p.youtube_url || p.youtube || p.video_youtube || "").trim();
-    const hasTik = !!tiktok;
-    const hasYou = !!youtube;
+    // videos
+    const v = bestVideo(p);
+    const hasTik = !!v.tiktok;
+    const hasYou = !!v.youtube;
+    const hasGen = !!v.generic;
 
-    U.$("pmVideoRow").style.display = (hasTik || hasYou) ? "flex" : "none";
+    U.$("pmVideoRow").style.display = (hasTik || hasYou || hasGen) ? "flex" : "none";
+
+    // TikTok / YouTube
     U.$("pmTiktok").style.display = hasTik ? "inline-block" : "none";
     U.$("pmYoutube").style.display = hasYou ? "inline-block" : "none";
-    if (hasTik) U.$("pmTiktok").href = tiktok;
-    if (hasYou) U.$("pmYoutube").href = youtube;
+    if (hasTik) U.$("pmTiktok").href = v.tiktok;
+    if (hasYou) U.$("pmYoutube").href = v.youtube;
+
+    // si no hay TikTok/Youtube, mostramos YouTube como genérico si existe
+    if (!hasYou && hasGen) {
+      U.$("pmYoutube").style.display = "inline-block";
+      U.$("pmYoutube").textContent = "Ver video";
+      U.$("pmYoutube").href = v.generic;
+    } else {
+      U.$("pmYoutube").textContent = "Ver en YouTube";
+    }
 
     renderProductImages();
 
@@ -235,6 +271,23 @@ window.SDC_CATALOG = (() => {
     U.$("pmNote").textContent = stock > 0 ? "Selecciona cantidad y añade al carrito." : "Este producto está agotado.";
 
     U.$("productModal").classList.add("open");
+  }
+
+  function buildExtraInfo(p){
+    // muestra solo lo que exista
+    const lines = [];
+    const add = (label, value) => {
+      const s = String(value || "").trim();
+      if (s) lines.push(`${label}: ${s}`);
+    };
+
+    add("Marca", p.marca);
+    add("Modelo", p.modelo);
+    add("Compatibilidad", p.compatibilidad);
+    add("Garantía", p.garantia);
+    add("Condición", p.condicion);
+
+    return lines.join("\n");
   }
 
   function renderProductImages() {
@@ -286,5 +339,12 @@ window.SDC_CATALOG = (() => {
     };
   }
 
-  return { load, renderGrid, renderTabs, renderSubTabs, bindProductModalEvents, closeProductModal };
+  return {
+    load,
+    renderGrid,
+    renderTabs,
+    renderSubTabs,
+    bindProductModalEvents,
+    closeProductModal
+  };
 })();
