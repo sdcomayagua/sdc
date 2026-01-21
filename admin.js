@@ -8,14 +8,20 @@
     sessionStorage.setItem("SDC_ADMIN_UNLOCK", "1");
   }
 
-  // Si ya desbloqueaste esta sesión, entra directo
+  // Ya desbloqueado en esta sesión
   if (sessionStorage.getItem("SDC_ADMIN_UNLOCK") === "1") unlock();
+
+  function isValidPin(input) {
+    const pins = Array.isArray(CFG.ADMIN_PINS) ? CFG.ADMIN_PINS.map(String) : [];
+    const pinSingle = CFG.ADMIN_PIN ? [String(CFG.ADMIN_PIN)] : [];
+    const allowed = pins.length ? pins : pinSingle; // compatibilidad
+    return allowed.includes(String(input || "").trim());
+  }
 
   U.$("pinBtn").onclick = () => {
     const v = (U.$("pinInput").value || "").trim();
-    if (!CFG.ADMIN_PIN) { U.toast("PIN no configurado en config.js"); return; }
-    if (v === String(CFG.ADMIN_PIN)) { unlock(); return; }
-    U.toast("PIN incorrecto");
+    if (!isValidPin(v)) { U.toast("PIN incorrecto"); return; }
+    unlock();
   };
 
   U.$("uploadBtn").onclick = async () => {
