@@ -13,15 +13,49 @@
     <div class="row">
       <div class="brand"><span class="brandDot"></span>Soluciones Digitales Comayagua</div>
       <div class="pill" id="statusPill">Cargando catálogo...</div>
-      <div class="search"><input id="q" placeholder="Buscar producto..." /></div>
+
+      <div class="search">
+        <input id="q" placeholder="Buscar producto..." />
+      </div>
+
+      <div class="sortBox">
+        <select id="sortSel" title="Ordenar">
+          <option value="relevancia">Orden: Relevancia</option>
+          <option value="stock_first">Orden: Disponibles primero</option>
+          <option value="precio_asc">Orden: Precio menor</option>
+          <option value="precio_desc">Orden: Precio mayor</option>
+          <option value="orden_desc">Orden: Más nuevos (orden)</option>
+        </select>
+      </div>
+
       <button class="btn acc" id="cartBtn">Carrito (<span id="cartCount">0</span>)</button>
     </div>
+
     <div class="tabs" id="catTabs"></div>
     <div class="tabs" id="subTabs"></div>
   </div>
 </header>
 
 <main class="wrap">
+  <!-- B) Destacados -->
+  <section id="featuredSection" class="section" style="display:none">
+    <div class="sectionHead">
+      <div class="sectionTitle">Destacados</div>
+      <div class="mut">Lo más recomendado</div>
+    </div>
+    <div class="hScroll" id="featuredRow"></div>
+  </section>
+
+  <!-- B) Ofertas -->
+  <section id="offersSection" class="section" style="display:none">
+    <div class="sectionHead">
+      <div class="sectionTitle">Ofertas</div>
+      <div class="mut">Mejores precios</div>
+    </div>
+    <div class="hScroll" id="offersRow"></div>
+  </section>
+
+  <!-- Grid principal -->
   <div class="grid" id="grid"></div>
 </main>
 
@@ -56,7 +90,6 @@
           <div class="pmVideoRow" id="pmVideoRow" style="display:none">
             <a class="btn" id="pmTiktok" target="_blank" rel="noopener" style="display:none">Ver en TikTok</a>
             <a class="btn" id="pmYoutube" target="_blank" rel="noopener" style="display:none">Ver en YouTube</a>
-            <!-- Facebook se crea automáticamente si hace falta -->
           </div>
 
           <div class="pmQtyRow">
@@ -69,7 +102,7 @@
           </div>
 
           <div class="note" id="pmNote" style="margin-top:10px"></div>
-          <!-- Botón Compartir se crea automáticamente -->
+          <!-- Botón compartir se crea automático por product_modal.js -->
         </div>
       </div>
     </div>
@@ -137,6 +170,12 @@
       </div>
     </div>
   </div>
+</div>
+
+<!-- A) BARRA INFERIOR MÓVIL -->
+<div class="mobileBar" id="mobileBar">
+  <button class="btn" id="bottomCartBtn">Carrito <span class="miniCount" id="bottomCartCount">0</span></button>
+  <button class="btn acc" id="bottomSendBtn">WhatsApp</button>
 </div>
 
 <!-- SCRIPTS -->
