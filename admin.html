@@ -21,24 +21,19 @@
   <div class="card">
     <div class="p" id="pinBox">
       <div class="h">PIN</div>
-      <div class="note">Ingresa tu PIN local para abrir el panel.</div>
+      <div class="note">Ingresa tu PIN para abrir el panel.</div>
       <div class="two" style="margin-top:10px">
         <div><input id="pinInput" type="password" placeholder="PIN" /></div>
         <div><button class="btn acc" id="pinBtn" style="width:100%">Entrar</button></div>
       </div>
       <div class="note" style="margin-top:10px">
-        Este PIN solo oculta el panel. La seguridad real es tu ADMIN_KEY del Apps Script.
+        El PIN también se usa como clave invisible para subir imágenes.
       </div>
     </div>
 
     <div class="p" id="adminBox" style="display:none">
       <div class="h">Subir imagen a Drive</div>
-      <div class="note">Necesitas tu ADMIN_KEY (la valida el Apps Script). Sin clave: “No autorizado”.</div>
-
-      <div style="margin-top:10px">
-        <label class="mut">Clave Admin (ADMIN_KEY)</label>
-        <input id="adminKey" placeholder="Tu ADMIN_KEY" />
-      </div>
+      <div class="note">Ya no necesitas escribir ADMIN_KEY. Se usa el PIN automáticamente.</div>
 
       <div style="margin-top:10px"><input type="file" id="fileUp" accept="image/*" /></div>
       <button class="btn warn" id="uploadBtn" style="margin-top:10px">Subir imagen</button>
