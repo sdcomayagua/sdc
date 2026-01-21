@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1" />
+  <title>Panel Admin | SDComayagua</title>
+  <meta name="theme-color" content="#0b57ff" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="./assets/admin.css" />
+</head>
+
+<body>
+  <header class="top">
+    <div class="brand">
+      <div class="logo">SDC</div>
+      <div class="bt">
+        <div class="title">Panel de administración</div>
+        <div class="sub">SDComayagua · Google Sheets backend</div>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button class="btn ghost" id="btnSync" title="Actualizar catálogo (crea/actualiza catalog.json en repo con GitHub Actions)">
+        <i class="ri-refresh-line"></i><span>Sync</span>
+      </button>
+      <a class="btn ghost" href="../index.html" target="_blank" rel="noopener">
+        <i class="ri-store-2-line"></i><span>Ver tienda</span>
+      </a>
+      <button class="btn" id="btnNew">
+        <i class="ri-add-line"></i><span>Nuevo producto</span>
+      </button>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="panel">
+      <div class="row">
+        <div class="search">
+          <i class="ri-search-line"></i>
+          <input id="q" placeholder="Buscar por nombre, ID, categoría, subcategoría…" />
+        </div>
+
+        <div class="filters">
+          <select id="fCat"><option value="">Todas las categorías</option></select>
+          <select id="fSub"><option value="">Todas las subcategorías</option></select>
+          <select id="fStock">
+            <option value="">Stock: todos</option>
+            <option value="in">Con stock</option>
+            <option value="out">Agotados</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="stats" id="stats"></div>
+
+      <div class="tableWrap">
+        <table class="tbl">
+          <thead>
+            <tr>
+              <th style="width:56px;">Img</th>
+              <th>Producto</th>
+              <th style="width:110px;">Precio</th>
+              <th style="width:90px;">Stock</th>
+              <th style="width:240px;">Categoría</th>
+              <th style="width:200px;">Subcat</th>
+              <th style="width:180px;">Variante</th>
+              <th style="width:168px;">Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="tbody"></tbody>
+        </table>
+
+        <div class="empty" id="empty" style="display:none;">
+          No hay productos para mostrar.
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- LOGIN -->
+  <div class="modal" id="loginModal">
+    <div class="card">
+      <div class="cardH">
+        <div>
+          <div class="h1">Acceso admin</div>
+          <div class="muted">Se valida contra tu Google Apps Script (token).</div>
+        </div>
+      </div>
+      <div class="cardB">
+        <label class="lab">Token admin</label>
+        <input id="adminToken" class="inp" placeholder="Pega tu token…" autocomplete="off" />
+        <div class="hint">Tip: guarda el token en Apps Script (Properties) como <b>ADMIN_TOKEN</b>.</div>
+        <button class="btn full" id="btnLogin"><i class="ri-lock-line"></i><span>Entrar</span></button>
+        <div class="err" id="loginErr" style="display:none;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EDITOR -->
+  <div class="modal" id="editModal">
+    <div class="card wide">
+      <div class="cardH">
+        <div>
+          <div class="h1" id="editTitle">Producto</div>
+          <div class="muted" id="editSub">—</div>
+        </div>
+        <button class="iconBtn" id="btnCloseEdit" aria-label="Cerrar"><i class="ri-close-line"></i></button>
+      </div>
+
+      <div class="cardB">
+        <div class="grid">
+          <div class="col">
+            <label class="lab">ID (auto)</label>
+            <div class="idRow">
+              <input id="p_id" class="inp" placeholder="(se genera automáticamente)" readonly />
+              <button class="btn ghost" id="btnGenId" title="Generar nuevo ID"><i class="ri-magic-line"></i></button>
+            </div>
+
+            <label class="lab">Nombre</label>
+            <input id="p_nombre" class="inp" placeholder="Ej: Gamepad X" />
+
+            <div class="grid2">
+              <div>
+                <label class="lab">Precio (Lps)</label>
+                <input id="p_precio" class="inp" inputmode="numeric" placeholder="0" />
+              </div>
+              <div>
+                <label class="lab">Precio anterior</label>
+                <input id="p_precio_anterior" class="inp" inputmode="numeric" placeholder="0" />
+              </div>
+            </div>
+
+            <div class="grid2">
+              <div>
+                <label class="lab">Stock</label>
+                <input id="p_stock" class="inp" inputmode="numeric" placeholder="0" />
+              </div>
+              <div>
+                <label class="lab">Estado</label>
+                <select id="p_estado" class="inp">
+                  <option value="ACTIVO">ACTIVO</option>
+                  <option value="OCULTO">OCULTO</option>
+                </select>
+              </div>
+            </div>
+
+            <label class="lab">Categoría</label>
+            <input id="p_categoria" class="inp" placeholder="Ej: Gamer" list="catsList" />
+
+            <label class="lab">Subcategoría</label>
+            <input id="p_subcategoria" class="inp" placeholder="Ej: Gamepad" list="subsList" />
+
+            <div class="grid2">
+              <div>
+                <label class="lab">Sub‑subcategoría</label>
+                <input id="p_subsubcategoria" class="inp" placeholder="Opcional" />
+              </div>
+              <div>
+                <label class="lab">Variante</label>
+                <input id="p_variante" class="inp" placeholder="Ej: PS5 / Xbox / Color" />
+              </div>
+            </div>
+          </div>
+
+          <div class="col">
+            <label class="lab">Imagen principal (URL)</label>
+            <input id="p_imagen" class="inp" placeholder="https://…" />
+            <div class="imgPrev">
+              <img id="imgPrev" alt="" />
+            </div>
+
+            <label class="lab">Galería (URLs separadas por coma)</label>
+            <textarea id="p_galeria" class="inp ta" placeholder="url1, url2, url3"></textarea>
+
+            <label class="lab">Video (URL)</label>
+            <input id="p_video" class="inp" placeholder="YouTube / TikTok / Facebook…" />
+
+            <label class="lab">Descripción</label>
+            <textarea id="p_descripcion" class="inp ta" placeholder="Detalles del producto…"></textarea>
+
+            <div class="btnRow">
+              <button class="btn danger" id="btnDelete"><i class="ri-delete-bin-6-line"></i><span>Eliminar</span></button>
+              <div class="spacer"></div>
+              <button class="btn ghost" id="btnCancel"><span>Cancelar</span></button>
+              <button class="btn" id="btnSave"><i class="ri-save-3-line"></i><span>Guardar</span></button>
+            </div>
+
+            <div class="err" id="editErr" style="display:none;"></div>
+            <div class="ok" id="editOk" style="display:none;"></div>
+          </div>
+        </div>
+
+        <datalist id="catsList"></datalist>
+        <datalist id="subsList"></datalist>
+      </div>
+    </div>
+  </div>
+
+  <script src="./assets/admin.js"></script>
+</body>
+</html>
