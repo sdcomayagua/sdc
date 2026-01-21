@@ -20,14 +20,17 @@ window.SDC_CART = (() => {
 
   function renderCart() {
     const el = U.$("cartItems");
+    const emptyNote = U.$("cartEmptyNote");
     const cart = S.getCart();
     el.innerHTML = "";
 
     syncBottomCount();
 
     if (cart.size === 0) {
-      el.innerHTML = `<div class="note">Tu carrito está vacío.</div>`;
+      if (emptyNote) emptyNote.style.display = "block";
       return;
+    } else {
+      if (emptyNote) emptyNote.style.display = "none";
     }
 
     for (const [id, it] of cart.entries()) {
@@ -119,11 +122,9 @@ window.SDC_CART = (() => {
     U.$("closeCart").onclick = closeCart;
     U.$("cartModal").onclick = (e) => { if (e.target.id === "cartModal") closeCart(); };
 
-    // A) Barra inferior
     const b = U.$("bottomCartBtn");
     if (b) b.onclick = openCart;
 
-    // inicial
     syncBottomCount();
   }
 
