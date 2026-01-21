@@ -28,6 +28,11 @@
         </select>
       </div>
 
+      <!-- ✅ Modo Día/Noche -->
+      <button class="btn ghost themeBtn" id="themeBtn" type="button">
+        <span class="tIcon">🌙</span><span class="tText">Modo: Noche</span>
+      </button>
+
       <button class="btn acc" id="cartBtn">Carrito (<span id="cartCount">0</span>)</button>
     </div>
 
@@ -37,6 +42,7 @@
 </header>
 
 <main class="wrap">
+  <!-- B) Destacados -->
   <section id="featuredSection" class="section" style="display:none">
     <div class="sectionHead">
       <div class="sectionTitle">Destacados</div>
@@ -45,6 +51,7 @@
     <div class="hScroll" id="featuredRow"></div>
   </section>
 
+  <!-- B) Ofertas -->
   <section id="offersSection" class="section" style="display:none">
     <div class="sectionHead">
       <div class="sectionTitle">Ofertas</div>
@@ -53,12 +60,13 @@
     <div class="hScroll" id="offersRow"></div>
   </section>
 
+  <!-- Grid principal -->
   <div class="grid" id="grid"></div>
 </main>
 
 <div class="toast" id="toast"></div>
 
-<!-- MODAL: PRODUCTO (se mantiene igual) -->
+<!-- MODAL: PRODUCTO -->
 <div class="modal" id="productModal">
   <div class="sheet">
     <div class="head row" style="justify-content:space-between">
@@ -87,6 +95,7 @@
           <div class="pmVideoRow" id="pmVideoRow" style="display:none">
             <a class="btn" id="pmTiktok" target="_blank" rel="noopener" style="display:none">Ver en TikTok</a>
             <a class="btn" id="pmYoutube" target="_blank" rel="noopener" style="display:none">Ver en YouTube</a>
+            <!-- Facebook + Compartir se crean automáticamente -->
           </div>
 
           <div class="pmQtyRow">
@@ -105,7 +114,7 @@
   </div>
 </div>
 
-<!-- MODAL: CARRITO (mejorado) -->
+<!-- MODAL: CARRITO -->
 <div class="modal" id="cartModal">
   <div class="sheet">
     <div class="head row" style="justify-content:space-between">
@@ -187,11 +196,19 @@
 <!-- BARRA INFERIOR MÓVIL -->
 <div class="mobileBar" id="mobileBar">
   <button class="btn" id="bottomCartBtn">Carrito <span class="miniCount" id="bottomCartCount">0</span></button>
+
+  <!-- ✅ Modo Día/Noche en móvil -->
+  <button class="btn ghost themeBtn" id="bottomThemeBtn" type="button">
+    <span class="tIcon">🌙</span><span class="tText">Modo: Noche</span>
+  </button>
+
   <button class="btn acc" id="bottomSendBtn">WhatsApp</button>
 </div>
 
+<!-- SCRIPTS -->
 <script src="config.js"></script>
 <script src="utils.js"></script>
+<script src="theme.js"></script>
 <script src="store.js"></script>
 
 <script src="media.js"></script>
