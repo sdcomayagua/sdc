@@ -9,25 +9,14 @@
   const LS_ATTEMPTS = "SDC_ADMIN_PIN_ATTEMPTS";
   const LS_LOCK_UNTIL = "SDC_ADMIN_LOCK_UNTIL";
   const SS_UNLOCK = "SDC_ADMIN_UNLOCK";
+  const SS_PIN = "SDC_ADMIN_PIN"; // guardamos el PIN SOLO en sessionStorage (se borra al cerrar pestaña)
 
   function nowMs(){ return Date.now(); }
-
-  function getAttempts(){
-    return Number(localStorage.getItem(LS_ATTEMPTS) || "0");
-  }
-  function setAttempts(n){
-    localStorage.setItem(LS_ATTEMPTS, String(n));
-  }
-  function getLockUntil(){
-    return Number(localStorage.getItem(LS_LOCK_UNTIL) || "0");
-  }
-  function setLockUntil(ms){
-    localStorage.setItem(LS_LOCK_UNTIL, String(ms));
-  }
-  function clearLock(){
-    setAttempts(0);
-    setLockUntil(0);
-  }
+  function getAttempts(){ return Number(localStorage.getItem(LS_ATTEMPTS) || "0"); }
+  function setAttempts(n){ localStorage.setItem(LS_ATTEMPTS, String(n)); }
+  function getLockUntil(){ return Number(localStorage.getItem(LS_LOCK_UNTIL) || "0"); }
+  function setLockUntil(ms){ localStorage.setItem(LS_LOCK_UNTIL, String(ms)); }
+  function clearLock(){ setAttempts(0); setLockUntil(0); }
 
   function pinsAllowed(){
     const pins = Array.isArray(CFG.ADMIN_PINS) ? CFG.ADMIN_PINS.map(String) : [];
@@ -49,76 +38,70 @@
     return `${min} min`;
   }
 
-  function unlock() {
+  function unlock(pin) {
     U.$("pinBox").style.display = "none";
     U.$("adminBox").style.display = "block";
     sessionStorage.setItem(SS_UNLOCK, "1");
+    sessionStorage.setItem(SS_PIN, String(pin || "").trim());
   }
 
-  // Si ya desbloqueaste en esta sesión, entra directo (sin PIN)
+  // Si ya desbloqueaste en esta sesión
   if (sessionStorage.getItem(SS_UNLOCK) === "1") {
-    unlock();
+    U.$("pinBox").style.display = "none";
+    U.$("adminBox").style.display = "block";
   }
 
-  // Si está bloqueado, avisa
   if (isLocked()) {
     U.toast(`Admin bloqueado. Intenta de nuevo en ${remainingLockText()}.`);
   }
 
   U.$("pinBtn").onclick = () => {
     const allowed = pinsAllowed();
-    if (!allowed.length) {
-      U.toast("No hay PIN configurado en config.js");
-      return;
-    }
+    if (!allowed.length) { U.toast("No hay PIN configurado en config.js"); return; }
 
-    if (isLocked()) {
-      U.toast(`Bloqueado. Intenta de nuevo en ${remainingLockText()}.`);
-      return;
-    }
+    if (isLocked()) { U.toast(`Bloqueado. Intenta de nuevo en ${remainingLockText()}.`); return; }
 
     const input = (U.$("pinInput").value || "").trim();
     const ok = allowed.includes(input);
 
     if (ok) {
       clearLock();
-      unlock();
+      unlock(input);
       return;
     }
 
-    // Falló
     const attempts = getAttempts() + 1;
     setAttempts(attempts);
 
     const left = Math.max(0, MAX_ATTEMPTS - attempts);
-    if (left > 0) {
-      U.toast(`PIN incorrecto. Intentos restantes: ${left}`);
-      return;
-    }
+    if (left > 0) { U.toast(`PIN incorrecto. Intentos restantes: ${left}`); return; }
 
-    // Bloquear
     const lockUntil = nowMs() + LOCK_MINUTES * 60 * 1000;
     setLockUntil(lockUntil);
     U.toast(`Demasiados intentos. Bloqueado por ${LOCK_MINUTES} minutos.`);
   };
 
   U.$("uploadBtn").onclick = async () => {
-    // Requiere estar desbloqueado (PIN)
+    // Requiere PIN válido (desbloqueado)
     if (sessionStorage.getItem(SS_UNLOCK) !== "1") {
       U.toast("Primero ingresa el PIN.");
       return;
     }
 
-    const key = (U.$("adminKey").value || "").trim();
-    const file = U.$("fileUp").files[0];
+    const pinAsKey = String(sessionStorage.getItem(SS_PIN) || "").trim();
+    if (!pinAsKey) {
+      U.toast("PIN no encontrado. Vuelve a entrar.");
+      sessionStorage.removeItem(SS_UNLOCK);
+      return;
+    }
 
-    if (!key) { U.toast("Falta ADMIN_KEY"); return; }
+    const file = U.$("fileUp").files[0];
     if (!file) { U.toast("Selecciona una imagen"); return; }
 
     const base64 = await U.fileToBase64(file);
     const payload = { filename: file.name, contentType: file.type || "image/jpeg", base64 };
 
-    const res = await fetch(`${CFG.API_URL}?action=upload&key=${encodeURIComponent(key)}`, {
+    const res = await fetch(`${CFG.API_URL}?action=upload&key=${encodeURIComponent(pinAsKey)}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload)
