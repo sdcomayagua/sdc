@@ -11,6 +11,8 @@ window.SDC_CATALOG_UI = (() => {
     </svg>`
   );
 
+  const PAGER = window.SDC_PAGER;
+
   function toBool(v){
     const s = String(v ?? "").trim().toLowerCase();
     return v === true || s === "1" || s === "true" || s === "si" || s === "sí" || s === "yes";
@@ -36,13 +38,12 @@ window.SDC_CATALOG_UI = (() => {
   function sortList(list){
     const mode = getSortMode();
     const withStockFirst = (a,b) => {
-      const sa = (Number(a.stock)>0)?0:1;
-      const sb = (Number(b.stock)>0)?0:1;
+      const sa=(Number(a.stock)>0)?0:1, sb=(Number(b.stock)>0)?0:1;
       if(sa!==sb) return sa-sb;
       return 0;
     };
     const byOrderThenName = (a,b) => {
-      const oa = Number(a.orden||0), ob = Number(b.orden||0);
+      const oa=Number(a.orden||0), ob=Number(b.orden||0);
       if(oa!==ob) return oa-ob;
       return String(a.nombre||"").localeCompare(String(b.nombre||""));
     };
@@ -51,12 +52,11 @@ window.SDC_CATALOG_UI = (() => {
     const byOrderDesc = (a,b) => Number(b.orden||0) - Number(a.orden||0);
 
     const copy = list.slice();
-    if (mode === "precio_asc") { copy.sort((a,b)=>{ const s=withStockFirst(a,b); return s!==0?s:byPriceAsc(a,b); }); return copy; }
-    if (mode === "precio_desc"){ copy.sort((a,b)=>{ const s=withStockFirst(a,b); return s!==0?s:byPriceDesc(a,b); }); return copy; }
-    if (mode === "orden_desc") { copy.sort((a,b)=>{ const s=withStockFirst(a,b); return s!==0?s:byOrderDesc(a,b); }); return copy; }
-    if (mode === "stock_first"){ copy.sort((a,b)=>{ const s=withStockFirst(a,b); return s!==0?s:byOrderThenName(a,b); }); return copy; }
+    if (mode === "precio_asc") { copy.sort((a,b)=>{const s=withStockFirst(a,b); return s!==0?s:byPriceAsc(a,b)}); return copy; }
+    if (mode === "precio_desc"){ copy.sort((a,b)=>{const s=withStockFirst(a,b); return s!==0?s:byPriceDesc(a,b)}); return copy; }
+    if (mode === "orden_desc") { copy.sort((a,b)=>{const s=withStockFirst(a,b); return s!==0?s:byOrderDesc(a,b)}); return copy; }
+    if (mode === "stock_first"){ copy.sort((a,b)=>{const s=withStockFirst(a,b); return s!==0?s:byOrderThenName(a,b)}); return copy; }
 
-    // relevancia
     copy.sort((a,b)=>{
       const sa=(Number(a.stock)>0)?0:1, sb=(Number(b.stock)>0)?0:1;
       if(sa!==sb) return sa-sb;
@@ -68,9 +68,8 @@ window.SDC_CATALOG_UI = (() => {
   }
 
   function shouldShowTopSections(){
-    // solo en Todas/Todas y sin filtro activo
     const mode = window.SDC_FILTERS?.getMode?.() || "all";
-    return (S.getActiveCat() === "Todas" && S.getActiveSub() === "Todas" && mode === "all");
+    return (S.getActiveCat()==="Todas" && S.getActiveSub()==="Todas" && mode==="all");
   }
 
   function hideTopSections(){
@@ -82,56 +81,47 @@ window.SDC_CATALOG_UI = (() => {
     const or = U.$("offersRow"); if (or) or.innerHTML = "";
   }
 
-  function renderFeatured() {
-    if (!shouldShowTopSections()){
-      hideTopSections();
-      return;
-    }
+  function renderFeatured(){
+    if (!shouldShowTopSections()){ hideTopSections(); return; }
+
     const all = S.getProducts();
     const featured = all.filter(p => toBool(p.destacado));
     const offers = all.filter(p => isOffer(p));
-    renderHRow("featuredSection", "featuredRow", featured);
-    renderHRow("offersSection", "offersRow", offers);
+    renderHRow("featuredSection","featuredRow", featured);
+    renderHRow("offersSection","offersRow", offers);
   }
 
-  function renderHRow(sectionId, rowId, list){
+  function renderHRow(sectionId,rowId,list){
     const section = U.$(sectionId);
     const row = U.$(rowId);
     if(!section || !row) return;
 
     const items = sortList(list).slice(0, 20);
-    if(items.length === 0){
-      section.style.display = "none";
-      row.innerHTML = "";
-      return;
-    }
+    if(!items.length){ section.style.display="none"; row.innerHTML=""; return; }
 
-    section.style.display = "block";
-    row.innerHTML = "";
+    section.style.display="block";
+    row.innerHTML="";
 
-    items.forEach(p => {
+    items.forEach(p=>{
       const inStock = Number(p.stock||0) > 0;
-
       const card = document.createElement("div");
       card.className = "hCard" + (!inStock ? " outCard" : "");
-      card.onclick = () => PM.open(p, { setHash:true });
+      card.onclick = ()=>PM.open(p,{setHash:true});
 
       const imgWrap = document.createElement("div");
-      imgWrap.className = "imgWrap";
+      imgWrap.className="imgWrap";
 
-      const img = document.createElement("img");
-      img.src = p.imagen || "";
-      img.alt = p.nombre || "";
-      img.loading = "lazy";
-      img.onerror = () => img.src = fallbackSvg;
+      const img=document.createElement("img");
+      img.src=p.imagen||""; img.alt=p.nombre||""; img.loading="lazy";
+      img.onerror=()=>img.src=fallbackSvg;
 
       imgWrap.appendChild(img);
 
-      const box = document.createElement("div");
-      box.className = "hp";
+      const box=document.createElement("div");
+      box.className="hp";
       box.innerHTML = `
         <div class="hname">${U.esc(p.nombre||"")}</div>
-        <div class="mut">${inStock ? ("Stock: " + Number(p.stock||0)) : "AGOTADO"}</div>
+        <div class="mut">${inStock ? ("Stock: "+Number(p.stock||0)) : "AGOTADO"}</div>
         <div class="hprice">${U.money(p.precio, CFG.CURRENCY)}</div>
       `;
 
@@ -141,147 +131,146 @@ window.SDC_CATALOG_UI = (() => {
     });
   }
 
-  // Skeleton
-  function renderSkeletonGrid(count = 10){
+  function renderSkeletonGrid(count=10){
     hideTopSections();
-    const el = U.$("grid");
-    if (!el) return;
-    el.innerHTML = "";
-    for (let i=0;i<count;i++){
-      const sk = document.createElement("div");
-      sk.className = "skCard skShimmer";
-      sk.innerHTML = `
+    const el=U.$("grid");
+    if(!el) return;
+    el.innerHTML="";
+    for(let i=0;i<count;i++){
+      const sk=document.createElement("div");
+      sk.className="skCard skShimmer";
+      sk.innerHTML=`
         <div class="skImg"></div>
         <div class="skBody">
           <div class="skLine lg"></div>
           <div class="skLine md"></div>
           <div class="skLine sm"></div>
-        </div>
-      `;
+        </div>`;
       el.appendChild(sk);
     }
+    const wrap = U.$("loadMoreWrap");
+    if (wrap) wrap.style.display = "none";
   }
 
-  function renderTabs() {
-    const el = U.$("catTabs");
-    el.innerHTML = "";
-    const categories = S.getCats();
-    const activeCat = S.getActiveCat();
-
-    categories.forEach(c => {
-      const d = document.createElement("div");
-      d.className = "tab" + (c === activeCat ? " active" : "");
-      d.textContent = c;
-      d.onclick = () => {
+  function renderTabs(){
+    const el=U.$("catTabs");
+    el.innerHTML="";
+    const cats=S.getCats();
+    const active=S.getActiveCat();
+    cats.forEach(c=>{
+      const d=document.createElement("div");
+      d.className="tab"+(c===active?" active":"");
+      d.textContent=c;
+      d.onclick=()=>{
         S.setActiveCat(c);
         S.setActiveSub("Todas");
-        renderTabs();
-        renderSubTabs();
-        renderGrid();
+        renderTabs(); renderSubTabs(); renderGrid();
       };
       el.appendChild(d);
     });
   }
 
-  function renderSubTabs() {
-    const el = U.$("subTabs");
-    el.innerHTML = "";
+  function renderSubTabs(){
+    const el=U.$("subTabs");
+    el.innerHTML="";
+    const activeCat=S.getActiveCat();
+    const activeSub=S.getActiveSub();
+    const map=S.getSubcatsMap();
 
-    const activeCat = S.getActiveCat();
-    const activeSub = S.getActiveSub();
-    const subcatsByCat = S.getSubcatsMap();
-
-    let subs = [];
-    if (activeCat === "Todas") {
-      const all = new Set();
-      for (const set of subcatsByCat.values()) for (const s of set) all.add(s);
-      subs = ["Todas", ...Array.from(all).sort((a,b)=>a.localeCompare(b))];
+    let subs=[];
+    if(activeCat==="Todas"){
+      const all=new Set();
+      for(const set of map.values()) for(const s of set) all.add(s);
+      subs=["Todas",...Array.from(all).sort((a,b)=>a.localeCompare(b))];
     } else {
-      const set = subcatsByCat.get(activeCat) || new Set();
-      subs = ["Todas", ...Array.from(set).sort((a,b)=>a.localeCompare(b))];
+      const set=map.get(activeCat)||new Set();
+      subs=["Todas",...Array.from(set).sort((a,b)=>a.localeCompare(b))];
     }
 
-    subs.forEach(s => {
-      const d = document.createElement("div");
-      d.className = "tab" + (s === activeSub ? " active" : "");
-      d.textContent = s;
-      d.onclick = () => {
+    subs.forEach(s=>{
+      const d=document.createElement("div");
+      d.className="tab"+(s===activeSub?" active":"");
+      d.textContent=s;
+      d.onclick=()=>{
         S.setActiveSub(s);
-        renderSubTabs();
-        renderGrid();
+        renderSubTabs(); renderGrid();
       };
       el.appendChild(d);
     });
   }
 
-  function renderGrid() {
+  function renderGrid(){
     renderFeatured();
 
-    const q = (U.$("q").value || "").trim().toLowerCase();
-    const activeCat = S.getActiveCat();
-    const activeSub = S.getActiveSub();
+    const q=(U.$("q").value||"").trim().toLowerCase();
+    const activeCat=S.getActiveCat();
+    const activeSub=S.getActiveSub();
+    const mode=window.SDC_FILTERS?.getMode?.() || "all";
+    const sort=getSortMode();
 
-    let list = S.getProducts();
+    let list=S.getProducts();
 
-    // categoria/sub
-    if (activeCat !== "Todas") list = list.filter(p => p.categoria === activeCat);
-    if (activeSub !== "Todas") list = list.filter(p => p.subcategoria === activeSub);
+    if(activeCat!=="Todas") list=list.filter(p=>p.categoria===activeCat);
+    if(activeSub!=="Todas") list=list.filter(p=>p.subcategoria===activeSub);
 
-    // filtros rápidos
     list = filterQuick(list);
 
-    // búsqueda
-    if (q) list = list.filter(p =>
-      (p.nombre || "").toLowerCase().includes(q) ||
-      (p.tags || "").toLowerCase().includes(q) ||
-      (p.marca || "").toLowerCase().includes(q) ||
-      (p.modelo || "").toLowerCase().includes(q)
+    if(q) list=list.filter(p =>
+      (p.nombre||"").toLowerCase().includes(q) ||
+      (p.tags||"").toLowerCase().includes(q) ||
+      (p.marca||"").toLowerCase().includes(q) ||
+      (p.modelo||"").toLowerCase().includes(q)
     );
 
-    // ordenar
     list = sortList(list);
 
-    const el = U.$("grid");
-    el.innerHTML = "";
+    // ✅ paginación: clave por contexto
+    const pagerKey = [activeCat, activeSub, mode, sort, q].join("|");
+    PAGER.ensureKey(pagerKey);
 
-    list.forEach(p => {
-      const inStock = Number(p.stock || 0) > 0;
+    const visibleList = PAGER.slice(list);
 
-      const card = document.createElement("div");
-      card.className = "card" + (!inStock ? " outCard" : "");
-      card.onclick = () => PM.open(p, { setHash: true });
+    const el=U.$("grid");
+    el.innerHTML="";
 
-      const imgWrap = document.createElement("div");
-      imgWrap.className = "imgWrap";
+    visibleList.forEach(p=>{
+      const inStock = Number(p.stock||0) > 0;
 
-      const img = document.createElement("img");
-      img.className = "img";
-      img.loading = "lazy";
-      img.src = p.imagen || "";
-      img.alt = p.nombre || "";
-      img.onerror = () => img.src = fallbackSvg;
+      const card=document.createElement("div");
+      card.className="card"+(!inStock?" outCard":"");
+      card.onclick=()=>PM.open(p,{setHash:true});
+
+      const imgWrap=document.createElement("div");
+      imgWrap.className="imgWrap";
+
+      const img=document.createElement("img");
+      img.className="img";
+      img.loading="lazy";
+      img.src=p.imagen||"";
+      img.alt=p.nombre||"";
+      img.onerror=()=>img.src=fallbackSvg;
 
       imgWrap.appendChild(img);
 
-      const box = document.createElement("div");
-      box.className = "p";
-      box.innerHTML = `
-        <div class="name">${U.esc(p.nombre || "")}</div>
-        <div class="mut">${U.esc(p.categoria || "")}${p.subcategoria ? (" • " + U.esc(p.subcategoria)) : ""}</div>
+      const box=document.createElement("div");
+      box.className="p";
+      box.innerHTML=`
+        <div class="name">${U.esc(p.nombre||"")}</div>
+        <div class="mut">${U.esc(p.categoria||"")}${p.subcategoria?(" • "+U.esc(p.subcategoria)):""}</div>
         <div class="price">${U.money(p.precio, CFG.CURRENCY)}</div>
       `;
 
-      const badge = document.createElement("div");
-      badge.className = "badge " + (inStock ? "off" : "out");
-      badge.textContent = inStock ? `Stock: ${Number(p.stock)}` : "AGOTADO";
+      const badge=document.createElement("div");
+      badge.className="badge "+(inStock?"off":"out");
+      badge.textContent=inStock?`Stock: ${Number(p.stock)}`:"AGOTADO";
 
-      const btn = document.createElement("button");
-      btn.className = "btn acc";
-      btn.style.width = "100%";
-      btn.style.marginTop = "10px";
-      btn.textContent = inStock ? "Añadir al carrito" : "No disponible";
-      btn.disabled = !inStock;
-      btn.onclick = (ev) => { ev.stopPropagation(); S.addToCart(p, 1); };
+      const btn=document.createElement("button");
+      btn.className="btn acc";
+      btn.style.width="100%";
+      btn.style.marginTop="10px";
+      btn.textContent=inStock?"Añadir al carrito":"No disponible";
+      btn.disabled=!inStock;
+      btn.onclick=(ev)=>{ev.stopPropagation(); S.addToCart(p,1);};
 
       box.appendChild(badge);
       box.appendChild(btn);
@@ -290,12 +279,26 @@ window.SDC_CATALOG_UI = (() => {
       card.appendChild(box);
       el.appendChild(card);
     });
+
+    // ✅ botón “Cargar más”
+    const wrap = U.$("loadMoreWrap");
+    const btn = U.$("loadMoreBtn");
+    const note = U.$("loadMoreNote");
+    if (wrap && btn && note) {
+      const can = PAGER.canLoadMore(list.length);
+      wrap.style.display = can ? "block" : "none";
+      note.textContent = can ? `Mostrando ${visibleList.length} de ${list.length}` : "";
+      btn.onclick = () => {
+        PAGER.loadMore();
+        renderGrid();
+      };
+    }
   }
 
-  function bindSort() {
-    const sel = U.$("sortSel");
-    if (!sel) return;
-    sel.onchange = () => renderGrid();
+  function bindSort(){
+    const sel=U.$("sortSel");
+    if(!sel) return;
+    sel.onchange=()=>renderGrid();
   }
 
   return { renderTabs, renderSubTabs, renderGrid, bindSort, renderSkeletonGrid };
