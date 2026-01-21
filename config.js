@@ -4,7 +4,7 @@ window.SDC_CONFIG = {
   CURRENCY: "Lps",
   NATIONAL_PREPAGO: 110,
   NATIONAL_CONTRA_ENTREGA: 160,
-  ADMIN_PIN: "SDC2026",
+  ADMIN_PIN: "199311",
   LOCAL_ALLOW: [
     "Comayagua|Comayagua",
     "Comayagua|Ajuterique",
