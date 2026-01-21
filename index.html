@@ -42,7 +42,7 @@
 </header>
 
 <main class="wrap">
-  <!-- B) Destacados -->
+  <!-- Destacados -->
   <section id="featuredSection" class="section" style="display:none">
     <div class="sectionHead">
       <div class="sectionTitle">Destacados</div>
@@ -51,7 +51,7 @@
     <div class="hScroll" id="featuredRow"></div>
   </section>
 
-  <!-- B) Ofertas -->
+  <!-- Ofertas -->
   <section id="offersSection" class="section" style="display:none">
     <div class="sectionHead">
       <div class="sectionTitle">Ofertas</div>
@@ -66,8 +66,11 @@
 
 <div class="toast" id="toast"></div>
 
+<!-- ✅ Botón “Ir arriba” -->
+<button class="toTop" id="toTop" type="button" aria-label="Ir arriba">↑</button>
+
 <!-- MODAL: PRODUCTO -->
-<div class="modal" id="productModal">
+<div class="modal" id="productModal" aria-hidden="true">
   <div class="sheet">
     <div class="head row" style="justify-content:space-between">
       <div style="font-weight:1000" id="pmTitle">Producto</div>
@@ -115,7 +118,7 @@
 </div>
 
 <!-- MODAL: CARRITO -->
-<div class="modal" id="cartModal">
+<div class="modal" id="cartModal" aria-hidden="true">
   <div class="sheet">
     <div class="head row" style="justify-content:space-between">
       <div style="font-weight:1000">Carrito</div>
@@ -125,14 +128,14 @@
     <div class="body">
       <div class="cartLayout">
 
-        <!-- IZQUIERDA: ITEMS -->
+        <!-- IZQUIERDA -->
         <div class="panel">
           <div class="panelTitle">Productos</div>
           <div id="cartItems"></div>
           <div class="note" id="cartEmptyNote" style="display:none">Tu carrito está vacío.</div>
         </div>
 
-        <!-- DERECHA: ENTREGA + CLIENTE + RESUMEN -->
+        <!-- DERECHA -->
         <div class="panel">
           <div class="panelTitle">Entrega y pago</div>
 
@@ -197,7 +200,6 @@
 <div class="mobileBar" id="mobileBar">
   <button class="btn" id="bottomCartBtn">Carrito <span class="miniCount" id="bottomCartCount">0</span></button>
 
-  <!-- ✅ Modo Día/Noche en móvil -->
   <button class="btn ghost themeBtn" id="bottomThemeBtn" type="button">
     <span class="tIcon">🌙</span><span class="tText">Modo: Noche</span>
   </button>
@@ -209,6 +211,8 @@
 <script src="config.js"></script>
 <script src="utils.js"></script>
 <script src="theme.js"></script>
+<script src="motion.js"></script>
+<script src="ux.js"></script>
 <script src="store.js"></script>
 
 <script src="media.js"></script>
