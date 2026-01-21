@@ -1,36 +1,98 @@
-window.SDC_UTILS = (() => {
-  const $ = (id) => document.getElementById(id);
+window.SDC_STORE = (() => {
+  const CFG = window.SDC_CONFIG;
+  const U = window.SDC_UTILS;
 
-  const esc = (s) => String(s).replace(/[&<>"']/g, (m) => ({
-    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
-  }[m]));
-
-  const escAttr = (s) => String(s).replace(/"/g, "&quot;");
-
-  const toast = (msg) => {
-    const t = $("toast");
-    if(!t) return;
-    t.textContent = msg;
-    t.classList.add("show");
-    setTimeout(() => t.classList.remove("show"), 1800);
+  const state = {
+    DATA: null,
+    products: [],
+    categories: [],
+    subcatsByCat: new Map(),
+    activeCat: "Todas",
+    activeSub: "Todas",
+    cart: new Map(), // id -> {p, qty}
   };
 
-  const money = (n, currency) => `${currency}. ${Number(n||0).toFixed(2)}`;
+  const LOCAL_ALLOW = new Set(CFG.LOCAL_ALLOW || []);
 
-  const fallbackImg = () =>
-    "data:image/svg+xml;charset=utf-8," + encodeURIComponent(
-      `<svg xmlns='http://www.w3.org/2000/svg' width='800' height='800'>
-        <rect width='100%' height='100%' fill='#0a0f17'/>
-        <text x='50%' y='50%' fill='#9fb0c6' font-size='28' text-anchor='middle' dominant-baseline='middle'>Sin imagen</text>
-      </svg>`
-    );
+  const setData = (data) => { state.DATA = data; };
+  const getData = () => state.DATA;
 
-  const fileToBase64 = (file) => new Promise((resolve, reject) => {
-    const r = new FileReader();
-    r.onload = () => resolve(r.result);
-    r.onerror = reject;
-    r.readAsDataURL(file);
-  });
+  const setProducts = (arr) => { state.products = Array.isArray(arr) ? arr : []; };
+  const getProducts = () => state.products;
 
-  return { $, esc, escAttr, toast, money, fallbackImg, fileToBase64 };
+  const setCats = (cats) => { state.categories = cats; };
+  const getCats = () => state.categories;
+
+  const setSubcatsMap = (m) => { state.subcatsByCat = m; };
+  const getSubcatsMap = () => state.subcatsByCat;
+
+  const setActiveCat = (c) => { state.activeCat = c; };
+  const getActiveCat = () => state.activeCat;
+
+  const setActiveSub = (s) => { state.activeSub = s; };
+  const getActiveSub = () => state.activeSub;
+
+  const cartCount = () => {
+    let c = 0;
+    for (const it of state.cart.values()) c += it.qty;
+    return c;
+  };
+
+  const updateCartCountUI = () => {
+    const el = U.$("cartCount");
+    if (el) el.textContent = String(cartCount());
+  };
+
+  const addToCart = (p, qty = 1) => {
+    const id = p.id || p.nombre;
+    const stock = Number(p.stock || 0);
+    const cur = state.cart.get(id);
+    const currentQty = cur ? cur.qty : 0;
+    const addQty = Math.max(1, Number(qty || 1));
+    const next = currentQty + addQty;
+
+    if (next > stock) { U.toast("No hay stock suficiente"); return false; }
+
+    state.cart.set(id, { p, qty: next });
+    updateCartCountUI();
+    U.toast("Agregado al carrito");
+    return true;
+  };
+
+  const setCartQty = (id, qty) => {
+    const it = state.cart.get(id);
+    if (!it) return;
+    it.qty = qty;
+    state.cart.set(id, it);
+    updateCartCountUI();
+  };
+
+  const delFromCart = (id) => {
+    state.cart.delete(id);
+    updateCartCountUI();
+  };
+
+  const getCart = () => state.cart;
+
+  const isLocalAllowed = (dep, mun) => LOCAL_ALLOW.has(`${dep}|${mun}`);
+
+  const getWhatsapp = () => {
+    const d = state.DATA;
+    if (d && d.whatsapp) return d.whatsapp;
+    return CFG.DEFAULT_WHATSAPP;
+  };
+
+  return {
+    state,
+    setData, getData,
+    setProducts, getProducts,
+    setCats, getCats,
+    setSubcatsMap, getSubcatsMap,
+    setActiveCat, getActiveCat,
+    setActiveSub, getActiveSub,
+    getCart, addToCart, setCartQty, delFromCart,
+    cartCount, updateCartCountUI,
+    isLocalAllowed,
+    getWhatsapp,
+  };
 })();
