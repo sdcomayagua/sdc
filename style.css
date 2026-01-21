@@ -252,3 +252,107 @@ html[data-theme="dark"] .badge.out{color:#ffb3b3}
 .themeBtn{display:flex;align-items:center;gap:8px}
 .tIcon{font-size:14px}
 .tText{font-size:12px;color:var(--mut);font-weight:800}
+
+/* ===== (1) Animación Modales + Lock scroll ===== */
+.modal{
+  display:flex;
+  opacity:0;
+  visibility:hidden;
+  pointer-events:none;
+  transition:opacity .18s ease, visibility .18s ease;
+}
+.modal.open{
+  opacity:1;
+  visibility:visible;
+  pointer-events:auto;
+}
+.modal .sheet{
+  transform:translateY(18px) scale(.985);
+  transition:transform .18s ease;
+}
+.modal.open .sheet{
+  transform:translateY(0) scale(1);
+}
+body.modalOn{overflow:hidden}
+
+/* ===== (2) Skeleton Loading ===== */
+.skCard{
+  border-radius:18px;
+  border:1px solid var(--line);
+  background:var(--card);
+  overflow:hidden;
+  position:relative;
+}
+.skImg{width:100%;aspect-ratio:1/1;background:color-mix(in oklab, var(--mut) 18%, transparent)}
+.skBody{padding:12px}
+.skLine{height:10px;border-radius:999px;background:color-mix(in oklab, var(--mut) 18%, transparent);margin:10px 0}
+.skLine.sm{width:55%}
+.skLine.md{width:78%}
+.skLine.lg{width:92%}
+.skShimmer::after{
+  content:"";
+  position:absolute;inset:0;
+  background:linear-gradient(90deg, transparent, rgba(255,255,255,.12), transparent);
+  transform:translateX(-120%);
+  animation:sh 1.2s infinite;
+}
+html[data-theme="light"] .skShimmer::after{
+  background:linear-gradient(90deg, transparent, rgba(10,20,40,.08), transparent);
+}
+@keyframes sh{to{transform:translateX(120%)}}
+
+/* ===== (3) Botón Ir Arriba ===== */
+.toTop{
+  position:fixed;
+  right:14px;
+  bottom:84px;
+  z-index:140;
+  width:44px;height:44px;
+  border-radius:14px;
+  border:1px solid var(--line);
+  background:color-mix(in oklab, var(--card) 92%, transparent);
+  color:var(--txt);
+  box-shadow:var(--shadow);
+  cursor:pointer;
+  opacity:0;
+  transform:translateY(8px);
+  pointer-events:none;
+  transition:opacity .18s ease, transform .18s ease;
+}
+.toTop.show{
+  opacity:1;
+  transform:translateY(0);
+  pointer-events:auto;
+}
+
+/* ===== ✅ AGOTADO: gris + cinta diagonal ===== */
+.card.outCard{
+  opacity:.62;
+  filter:grayscale(.75);
+}
+.card.outCard:hover{
+  transform:none;
+  box-shadow:none;
+}
+.imgWrap{position:relative}
+.card.outCard .img{
+  opacity:.55;
+  filter:grayscale(1);
+}
+.card.outCard .imgWrap::after{
+  content:"AGOTADO";
+  position:absolute;
+  top:16px;
+  left:-58px;
+  padding:8px 80px;
+  font-weight:1000;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:#fff;
+  background:rgba(0,0,0,.75);
+  transform:rotate(-35deg);
+  border:1px solid rgba(255,255,255,.18);
+}
+html[data-theme="light"] .card.outCard .imgWrap::after{
+  background:rgba(20,25,35,.72);
+}
