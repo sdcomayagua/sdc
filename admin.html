@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Admin | SDC</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <div class="row" style="justify-content:space-between">
+      <div class="brand">Admin - Subir Imagen (SDC)</div>
+      <a class="btn" href="index.html">Volver</a>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="card">
+    <div class="p">
+      <div class="h">Subir imagen a Drive</div>
+      <div class="note">Esto requiere tu clave ADMIN_KEY. Si alguien no la tiene, no podrá subir nada.</div>
+
+      <div style="margin-top:10px">
+        <label class="mut">Clave Admin</label>
+        <input id="adminKey" placeholder="Tu clave (ADMIN_KEY)" />
+      </div>
+
+      <div style="margin-top:10px">
+        <input type="file" id="fileUp" accept="image/*" />
+      </div>
+
+      <button class="btn warn" id="uploadBtn" style="margin-top:10px">Subir imagen</button>
+
+      <div class="hr"></div>
+      <div class="h">Resultado</div>
+
+      <div class="note">Link directo (descarga)</div>
+      <input id="outUrl" readonly />
+
+      <div class="note" style="margin-top:10px">Link de Drive (vista)</div>
+      <input id="outView" readonly />
+
+      <div class="note" style="margin-top:10px">Tip: pega el link en la columna <b>imagen</b> de tu hoja <b>productos</b>.</div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+</main>
+
+<script>
+const API_URL = "https://script.google.com/macros/s/AKfycbxx07ynQmhXH0FB7JeJFPfxYhcXxszggv3oK8TEPy5wv2_zM6kYYIcdi2YEj_DrFzKImw/exec";
+const $=id=>document.getElementById(id);
+const toast=msg=>{const t=$("toast");t.textContent=msg;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),1800);};
+
+$("uploadBtn").onclick = async () => {
+  const key = $("adminKey").value.trim();
+  const file = $("fileUp").files[0];
+  if(!key){ toast("Falta clave Admin"); return; }
+  if(!file){ toast("Selecciona una imagen"); return; }
+
+  const base64 = await fileToBase64(file);
+  const payload = { filename:file.name, contentType:file.type||"image/jpeg", base64 };
+
+  const res = await fetch(`${API_URL}?action=upload&key=${encodeURIComponent(key)}`,{
+    method:"POST",
+    headers:{ "Content-Type":"application/json" },
+    body: JSON.stringify(payload)
+  });
+  const json = await res.json();
+  if(!json.ok){ toast(json.error || "Error subiendo"); return; }
+
+  $("outUrl").value = json.url || "";
+  $("outView").value = json.viewUrl || "";
+  toast("Imagen subida");
+};
+
+function fileToBase64(file){
+  return new Promise((resolve,reject)=>{
+    const r=new FileReader();
+    r.onload=()=>resolve(r.result);
+    r.onerror=reject;
+    r.readAsDataURL(file);
+  });
+}
+</script>
+</body>
+</html>
