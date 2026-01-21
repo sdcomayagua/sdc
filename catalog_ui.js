@@ -11,6 +11,119 @@ window.SDC_CATALOG_UI = (() => {
     </svg>`
   );
 
+  function toBool(v){
+    const s = String(v ?? "").trim().toLowerCase();
+    return v === true || s === "1" || s === "true" || s === "si" || s === "sí" || s === "yes";
+  }
+
+  function getSortMode(){
+    const sel = U.$("sortSel");
+    return sel ? (sel.value || "relevancia") : "relevancia";
+  }
+
+  function sortList(list){
+    const mode = getSortMode();
+
+    const withStockFirst = (a,b) => {
+      const sa = (Number(a.stock)>0)?0:1;
+      const sb = (Number(b.stock)>0)?0:1;
+      if(sa!==sb) return sa-sb;
+      return 0;
+    };
+
+    const byOrderThenName = (a,b) => {
+      const oa = Number(a.orden||0), ob = Number(b.orden||0);
+      if(oa!==ob) return oa-ob;
+      return String(a.nombre||"").localeCompare(String(b.nombre||""));
+    };
+
+    const byPriceAsc = (a,b) => Number(a.precio||0) - Number(b.precio||0);
+    const byPriceDesc = (a,b) => Number(b.precio||0) - Number(a.precio||0);
+    const byOrderDesc = (a,b) => Number(b.orden||0) - Number(a.orden||0);
+
+    const copy = list.slice();
+
+    if (mode === "precio_asc") {
+      copy.sort((a,b)=>{ const s=withStockFirst(a,b); return s!==0?s:byPriceAsc(a,b); });
+      return copy;
+    }
+    if (mode === "precio_desc") {
+      copy.sort((a,b)=>{ const s=withStockFirst(a,b); return s!==0?s:byPriceDesc(a,b); });
+      return copy;
+    }
+    if (mode === "orden_desc") {
+      copy.sort((a,b)=>{ const s=withStockFirst(a,b); return s!==0?s:byOrderDesc(a,b); });
+      return copy;
+    }
+    if (mode === "stock_first") {
+      copy.sort((a,b)=>{ const s=withStockFirst(a,b); return s!==0?s:byOrderThenName(a,b); });
+      return copy;
+    }
+
+    // "relevancia" (tu orden actual: stock>0, orden, nombre)
+    copy.sort((a,b)=>{
+      const sa = (Number(a.stock)>0)?0:1;
+      const sb = (Number(b.stock)>0)?0:1;
+      if(sa!==sb) return sa-sb;
+      const oa = Number(a.orden||0), ob = Number(b.orden||0);
+      if(oa!==ob) return oa-ob;
+      return String(a.nombre||"").localeCompare(String(b.nombre||""));
+    });
+    return copy;
+  }
+
+  function renderFeatured() {
+    const all = S.getProducts();
+
+    const featured = all.filter(p => toBool(p.destacado));
+    const offers = all.filter(p => toBool(p.oferta) || (Number(p.precio_anterior||0) > Number(p.precio||0)));
+
+    renderHRow("featuredSection", "featuredRow", featured);
+    renderHRow("offersSection", "offersRow", offers);
+  }
+
+  function renderHRow(sectionId, rowId, list){
+    const section = U.$(sectionId);
+    const row = U.$(rowId);
+    if(!section || !row) return;
+
+    const items = sortList(list).slice(0, 20);
+    if(items.length === 0){
+      section.style.display = "none";
+      row.innerHTML = "";
+      return;
+    }
+
+    section.style.display = "block";
+    row.innerHTML = "";
+
+    items.forEach(p => {
+      const inStock = Number(p.stock||0) > 0;
+
+      const card = document.createElement("div");
+      card.className = "hCard";
+      card.onclick = () => PM.open(p, { setHash:true });
+
+      const img = document.createElement("img");
+      img.src = p.imagen || "";
+      img.alt = p.nombre || "";
+      img.loading = "lazy";
+      img.onerror = () => img.src = fallbackSvg;
+
+      const box = document.createElement("div");
+      box.className = "hp";
+      box.innerHTML = `
+        <div class="hname">${U.esc(p.nombre||"")}</div>
+        <div class="mut">${inStock ? ("Stock: " + Number(p.stock||0)) : "AGOTADO"}</div>
+        <div class="hprice">${U.money(p.precio, CFG.CURRENCY)}</div>
+      `;
+
+      card.appendChild(img);
+      card.appendChild(box);
+      row.appendChild(card);
+    });
+  }
+
   function renderTabs() {
     const el = U.$("catTabs");
     el.innerHTML = "";
@@ -64,6 +177,9 @@ window.SDC_CATALOG_UI = (() => {
   }
 
   function renderGrid() {
+    // B) render filas especiales (no dependen del filtro actual)
+    renderFeatured();
+
     const q = (U.$("q").value || "").trim().toLowerCase();
     const activeCat = S.getActiveCat();
     const activeSub = S.getActiveSub();
@@ -78,6 +194,9 @@ window.SDC_CATALOG_UI = (() => {
       (p.marca || "").toLowerCase().includes(q) ||
       (p.modelo || "").toLowerCase().includes(q)
     );
+
+    // C) ordenar segun selector
+    list = sortList(list);
 
     const el = U.$("grid");
     el.innerHTML = "";
@@ -125,5 +244,11 @@ window.SDC_CATALOG_UI = (() => {
     });
   }
 
-  return { renderTabs, renderSubTabs, renderGrid };
+  function bindSort() {
+    const sel = U.$("sortSel");
+    if (!sel) return;
+    sel.onchange = () => renderGrid();
+  }
+
+  return { renderTabs, renderSubTabs, renderGrid, bindSort };
 })();
