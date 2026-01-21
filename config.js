@@ -2,9 +2,15 @@ window.SDC_CONFIG = {
   API_URL: "https://script.google.com/macros/s/AKfycbxx07ynQmhXH0FB7JeJFPfxYhcXxszggv3oK8TEPy5wv2_zM6kYYIcdi2YEj_DrFzKImw/exec",
   DEFAULT_WHATSAPP: "+50431517755",
   CURRENCY: "Lps",
+
+  // Tarifas nacionales
   NATIONAL_PREPAGO: 110,
   NATIONAL_CONTRA_ENTREGA: 160,
-  ADMIN_PIN: "199311",
+
+  // PIN LOCAL (para abrir admin.html)
+  ADMIN_PIN: "SDC2026",
+
+  // Local permitido (entrega local)
   LOCAL_ALLOW: [
     "Comayagua|Comayagua",
     "Comayagua|Ajuterique",
@@ -14,5 +20,5 @@ window.SDC_CONFIG = {
     "Comayagua|Villa de San Antonio",
     "Comayagua|Palmerola",
     "Comayagua|El Pajonal",
-  ]
+  ],
 };
