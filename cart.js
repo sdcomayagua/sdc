@@ -2,6 +2,7 @@ window.SDC_CART = (() => {
   const CFG = window.SDC_CONFIG;
   const U = window.SDC_UTILS;
   const S = window.SDC_STORE;
+  const MINI = window.SDC_CART_MINI;
 
   function syncBottomCount(){
     const el = U.$("bottomCartCount");
@@ -28,6 +29,7 @@ window.SDC_CART = (() => {
 
     if (cart.size === 0) {
       if (emptyNote) emptyNote.style.display = "block";
+      MINI?.set?.("");
       return;
     } else {
       if (emptyNote) emptyNote.style.display = "none";
@@ -88,6 +90,7 @@ window.SDC_CART = (() => {
 
     if (cart.size === 0) {
       sum.innerHTML = `<div class="note">Agrega productos para ver el total.</div>`;
+      MINI?.set?.("");
       return;
     }
 
@@ -97,7 +100,11 @@ window.SDC_CART = (() => {
     const pay = U.$("payType").value;
 
     let subtotal = 0;
-    for (const it of cart.values()) subtotal += Number(it.p.precio || 0) * it.qty;
+    let itemsCount = 0;
+    for (const it of cart.values()) {
+      subtotal += Number(it.p.precio || 0) * it.qty;
+      itemsCount += it.qty;
+    }
 
     let shipping = 0;
     if (!local) shipping = (pay === "prepago") ? CFG.NATIONAL_PREPAGO : CFG.NATIONAL_CONTRA_ENTREGA;
@@ -115,6 +122,8 @@ window.SDC_CART = (() => {
         ? `<div class="note" style="margin-top:8px">Paga con: ${U.money(cash, CFG.CURRENCY)} → Cambio estimado: ${U.money(change, CFG.CURRENCY)}</div>`
         : `<div class="note" style="margin-top:8px">Para calcular cambio, escribe “¿con cuánto pagará?”</div>`) : ""}
     `;
+
+    MINI?.update?.({ itemsCount, totalNow, local, pay, shipping });
   }
 
   function bindEvents() {
