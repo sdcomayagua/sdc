@@ -28,7 +28,6 @@
         </select>
       </div>
 
-      <!-- Modo Día/Noche -->
       <button class="btn ghost themeBtn" id="themeBtn" type="button">
         <span class="tIcon">🌙</span><span class="tText">Modo: Noche</span>
       </button>
@@ -39,18 +38,15 @@
     <div class="tabs" id="catTabs"></div>
     <div class="tabs" id="subTabs"></div>
 
-    <!-- ✅ Filtros rápidos -->
     <div class="filtersBar" id="quickFilters"></div>
   </div>
 </header>
 
-<!-- ✅ Banner superior -->
 <div class="wrap" style="padding-top:10px;padding-bottom:0">
   <div id="topBanner"></div>
 </div>
 
 <main class="wrap">
-  <!-- Destacados -->
   <section id="featuredSection" class="section" style="display:none">
     <div class="sectionHead">
       <div class="sectionTitle">Destacados</div>
@@ -59,7 +55,6 @@
     <div class="hScroll" id="featuredRow"></div>
   </section>
 
-  <!-- Ofertas -->
   <section id="offersSection" class="section" style="display:none">
     <div class="sectionHead">
       <div class="sectionTitle">Ofertas</div>
@@ -68,13 +63,16 @@
     <div class="hScroll" id="offersRow"></div>
   </section>
 
-  <!-- Grid principal -->
   <div class="grid" id="grid"></div>
+
+  <!-- ✅ Cargar más -->
+  <div class="loadMoreWrap" id="loadMoreWrap" style="display:none">
+    <button class="btn ghost" id="loadMoreBtn" type="button">Cargar más</button>
+    <div class="note" id="loadMoreNote" style="margin-top:8px"></div>
+  </div>
 </main>
 
 <div class="toast" id="toast"></div>
-
-<!-- Botón “Ir arriba” -->
 <button class="toTop" id="toTop" type="button" aria-label="Ir arriba">↑</button>
 
 <!-- MODAL: PRODUCTO -->
@@ -103,12 +101,8 @@
             <span class="badge out" id="pmStockOut" style="display:none">AGOTADO</span>
           </div>
 
-          <!-- botones video + compartir -->
           <div class="pmActions" id="pmActions"></div>
-
           <div class="pmDesc" id="pmDesc"></div>
-
-          <!-- specs en tarjetas -->
           <div class="pmSpecs" id="pmSpecs" style="display:none"></div>
 
           <div class="pmQtyRow">
@@ -192,7 +186,10 @@
           <div id="summary"></div>
 
           <div class="cartSticky">
-            <button class="btn acc" id="sendWA" style="width:100%">Enviar pedido por WhatsApp</button>
+            <!-- ✅ Mini resumen sticky -->
+            <div class="cartMini" id="cartMiniSummary"></div>
+
+            <button class="btn acc" id="sendWA" style="width:100%;margin-top:10px">Enviar pedido por WhatsApp</button>
             <div class="note" style="margin-top:8px">
               Envío nacional: contra entrega (L 160) o prepago (L 110).
             </div>
@@ -204,7 +201,6 @@
   </div>
 </div>
 
-<!-- BARRA INFERIOR MÓVIL -->
 <div class="mobileBar" id="mobileBar">
   <button class="btn" id="bottomCartBtn">Carrito <span class="miniCount" id="bottomCartCount">0</span></button>
   <button class="btn ghost themeBtn" id="bottomThemeBtn" type="button">
@@ -222,6 +218,8 @@
 
 <script src="banner.js"></script>
 <script src="filters.js"></script>
+<script src="pagination.js"></script>
+<script src="cart_mini.js"></script>
 <script src="product_modal_ui.js"></script>
 
 <script src="store.js"></script>
