@@ -7,8 +7,8 @@ window.SDC_CONFIG = {
   NATIONAL_PREPAGO: 110,
   NATIONAL_CONTRA_ENTREGA: 160,
 
-  // PIN LOCAL (para abrir admin.html)
-  ADMIN_PIN: "SDC2026",
+  // PINs locales para abrir admin.html (acepta cualquiera)
+  ADMIN_PINS: ["199311", "202528"],
 
   // Local permitido (entrega local)
   LOCAL_ALLOW: [
