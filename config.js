@@ -1,10 +1,14 @@
 window.SDC_CONFIG = {
-  API_URL: "https://script.google.com/macros/s/AKfycbxx07ynQmhXH0FB7JeJFPfxYhcXxszggv3oK8TEPy5wv2_zM6kYYIcdi2YEj_DrFzKImw/exec",
+  API_URL: "https://script.google.com/macros/s/AKfycbxzmqW3XoUkaaTNvy6_xjqK5C-PTwnql88nEEAJ9KL2H2LLNmlBNy6cEub1NgxpFwmbiQ/exec",
   DEFAULT_WHATSAPP: "+50431517755",
   CURRENCY: "Lps",
+
   NATIONAL_PREPAGO: 110,
   NATIONAL_CONTRA_ENTREGA: 160,
+
+  // PINs (y también serán el key invisible para subir)
   ADMIN_PINS: ["199311", "202528"],
+
   LOCAL_ALLOW: [
     "Comayagua|Comayagua",
     "Comayagua|Ajuterique",
