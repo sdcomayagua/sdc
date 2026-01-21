@@ -37,7 +37,6 @@
 </header>
 
 <main class="wrap">
-  <!-- B) Destacados -->
   <section id="featuredSection" class="section" style="display:none">
     <div class="sectionHead">
       <div class="sectionTitle">Destacados</div>
@@ -46,7 +45,6 @@
     <div class="hScroll" id="featuredRow"></div>
   </section>
 
-  <!-- B) Ofertas -->
   <section id="offersSection" class="section" style="display:none">
     <div class="sectionHead">
       <div class="sectionTitle">Ofertas</div>
@@ -55,13 +53,12 @@
     <div class="hScroll" id="offersRow"></div>
   </section>
 
-  <!-- Grid principal -->
   <div class="grid" id="grid"></div>
 </main>
 
 <div class="toast" id="toast"></div>
 
-<!-- MODAL: PRODUCTO -->
+<!-- MODAL: PRODUCTO (se mantiene igual) -->
 <div class="modal" id="productModal">
   <div class="sheet">
     <div class="head row" style="justify-content:space-between">
@@ -102,83 +99,97 @@
           </div>
 
           <div class="note" id="pmNote" style="margin-top:10px"></div>
-          <!-- Botón compartir se crea automático por product_modal.js -->
         </div>
       </div>
     </div>
   </div>
 </div>
 
-<!-- MODAL: CARRITO -->
+<!-- MODAL: CARRITO (mejorado) -->
 <div class="modal" id="cartModal">
   <div class="sheet">
     <div class="head row" style="justify-content:space-between">
       <div style="font-weight:1000">Carrito</div>
       <button class="btn" id="closeCart">Cerrar</button>
     </div>
+
     <div class="body">
-      <div id="cartItems"></div>
+      <div class="cartLayout">
 
-      <div class="hr"></div>
-      <div class="h">Entrega</div>
-
-      <div class="two">
-        <div><label class="mut">Departamento</label><select id="dep"></select></div>
-        <div><label class="mut">Municipio</label><select id="mun"></select></div>
-      </div>
-
-      <div class="two" style="margin-top:10px">
-        <div>
-          <label class="mut">Tipo de entrega</label>
-          <select id="deliveryType"></select>
-          <div class="note" id="deliveryNote" style="margin-top:6px"></div>
+        <!-- IZQUIERDA: ITEMS -->
+        <div class="panel">
+          <div class="panelTitle">Productos</div>
+          <div id="cartItems"></div>
+          <div class="note" id="cartEmptyNote" style="display:none">Tu carrito está vacío.</div>
         </div>
-        <div>
-          <label class="mut">Forma de pago</label>
-          <select id="payType">
-            <option value="pagar_al_recibir">PAGAR AL RECIBIR</option>
-            <option value="prepago">PREPAGO (depósito)</option>
-          </select>
-          <div class="note" id="payNote" style="margin-top:6px"></div>
+
+        <!-- DERECHA: ENTREGA + CLIENTE + RESUMEN -->
+        <div class="panel">
+          <div class="panelTitle">Entrega y pago</div>
+
+          <div class="two">
+            <div><label class="mut">Departamento</label><select id="dep"></select></div>
+            <div><label class="mut">Municipio</label><select id="mun"></select></div>
+          </div>
+
+          <div class="two" style="margin-top:10px">
+            <div>
+              <label class="mut">Tipo de entrega</label>
+              <select id="deliveryType"></select>
+              <div class="note" id="deliveryNote" style="margin-top:6px"></div>
+            </div>
+            <div>
+              <label class="mut">Forma de pago</label>
+              <select id="payType">
+                <option value="pagar_al_recibir">PAGAR AL RECIBIR</option>
+                <option value="prepago">PREPAGO (depósito)</option>
+              </select>
+              <div class="note" id="payNote" style="margin-top:6px"></div>
+            </div>
+          </div>
+
+          <div id="cashBox" style="display:none;margin-top:10px">
+            <label class="mut">¿Con cuánto pagará? (para calcular cambio)</label>
+            <input id="cashAmount" inputmode="numeric" placeholder="Ej: 500" />
+          </div>
+
+          <div class="hr"></div>
+          <div class="panelTitle">Datos del cliente</div>
+
+          <div class="two">
+            <div><label class="mut">Nombre</label><input id="name" placeholder="Tu nombre" /></div>
+            <div><label class="mut">Teléfono</label><input id="phone" placeholder="Ej: 9xxx-xxxx" /></div>
+          </div>
+
+          <div style="margin-top:10px">
+            <label class="mut">Dirección / Referencia</label>
+            <textarea id="addr" placeholder="Colonia, barrio, referencias..."></textarea>
+          </div>
+
+          <div class="hr"></div>
+          <div class="panelTitle">Resumen</div>
+
+          <div id="summary"></div>
+
+          <div class="cartSticky">
+            <button class="btn acc" id="sendWA" style="width:100%">Enviar pedido por WhatsApp</button>
+            <div class="note" style="margin-top:8px">
+              Envío nacional: contra entrega (L 160) o prepago (L 110).
+            </div>
+          </div>
         </div>
-      </div>
 
-      <div id="cashBox" style="display:none;margin-top:10px">
-        <label class="mut">¿Con cuánto pagará? (para calcular cambio)</label>
-        <input id="cashAmount" inputmode="numeric" placeholder="Ej: 500" />
-      </div>
-
-      <div class="hr"></div>
-      <div class="h">Datos del cliente</div>
-
-      <div class="two">
-        <div><label class="mut">Nombre</label><input id="name" placeholder="Tu nombre" /></div>
-        <div><label class="mut">Teléfono</label><input id="phone" placeholder="Ej: 9xxx-xxxx" /></div>
-      </div>
-
-      <div style="margin-top:10px">
-        <label class="mut">Dirección / Referencia</label>
-        <textarea id="addr" placeholder="Colonia, barrio, referencias..."></textarea>
-      </div>
-
-      <div class="hr"></div>
-      <div id="summary"></div>
-
-      <button class="btn acc" id="sendWA" style="width:100%;margin-top:10px">Enviar pedido por WhatsApp</button>
-      <div class="note" style="margin-top:8px">
-        Envío nacional: contra entrega (L 160) o prepago (L 110).
       </div>
     </div>
   </div>
 </div>
 
-<!-- A) BARRA INFERIOR MÓVIL -->
+<!-- BARRA INFERIOR MÓVIL -->
 <div class="mobileBar" id="mobileBar">
   <button class="btn" id="bottomCartBtn">Carrito <span class="miniCount" id="bottomCartCount">0</span></button>
   <button class="btn acc" id="bottomSendBtn">WhatsApp</button>
 </div>
 
-<!-- SCRIPTS -->
 <script src="config.js"></script>
 <script src="utils.js"></script>
 <script src="store.js"></script>
