@@ -3,6 +3,11 @@ window.SDC_CART = (() => {
   const U = window.SDC_UTILS;
   const S = window.SDC_STORE;
 
+  function syncBottomCount(){
+    const el = U.$("bottomCartCount");
+    if (el) el.textContent = String(S.cartCount());
+  }
+
   function openCart() {
     U.$("cartModal").classList.add("open");
     renderCart();
@@ -18,6 +23,8 @@ window.SDC_CART = (() => {
     const cart = S.getCart();
     el.innerHTML = "";
 
+    syncBottomCount();
+
     if (cart.size === 0) {
       el.innerHTML = `<div class="note">Tu carrito está vacío.</div>`;
       return;
@@ -30,13 +37,13 @@ window.SDC_CART = (() => {
       row.innerHTML = `
         <img src="${U.escAttr(p.imagen || "")}" alt="">
         <div style="flex:1">
-          <div style="font-weight:900">${U.esc(p.nombre || "")}</div>
+          <div style="font-weight:1000">${U.esc(p.nombre || "")}</div>
           <div class="mut">${U.esc(p.categoria || "")}${p.subcategoria ? (" • " + U.esc(p.subcategoria)) : ""}</div>
-          <div style="margin-top:6px;font-weight:900">${U.money(p.precio, CFG.CURRENCY)} <span class="mut">x ${it.qty}</span></div>
+          <div style="margin-top:6px;font-weight:1000">${U.money(p.precio, CFG.CURRENCY)} <span class="mut">x ${it.qty}</span></div>
         </div>
         <div class="qty">
           <button class="mini" data-act="minus" data-id="${U.escAttr(id)}">-</button>
-          <div style="min-width:22px;text-align:center;font-weight:900">${it.qty}</div>
+          <div style="min-width:22px;text-align:center;font-weight:1000">${it.qty}</div>
           <button class="mini" data-act="plus" data-id="${U.escAttr(id)}">+</button>
           <button class="mini" data-act="del" data-id="${U.escAttr(id)}">🗑</button>
         </div>
@@ -51,24 +58,25 @@ window.SDC_CART = (() => {
 
           const stock = Number(item.p.stock || 0);
 
-          if (act === "minus") {
-            S.setCartQty(pid, Math.max(1, item.qty - 1));
-          }
+          if (act === "minus") S.setCartQty(pid, Math.max(1, item.qty - 1));
           if (act === "plus") {
             if (item.qty + 1 > stock) { U.toast("No hay stock suficiente"); return; }
             S.setCartQty(pid, item.qty + 1);
           }
-          if (act === "del") {
-            S.delFromCart(pid);
-          }
+          if (act === "del") S.delFromCart(pid);
 
           renderCart();
           computeSummary();
+          S.updateCartCountUI();
+          syncBottomCount();
         };
       });
 
       el.appendChild(row);
     }
+
+    S.updateCartCountUI();
+    syncBottomCount();
   }
 
   function computeSummary() {
@@ -110,6 +118,13 @@ window.SDC_CART = (() => {
     U.$("cartBtn").onclick = openCart;
     U.$("closeCart").onclick = closeCart;
     U.$("cartModal").onclick = (e) => { if (e.target.id === "cartModal") closeCart(); };
+
+    // A) Barra inferior
+    const b = U.$("bottomCartBtn");
+    if (b) b.onclick = openCart;
+
+    // inicial
+    syncBottomCount();
   }
 
   return { openCart, closeCart, renderCart, computeSummary, bindEvents };
