@@ -9,7 +9,7 @@
   const LS_ATTEMPTS = "SDC_ADMIN_PIN_ATTEMPTS";
   const LS_LOCK_UNTIL = "SDC_ADMIN_LOCK_UNTIL";
   const SS_UNLOCK = "SDC_ADMIN_UNLOCK";
-  const SS_PIN = "SDC_ADMIN_PIN"; // guardamos el PIN SOLO en sessionStorage (se borra al cerrar pestaña)
+  const SS_PIN = "SDC_ADMIN_PIN"; // se borra al cerrar sesión o cerrar pestaña
 
   function nowMs(){ return Date.now(); }
   function getAttempts(){ return Number(localStorage.getItem(LS_ATTEMPTS) || "0"); }
@@ -38,21 +38,60 @@
     return `${min} min`;
   }
 
-  function unlock(pin) {
+  function showPinUI(){
+    U.$("pinBox").style.display = "block";
+    U.$("adminBox").style.display = "none";
+    const logoutBtn = U.$("logoutBtn");
+    if (logoutBtn) logoutBtn.style.display = "none";
+  }
+
+  function showAdminUI(){
     U.$("pinBox").style.display = "none";
     U.$("adminBox").style.display = "block";
+    const logoutBtn = U.$("logoutBtn");
+    if (logoutBtn) logoutBtn.style.display = "inline-block";
+  }
+
+  function unlock(pin) {
     sessionStorage.setItem(SS_UNLOCK, "1");
     sessionStorage.setItem(SS_PIN, String(pin || "").trim());
+    showAdminUI();
+  }
+
+  function logout() {
+    sessionStorage.removeItem(SS_UNLOCK);
+    sessionStorage.removeItem(SS_PIN);
+    // limpia inputs
+    if (U.$("pinInput")) U.$("pinInput").value = "";
+    if (U.$("fileUp")) U.$("fileUp").value = "";
+    if (U.$("outUrl")) U.$("outUrl").value = "";
+    if (U.$("outView")) U.$("outView").value = "";
+    showPinUI();
+    U.toast("Sesión cerrada");
+  }
+
+  // Botón cerrar sesión
+  if (U.$("logoutBtn")) {
+    U.$("logoutBtn").onclick = logout;
   }
 
   // Si ya desbloqueaste en esta sesión
   if (sessionStorage.getItem(SS_UNLOCK) === "1") {
-    U.$("pinBox").style.display = "none";
-    U.$("adminBox").style.display = "block";
+    showAdminUI();
+  } else {
+    showPinUI();
   }
 
+  // Aviso si está bloqueado
   if (isLocked()) {
     U.toast(`Admin bloqueado. Intenta de nuevo en ${remainingLockText()}.`);
+  }
+
+  // Enter desde input PIN
+  if (U.$("pinInput")) {
+    U.$("pinInput").addEventListener("keydown", (e) => {
+      if (e.key === "Enter") U.$("pinBtn").click();
+    });
   }
 
   U.$("pinBtn").onclick = () => {
@@ -70,12 +109,17 @@
       return;
     }
 
+    // Falló
     const attempts = getAttempts() + 1;
     setAttempts(attempts);
 
     const left = Math.max(0, MAX_ATTEMPTS - attempts);
-    if (left > 0) { U.toast(`PIN incorrecto. Intentos restantes: ${left}`); return; }
+    if (left > 0) {
+      U.toast(`PIN incorrecto. Intentos restantes: ${left}`);
+      return;
+    }
 
+    // Bloquear
     const lockUntil = nowMs() + LOCK_MINUTES * 60 * 1000;
     setLockUntil(lockUntil);
     U.toast(`Demasiados intentos. Bloqueado por ${LOCK_MINUTES} minutos.`);
@@ -85,13 +129,14 @@
     // Requiere PIN válido (desbloqueado)
     if (sessionStorage.getItem(SS_UNLOCK) !== "1") {
       U.toast("Primero ingresa el PIN.");
+      showPinUI();
       return;
     }
 
     const pinAsKey = String(sessionStorage.getItem(SS_PIN) || "").trim();
     if (!pinAsKey) {
       U.toast("PIN no encontrado. Vuelve a entrar.");
-      sessionStorage.removeItem(SS_UNLOCK);
+      logout();
       return;
     }
 
