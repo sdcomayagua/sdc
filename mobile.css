@@ -1,0 +1,54 @@
+/* mobile.css */
+
+/* Mobile bar */
+.mobileBar{
+  display:flex;
+  position:fixed;
+  left:10px;right:10px;bottom:10px;
+  z-index:130;
+  gap:10px;
+  padding:10px;
+  border-radius:18px;
+  border:1px solid var(--line);
+  background:color-mix(in oklab, var(--card) 92%, transparent);
+  box-shadow:var(--shadow);
+  backdrop-filter:blur(10px);
+}
+.mobileBar .btn{
+  flex:1;height:44px;
+  display:flex;align-items:center;justify-content:center;
+  gap:8px;padding:0 12px;border-radius:14px;font-weight:1000;
+}
+.mobileBar .miniCount{
+  padding:2px 8px;border-radius:999px;border:1px solid var(--line);
+  background:color-mix(in oklab, var(--card2) 85%, transparent);
+  color:var(--mut);font-size:12px;font-weight:1000;
+}
+
+/* Hide mobilebar when a modal is open */
+body.modalOn .mobileBar{display:none !important;}
+
+/* Mobile header clean */
+@media (max-width:720px){
+  header .wrap{padding:10px}
+  .headerBrand{display:none}
+  #statusPill{display:none}
+  #sortBoxDesktop{display:none}
+  #viewBtn{display:none}
+  #themeBtn{display:none}
+
+  .headerTop{
+    display:grid;
+    grid-template-columns: 1fr 52px 1fr;
+    grid-template-areas:
+      "search search search"
+      "sort   .     cart";
+    gap:8px;
+  }
+  .headerSearch{grid-area:search}
+  #sortBtnMobile{grid-area:sort;height:44px;width:52px;border-radius:14px}
+  #cartBtn{grid-area:cart;height:44px;border-radius:14px}
+  #cartBtn .cartMiniText{display:none}
+
+  .toTop{bottom:110px}
+}
