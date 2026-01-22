@@ -11,12 +11,13 @@
 
 <header>
   <div class="wrap">
-    <div class="row">
-      <div class="brand"><span class="brandDot"></span>Soluciones Digitales Comayagua</div>
-      <div class="pill" id="statusPill">Cargando catálogo...</div>
 
-      <div class="search">
-        <input id="q" placeholder="Buscar producto..." />
+    <!-- ===== FILA PRINCIPAL (móvil: 1 fila) ===== -->
+    <div class="row headerTop">
+      <div class="brand headerBrand"><span class="brandDot"></span><span class="brandText">Soluciones Digitales Comayagua</span></div>
+
+      <div class="search headerSearch">
+        <input id="q" placeholder="Buscar..." />
       </div>
 
       <!-- Desktop: select visible -->
@@ -30,19 +31,24 @@
         </select>
       </div>
 
-      <!-- Mobile: botón visible -->
-      <button class="btn ghost sortMobileBtn" id="sortBtnMobile" type="button" aria-label="Ordenar">
-        ⚙️ <span class="tText">Ordenar</span>
+      <!-- Mobile: botón ordenar -->
+      <button class="btn ghost sortMobileBtn" id="sortBtnMobile" type="button" aria-label="Ordenar">⚙️</button>
+
+      <!-- Tema (en móvil se oculta; se usa el de abajo) -->
+      <button class="btn ghost themeBtn" id="themeBtn" type="button" aria-label="Tema">
+        <span class="tIcon">🌙</span><span class="tText">Modo</span>
       </button>
 
-      <!-- Modo Día/Noche -->
-      <button class="btn ghost themeBtn" id="themeBtn" type="button">
-        <span class="tIcon">🌙</span><span class="tText">Modo: Noche</span>
+      <!-- Carrito (en móvil será icono) -->
+      <button class="btn acc cartMiniBtn" id="cartBtn" type="button" aria-label="Carrito">
+        🛒 <span class="cartMiniText">Carrito</span> (<span id="cartCount">0</span>)
       </button>
-
-      <button class="btn acc" id="cartBtn">Carrito (<span id="cartCount">0</span>)</button>
     </div>
 
+    <!-- Estado (se ocultará en móvil por CSS) -->
+    <div class="pill" id="statusPill">Cargando catálogo...</div>
+
+    <!-- Tabs (se quedan, pero más compactas en móvil) -->
     <div class="tabs" id="catTabs"></div>
     <div class="tabs" id="subTabs"></div>
 
@@ -74,7 +80,6 @@
 
   <div class="grid" id="grid"></div>
 
-  <!-- Cargar más -->
   <div class="loadMoreWrap" id="loadMoreWrap" style="display:none">
     <button class="btn ghost" id="loadMoreBtn" type="button">Cargar más</button>
     <div class="note" id="loadMoreNote" style="margin-top:8px"></div>
@@ -82,11 +87,9 @@
 </main>
 
 <div class="toast" id="toast"></div>
-
-<!-- Botón ir arriba -->
 <button class="toTop" id="toTop" type="button" aria-label="Ir arriba">↑</button>
 
-<!-- ✅ MODAL: ORDENAR (solo móvil) -->
+<!-- MODAL: ORDENAR -->
 <div class="modal" id="sortModal" aria-hidden="true">
   <div class="sheet">
     <div class="head row" style="justify-content:space-between">
@@ -231,13 +234,11 @@
 
 <!-- Barra inferior móvil (PRO) -->
 <div class="mobileBar" id="mobileBar">
-  <button class="btn" id="bottomCartBtn">🛒 Carrito <span class="miniCount" id="bottomCartCount">0</span></button>
-
+  <button class="btn" id="bottomCartBtn">🛒 <span class="miniCount" id="bottomCartCount">0</span></button>
   <button class="btn ghost themeBtn" id="bottomThemeBtn" type="button" aria-label="Tema">
-    <span class="tIcon">🌙</span><span class="tText">Modo</span>
+    <span class="tIcon">🌙</span>
   </button>
-
-  <button class="btn acc" id="bottomSendBtn">💬 WhatsApp</button>
+  <button class="btn acc" id="bottomSendBtn">💬</button>
 </div>
 
 <!-- SCRIPTS -->
