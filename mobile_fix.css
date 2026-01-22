@@ -1,0 +1,89 @@
+/* mobile_fix.css */
+
+/* 1) En móvil: header más limpio y compacto */
+@media (max-width:720px){
+  /* reduce padding general del header */
+  header .wrap{padding:10px}
+  .row{gap:8px}
+
+  /* oculta elementos que “ensucian” arriba */
+  .headerBrand{display:none !important;}
+  #statusPill{display:none !important;}
+  #sortBoxDesktop{display:none !important;}
+  #viewBtn{display:none !important;}
+  #themeBtn{display:none !important;}
+
+  /* búsqueda ocupa todo */
+  .headerSearch{flex:1 1 100% !important; min-width:100% !important;}
+  #q{padding:12px 12px;border-radius:14px;font-size:14px}
+
+  /* segunda fila: solo 2 botones (ordenar + carrito) */
+  .headerTop{
+    display:grid !important;
+    grid-template-columns: 1fr 52px 1fr;
+    grid-template-areas:
+      "search search search"
+      "sort   .     cart";
+    align-items:center;
+  }
+  .headerSearch{grid-area:search}
+  #sortBtnMobile{
+    grid-area:sort;
+    height:44px;
+    width:52px;
+    border-radius:14px;
+    display:inline-flex !important;
+    align-items:center;
+    justify-content:center;
+    font-size:18px;
+  }
+  #cartBtn{
+    grid-area:cart;
+    height:44px;
+    border-radius:14px;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    padding:0 12px;
+  }
+  #cartBtn .cartMiniText{display:none;}
+
+  /* tabs + filtros más compactos */
+  .tabsUnified{margin-top:8px}
+  .tabs{margin-top:0}
+  .tab{padding:9px 12px;font-size:13px}
+  .filtersBar{margin-top:8px}
+  .chip{padding:8px 12px;font-size:12px}
+
+  /* reduce espacio vertical general */
+  .section{margin-top:10px}
+}
+
+/* 2) Barra inferior: NO debe tapar botones en modales */
+body.modalOn .mobileBar{
+  display:none !important;
+}
+
+/* 3) Si no hay modal, barra inferior más baja y bonita */
+@media (max-width:720px){
+  .mobileBar{
+    left:10px;
+    right:10px;
+    bottom:10px;
+    padding:10px;
+    gap:8px;
+    border-radius:18px;
+  }
+  .mobileBar .btn{
+    height:44px;
+    border-radius:14px;
+    font-weight:1000;
+  }
+  .toTop{bottom:110px}
+}
+
+/* 4) Asegura que el contenido no quede pegado abajo */
+@media (max-width:720px){
+  body{padding-bottom:96px}
+}
