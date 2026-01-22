@@ -150,6 +150,7 @@ window.SDC_CATALOG_UI = (() => {
     }
     const wrap = U.$("loadMoreWrap");
     if (wrap) wrap.style.display = "none";
+    window.SDC_RESULTS?.refresh?.();
   }
 
   function renderTabs(){
@@ -224,7 +225,7 @@ window.SDC_CATALOG_UI = (() => {
 
     list = sortList(list);
 
-    // ✅ paginación: clave por contexto
+    // paginación
     const pagerKey = [activeCat, activeSub, mode, sort, q].join("|");
     PAGER.ensureKey(pagerKey);
 
@@ -234,7 +235,7 @@ window.SDC_CATALOG_UI = (() => {
     el.innerHTML="";
 
     visibleList.forEach(p=>{
-      const inStock = Number(p.stock||0) > 0;
+      const inStock = Number(p.stock || 0) > 0;
 
       const card=document.createElement("div");
       card.className="card"+(!inStock?" outCard":"");
@@ -280,7 +281,7 @@ window.SDC_CATALOG_UI = (() => {
       el.appendChild(card);
     });
 
-    // ✅ botón “Cargar más”
+    // Cargar más
     const wrap = U.$("loadMoreWrap");
     const btn = U.$("loadMoreBtn");
     const note = U.$("loadMoreNote");
@@ -293,6 +294,9 @@ window.SDC_CATALOG_UI = (() => {
         renderGrid();
       };
     }
+
+    // ✅ refrescar pill de resultados
+    window.SDC_RESULTS?.refresh?.();
   }
 
   function bindSort(){
