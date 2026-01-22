@@ -41,10 +41,6 @@
 
     window.SDC_CART_BADGE?.init?.();
 
-    // ✅ nuevos: tabs del modal + swipe close
-    window.SDC_PRODUCT_TABS?.init?.();
-    window.SDC_SWIPE_CLOSE?.init?.();
-
     window.SDC_CATALOG_UI?.renderSkeletonGrid?.(10);
 
     document.getElementById("q")?.addEventListener("input", () => window.SDC_CATALOG.renderGrid());
@@ -60,6 +56,9 @@
 
     window.SDC_SMART?.applyMiniIfNeeded?.((window.SDC_STORE.getProducts()||[]).length);
     window.SDC_CART_BADGE?.apply?.();
+
+    // ✅ ON/OFF de features (fácil quitar)
+    window.SDC_BOOT_FEATURES?.();
   }
 
   init().catch(err => {
