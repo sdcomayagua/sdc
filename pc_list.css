@@ -1,0 +1,18 @@
+/* pc_list.css */
+@media (min-width: 900px){
+  html.pcListColsOn body[data-view="list"] .grid{
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap:12px !important;
+  }
+
+  html.pcListColsOn body[data-view="list"] .card{
+    align-items:center;
+  }
+
+  html.pcListColsOn body[data-view="list"] .imgWrap,
+  html.pcListColsOn body[data-view="list"] .img{
+    width:140px !important;
+    min-width:140px !important;
+    height:140px !important;
+  }
+}
