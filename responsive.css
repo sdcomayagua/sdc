@@ -1,87 +1,70 @@
-/* =========================
-   MOBILE POLISH (overrides)
-   ========================= */
-
 @media (max-width: 720px) {
   body { padding-bottom: 86px; }
-
   .wrap { padding: 10px; }
   header .wrap { padding-bottom: 8px; }
-
-  /* Header: todo en 2 filas limpias */
   .row { gap: 8px; }
 
   .brand { font-size: 13px; }
   .brandDot { width: 8px; height: 8px; }
 
-  /* Oculta el estado en móvil (se mira mejor) */
   .pill { display: none; }
 
   .search { flex: 1 1 100%; min-width: 100%; }
   .sortBox { flex: 1 1 100%; min-width: 100%; }
 
+  /* ✅ A+B: desktop select oculto en móvil */
+  #sortBoxDesktop { display: none; }
+
+  /* ✅ botón ordenar visible en móvil */
+  .sortMobileBtn { display: inline-flex; align-items:center; gap:8px; }
+
   /* Tema: solo icono en móvil */
   .themeBtn .tText { display: none; }
   .themeBtn { padding: 10px 12px; }
 
-  /* Carrito arriba: más compacto */
   #cartBtn { padding: 10px 12px; }
 
-  /* Tabs: más compactas */
   .tabs { margin-top: 8px; padding-bottom: 4px; }
   .tab { padding: 7px 10px; font-size: 12px; }
 
-  /* Filtros rápidos en 2 filas */
   .filtersBar { gap: 6px; }
   .chip { padding: 7px 10px; font-size: 12px; }
 
-  /* Secciones destacadas/ofertas: cards un poquito más pequeñas */
   .hCard { min-width: 150px; max-width: 150px; }
   .hCard img { height: 150px; }
 
-  /* Grid más compacto */
   .grid { gap: 10px; }
   .p { padding: 10px; }
   .name { font-size: 13px; }
   .price { font-size: 13px; }
 
-  /* Botón "Añadir" más compacto */
   .card .btn.acc { padding: 9px 10px; border-radius: 12px; }
 
-  /* Modales ocupan más ancho, menos padding */
   .sheet { border-radius: 16px 16px 0 0; }
   .sheet .head { padding: 10px; }
   .sheet .body { padding: 10px; }
 
-  /* Modal producto */
   .pmWrap { gap: 12px; }
   .pmName { font-size: 16px; }
   .pmPrice { font-size: 16px; }
   .pmThumb { width: 52px; height: 52px; }
   .pmActions { gap: 6px; }
-  .pmIconBtn { padding: 9px 10px; }
-  .pmSpecs { gap: 8px; }
 
-  /* Modal carrito: paneles más “aireados” */
   .panel { padding: 10px; border-radius: 14px; }
   .cartItem { padding: 9px; border-radius: 14px; }
   .cartItem img { width: 56px; height: 56px; }
 
-  /* Sticky WhatsApp dentro del carrito: que se vea pro */
   .cartSticky { border-radius: 14px; padding: 10px; }
   #sendWA { padding: 12px 12px; font-weight: 1000; }
 
-  /* Barra inferior */
   .mobileBar { padding: 10px; gap: 8px; }
   .mobileBar .btn { padding: 11px 10px; }
   .miniCount { padding: 2px 7px; }
 
-  /* ToTop arriba de la barra inferior */
   .toTop { bottom: 96px; }
 }
 
 @media (max-width: 440px) {
-  /* Aún más compacto en teléfonos pequeños */
   .wrap { padding: 9px; }
   .brand { font-size: 12px; }
 
@@ -92,8 +75,12 @@
 
   .pmThumb { width: 48px; height: 48px; }
 
-  /* Botones del modal producto mejor proporción */
   .pmQtyRow { flex-direction: column; align-items: stretch; }
   .pmQtyRow .pmQty { justify-content: center; }
   #pmAddBtn { width: 100%; }
+}
+
+/* Desktop: botón ordenar oculto */
+@media (min-width: 721px) {
+  .sortMobileBtn { display: none; }
 }
