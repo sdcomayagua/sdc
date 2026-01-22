@@ -10,22 +10,17 @@ window.SDC_CART = (() => {
 
   function openCart() {
     U.$("cartModal").classList.add("open");
-
     window.SDC_WATCH?.checkCartChanges?.();
-
     renderCart();
     computeSummary();
     window.SDC_UI_BADGES?.updateCheckoutBadge?.();
-
     window.SDC_CHECKOUT?.showStep?.(1);
     window.SDC_STEPPER?.render?.();
     window.SDC_GUARD?.syncNextDisabled?.();
     window.SDC_GUARD?.showErr?.("");
   }
 
-  function closeCart() {
-    U.$("cartModal").classList.remove("open");
-  }
+  function closeCart() { U.$("cartModal").classList.remove("open"); }
 
   function clearCart(){
     const ok = confirm("¿Vaciar todo el carrito?");
@@ -37,6 +32,21 @@ window.SDC_CART = (() => {
     computeSummary();
     U.toast("Carrito vacío");
     window.SDC_GUARD?.syncNextDisabled?.();
+  }
+
+  function ensureFab(){
+    const stepConfirm = document.getElementById("stepConfirm");
+    if (!stepConfirm) return;
+
+    if (document.getElementById("cartFab")) return;
+
+    const fab = document.createElement("div");
+    fab.id = "cartFab";
+    fab.className = "cartFab";
+    fab.innerHTML = `<button class="btn acc" id="fabSendBtn" type="button">Enviar por WhatsApp</button>`;
+    stepConfirm.appendChild(fab);
+
+    document.getElementById("fabSendBtn").onclick = () => window.SDC_WA?.send?.();
   }
 
   function renderCart() {
@@ -76,7 +86,6 @@ window.SDC_CART = (() => {
         </div>
       `;
 
-      // editar desde carrito
       row.querySelector("img").onclick = () => window.SDC_PRODUCT_MODAL?.open?.(p, { setHash:false });
       row.querySelector(".cartTitle").onclick = () => window.SDC_PRODUCT_MODAL?.open?.(p, { setHash:false });
 
@@ -107,6 +116,8 @@ window.SDC_CART = (() => {
 
       el.appendChild(row);
     }
+
+    ensureFab();
   }
 
   function computeSummary() {
@@ -155,9 +166,6 @@ window.SDC_CART = (() => {
     U.$("bottomCartBtn").onclick = openCart;
 
     U.$("clearCartBtn").onclick = clearCart;
-
-    // botones wizard (guard los maneja, pero por si acaso)
-    // el guard se instala en T5
   }
 
   return { openCart, closeCart, renderCart, computeSummary, bindEvents };
