@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Soluciones Digitales Comayagua | Catálogo</title>
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="tanda3.css">
 </head>
 <body>
 
@@ -30,6 +31,9 @@
 
       <button class="btn ghost sortMobileBtn" id="sortBtnMobile" type="button" aria-label="Ordenar">⚙️</button>
 
+      <!-- ✅ Modo catálogo (PC/móvil) -->
+      <button class="btn ghost viewBtn" id="viewBtn" type="button" aria-label="Modo catálogo">🧾 <span class="tText">Detalle</span></button>
+
       <button class="btn ghost themeBtn" id="themeBtn" type="button" aria-label="Tema">
         <span class="tIcon">🌙</span><span class="tText">Modo</span>
       </button>
@@ -45,7 +49,6 @@
       <button class="btn ghost tabsToggle" id="tabsToggleBtn" type="button">
         <span id="tabsToggleLabel">Categorías</span>
       </button>
-
       <div class="tabsLine">
         <div class="tabs" id="catTabs"></div>
         <div class="tabs" id="subTabs"></div>
@@ -107,6 +110,19 @@
   </div>
 </div>
 
+<!-- MODAL ZOOM -->
+<div class="modal" id="zoomModal" aria-hidden="true">
+  <div class="sheet zoomSheet">
+    <div class="head row" style="justify-content:space-between">
+      <div style="font-weight:1000">Zoom</div>
+      <button class="btn" id="zoomClose">Cerrar</button>
+    </div>
+    <div class="body">
+      <img id="zoomImg" class="zoomImg" alt="zoom">
+    </div>
+  </div>
+</div>
+
 <!-- MODAL PRODUCTO -->
 <div class="modal" id="productModal" aria-hidden="true">
   <div class="sheet">
@@ -148,8 +164,6 @@
           </div>
 
           <div class="note" id="pmNote" style="margin-top:10px"></div>
-
-          <!-- ✅ TANDA 1: Recomendaciones -->
           <div id="recoBox"></div>
         </div>
       </div>
@@ -157,32 +171,31 @@
   </div>
 </div>
 
-<!-- MODAL CARRITO (Wizard) -->
+<!-- MODAL CARRITO -->
 <div class="modal" id="cartModal" aria-hidden="true">
   <div class="sheet">
     <div class="head row" style="justify-content:space-between">
       <div style="font-weight:1000">Carrito</div>
       <div style="display:flex;gap:8px;align-items:center">
-        <!-- ✅ Vaciar carrito -->
         <button class="btn danger" id="clearCartBtn" type="button">Vaciar</button>
         <button class="btn" id="closeCart">Cerrar</button>
       </div>
     </div>
 
     <div class="body">
-      <!-- ✅ Wizard bar -->
       <div id="checkoutBar" class="checkoutBar"></div>
+
+      <div id="cartAlert" class="cartAlert"></div>
+      <div id="checkoutBadge" class="checkoutBadge"></div>
 
       <div class="cartLayout">
 
-        <!-- STEP 1 -->
         <div class="panel" id="stepProducts">
           <div class="panelTitle">Productos</div>
           <div id="cartItems"></div>
           <div class="note" id="cartEmptyNote" style="display:none">Tu carrito está vacío.</div>
         </div>
 
-        <!-- STEP 2 -->
         <div class="panel" id="stepDelivery" style="display:none">
           <div class="panelTitle">Entrega y pago</div>
 
@@ -218,7 +231,6 @@
           <div class="cartMini" id="cartMiniSummary" style="margin-top:10px"></div>
         </div>
 
-        <!-- STEP 3 -->
         <div class="panel" id="stepConfirm" style="display:none">
           <div class="panelTitle">Datos del cliente</div>
 
@@ -232,19 +244,23 @@
             <textarea id="addr" placeholder="Colonia, barrio, referencias..."></textarea>
           </div>
 
-          <!-- ✅ Nota extra -->
           <div style="margin-top:10px">
             <label class="mut">Instrucciones de entrega (opcional)</label>
-            <textarea id="clientNote" placeholder="Ej: llamar antes / dejar en portón / color casa..."></textarea>
+            <textarea id="clientNote" placeholder="Ej: llamar antes / dejar en portón..."></textarea>
           </div>
 
           <div class="hr"></div>
-          <button class="btn acc" id="sendWA" style="width:100%">Enviar pedido por WhatsApp</button>
+
+          <div class="two">
+            <button class="btn ghost" id="copyOrderBtn" type="button">Copiar pedido</button>
+            <button class="btn ghost" id="shareOrderBtn" type="button">Compartir</button>
+          </div>
+
+          <button class="btn acc" id="sendWA" style="width:100%;margin-top:10px">Enviar pedido por WhatsApp</button>
         </div>
 
       </div>
 
-      <!-- Navegación del wizard -->
       <div class="wizardNav">
         <button class="btn ghost" id="prevStepBtn" type="button">Atrás</button>
         <button class="btn acc" id="nextStepBtn" type="button">Continuar</button>
@@ -257,13 +273,14 @@
 <!-- Barra inferior móvil -->
 <div class="mobileBar" id="mobileBar">
   <button class="btn" id="bottomCartBtn">🛒 <span class="miniCount" id="bottomCartCount">0</span></button>
+  <button class="btn ghost viewBtn" id="bottomViewBtn" type="button" aria-label="Modo catálogo">🧾</button>
   <button class="btn ghost themeBtn" id="bottomThemeBtn" type="button" aria-label="Tema"><span class="tIcon">🌙</span></button>
   <button class="btn acc" id="bottomSendBtn">💬</button>
 </div>
 
-<!-- SCRIPTS -->
 <script src="config.js"></script>
 <script src="utils.js"></script>
+
 <script src="theme.js"></script>
 <script src="motion.js"></script>
 <script src="ux.js"></script>
@@ -279,10 +296,19 @@
 <script src="search_ui.js"></script>
 <script src="results_counter.js"></script>
 
-<!-- ✅ TANDA 1 -->
 <script src="checkout_steps.js"></script>
 <script src="customer_profile.js"></script>
 <script src="product_reco.js"></script>
+
+<script src="image_zoom.js"></script>
+<script src="cart_tools.js"></script>
+<script src="add_to_cart_fx.js"></script>
+<script src="ui_badges.js"></script>
+
+<script src="continue_state.js"></script>
+<script src="stepper_pro.js"></script>
+<script src="price_stock_watch.js"></script>
+<script src="view_mode.js"></script>
 
 <script src="product_modal_ui.js"></script>
 
