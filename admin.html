@@ -204,23 +204,20 @@
         </div>
       </div>
 
-      <!-- ✅ Editor de descripción grande -->
       <div style="margin-top:12px">
         <div class="mut">descripcion (editor)</div>
         <textarea id="p_descripcion" style="min-height:180px" placeholder="Escribe aquí la descripción..."></textarea>
-        <div class="note" style="margin-top:6px">
-          Tip: usa saltos de línea y emojis si quieres (se verán en el modal del producto).
-        </div>
       </div>
 
       <div style="display:flex;gap:10px;margin-top:12px;flex-wrap:wrap">
         <button class="btn acc" id="saveBtn" type="button">Guardar / Actualizar</button>
+        <button class="btn ghost" id="duplicateBtn" type="button">Duplicar</button>
         <button class="btn ghost" id="clearFormBtn" type="button">Limpiar</button>
         <button class="btn ghost" id="copyJsonBtn" type="button">Copiar JSON</button>
       </div>
 
       <div class="note" style="margin-top:10px">
-        Recomendación: si quieres “AGOTADO”, pon stock=0.
+        Duplicar crea una copia exacta con un nuevo ID.
       </div>
     </div>
   </div>
