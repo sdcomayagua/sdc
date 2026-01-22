@@ -3,6 +3,7 @@ window.SDC_CATALOG_UI = (() => {
   const U = window.SDC_UTILS;
   const S = window.SDC_STORE;
   const PM = window.SDC_PRODUCT_MODAL;
+  const PAGER = window.SDC_PAGER;
 
   const fallbackSvg = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(
     `<svg xmlns='http://www.w3.org/2000/svg' width='800' height='800'>
@@ -11,17 +12,11 @@ window.SDC_CATALOG_UI = (() => {
     </svg>`
   );
 
-  const PAGER = window.SDC_PAGER;
-
   function toBool(v){
     const s = String(v ?? "").trim().toLowerCase();
     return v === true || s === "1" || s === "true" || s === "si" || s === "sí" || s === "yes";
   }
-
-  function isOffer(p){
-    return toBool(p.oferta) || (Number(p.precio_anterior||0) > Number(p.precio||0));
-  }
-
+  function isOffer(p){ return toBool(p.oferta) || (Number(p.precio_anterior||0) > Number(p.precio||0)); }
   function filterQuick(list){
     const mode = window.SDC_FILTERS?.getMode?.() || "all";
     if (mode === "stock") return list.filter(p => Number(p.stock||0) > 0);
@@ -67,90 +62,16 @@ window.SDC_CATALOG_UI = (() => {
     return copy;
   }
 
-  function shouldShowTopSections(){
-    const mode = window.SDC_FILTERS?.getMode?.() || "all";
-    return (S.getActiveCat()==="Todas" && S.getActiveSub()==="Todas" && mode==="all");
-  }
-
-  function hideTopSections(){
-    const fs = U.$("featuredSection");
-    const os = U.$("offersSection");
-    if (fs) fs.style.display = "none";
-    if (os) os.style.display = "none";
-    const fr = U.$("featuredRow"); if (fr) fr.innerHTML = "";
-    const or = U.$("offersRow"); if (or) or.innerHTML = "";
-  }
-
-  function renderFeatured(){
-    if (!shouldShowTopSections()){ hideTopSections(); return; }
-
-    const all = S.getProducts();
-    const featured = all.filter(p => toBool(p.destacado));
-    const offers = all.filter(p => isOffer(p));
-    renderHRow("featuredSection","featuredRow", featured);
-    renderHRow("offersSection","offersRow", offers);
-  }
-
-  function renderHRow(sectionId,rowId,list){
-    const section = U.$(sectionId);
-    const row = U.$(rowId);
-    if(!section || !row) return;
-
-    const items = sortList(list).slice(0, 20);
-    if(!items.length){ section.style.display="none"; row.innerHTML=""; return; }
-
-    section.style.display="block";
-    row.innerHTML="";
-
-    items.forEach(p=>{
-      const inStock = Number(p.stock||0) > 0;
-      const card = document.createElement("div");
-      card.className = "hCard" + (!inStock ? " outCard" : "");
-      card.onclick = ()=>PM.open(p,{setHash:true});
-
-      const imgWrap = document.createElement("div");
-      imgWrap.className="imgWrap";
-
-      const img=document.createElement("img");
-      img.src=p.imagen||""; img.alt=p.nombre||""; img.loading="lazy";
-      img.onerror=()=>img.src=fallbackSvg;
-
-      imgWrap.appendChild(img);
-
-      const box=document.createElement("div");
-      box.className="hp";
-      box.innerHTML = `
-        <div class="hname">${U.esc(p.nombre||"")}</div>
-        <div class="mut">${inStock ? ("Stock: "+Number(p.stock||0)) : "AGOTADO"}</div>
-        <div class="hprice">${U.money(p.precio, CFG.CURRENCY)}</div>
-      `;
-
-      card.appendChild(imgWrap);
-      card.appendChild(box);
-      row.appendChild(card);
-    });
-  }
-
   function renderSkeletonGrid(count=10){
-    hideTopSections();
     const el=U.$("grid");
     if(!el) return;
     el.innerHTML="";
     for(let i=0;i<count;i++){
       const sk=document.createElement("div");
       sk.className="skCard skShimmer";
-      sk.innerHTML=`
-        <div class="skImg"></div>
-        <div class="skBody">
-          <div class="skLine lg"></div>
-          <div class="skLine md"></div>
-          <div class="skLine sm"></div>
-        </div>`;
+      sk.innerHTML=`<div class="skImg"></div><div class="skBody"><div class="skLine lg"></div><div class="skLine md"></div><div class="skLine sm"></div></div>`;
       el.appendChild(sk);
     }
-    const wrap = U.$("loadMoreWrap");
-    if (wrap) wrap.style.display = "none";
-    window.SDC_RESULTS?.refresh?.();
   }
 
   function renderTabs(){
@@ -162,11 +83,7 @@ window.SDC_CATALOG_UI = (() => {
       const d=document.createElement("div");
       d.className="tab"+(c===active?" active":"");
       d.textContent=c;
-      d.onclick=()=>{
-        S.setActiveCat(c);
-        S.setActiveSub("Todas");
-        renderTabs(); renderSubTabs(); renderGrid();
-      };
+      d.onclick=()=>{ S.setActiveCat(c); S.setActiveSub("Todas"); renderTabs(); renderSubTabs(); renderGrid(); };
       el.appendChild(d);
     });
   }
@@ -192,17 +109,12 @@ window.SDC_CATALOG_UI = (() => {
       const d=document.createElement("div");
       d.className="tab"+(s===activeSub?" active":"");
       d.textContent=s;
-      d.onclick=()=>{
-        S.setActiveSub(s);
-        renderSubTabs(); renderGrid();
-      };
+      d.onclick=()=>{ S.setActiveSub(s); renderSubTabs(); renderGrid(); };
       el.appendChild(d);
     });
   }
 
   function renderGrid(){
-    renderFeatured();
-
     const q=(U.$("q").value||"").trim().toLowerCase();
     const activeCat=S.getActiveCat();
     const activeSub=S.getActiveSub();
@@ -225,17 +137,17 @@ window.SDC_CATALOG_UI = (() => {
 
     list = sortList(list);
 
-    // paginación
     const pagerKey = [activeCat, activeSub, mode, sort, q].join("|");
     PAGER.ensureKey(pagerKey);
-
     const visibleList = PAGER.slice(list);
 
     const el=U.$("grid");
     el.innerHTML="";
 
     visibleList.forEach(p=>{
-      const inStock = Number(p.stock || 0) > 0;
+      const stock = Number(p.stock||0);
+      const inStock = stock > 0;
+      const low = inStock && stock <= 3;
 
       const card=document.createElement("div");
       card.className="card"+(!inStock?" outCard":"");
@@ -253,6 +165,13 @@ window.SDC_CATALOG_UI = (() => {
 
       imgWrap.appendChild(img);
 
+      if (low) {
+        const tag = document.createElement("div");
+        tag.className = "lowTag";
+        tag.textContent = `POCO STOCK (${stock})`;
+        imgWrap.appendChild(tag);
+      }
+
       const box=document.createElement("div");
       box.className="p";
       box.innerHTML=`
@@ -262,8 +181,8 @@ window.SDC_CATALOG_UI = (() => {
       `;
 
       const badge=document.createElement("div");
-      badge.className="badge "+(inStock?"off":"out");
-      badge.textContent=inStock?`Stock: ${Number(p.stock)}`:"AGOTADO";
+      badge.className="badge "+(inStock ? (low ? "low":"off") : "out");
+      badge.textContent=inStock ? (low ? `POCO STOCK (${stock})` : `Stock: ${stock}`) : "AGOTADO";
 
       const btn=document.createElement("button");
       btn.className="btn acc";
@@ -271,7 +190,15 @@ window.SDC_CATALOG_UI = (() => {
       btn.style.marginTop="10px";
       btn.textContent=inStock?"Añadir al carrito":"No disponible";
       btn.disabled=!inStock;
-      btn.onclick=(ev)=>{ev.stopPropagation(); S.addToCart(p,1);};
+      btn.onclick=(ev)=>{
+        ev.stopPropagation();
+        const ok = S.addToCart(p,1);
+        if (ok) {
+          window.SDC_FX?.flyFrom?.(img);
+          window.SDC_FX?.vibrate?.(25);
+          window.SDC_CART?.renderCart?.();
+        }
+      };
 
       box.appendChild(badge);
       box.appendChild(btn);
@@ -281,7 +208,7 @@ window.SDC_CATALOG_UI = (() => {
       el.appendChild(card);
     });
 
-    // Cargar más
+    // cargar más
     const wrap = U.$("loadMoreWrap");
     const btn = U.$("loadMoreBtn");
     const note = U.$("loadMoreNote");
@@ -289,13 +216,9 @@ window.SDC_CATALOG_UI = (() => {
       const can = PAGER.canLoadMore(list.length);
       wrap.style.display = can ? "block" : "none";
       note.textContent = can ? `Mostrando ${visibleList.length} de ${list.length}` : "";
-      btn.onclick = () => {
-        PAGER.loadMore();
-        renderGrid();
-      };
+      btn.onclick = () => { PAGER.loadMore(); renderGrid(); };
     }
 
-    // ✅ refrescar pill de resultados
     window.SDC_RESULTS?.refresh?.();
   }
 
