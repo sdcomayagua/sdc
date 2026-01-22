@@ -35,6 +35,7 @@ header{
 }
 .wrap{max-width:1200px;margin:0 auto;padding:14px}
 .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+
 .brand{font-weight:1000;letter-spacing:.2px;display:flex;align-items:center;gap:10px}
 .brandDot{width:10px;height:10px;border-radius:999px;background:var(--acc);box-shadow:0 0 0 4px rgba(37,211,102,.15)}
 .pill{padding:8px 10px;border:1px solid var(--line);border-radius:999px;color:var(--mut);font-size:12px}
@@ -115,7 +116,7 @@ textarea{min-height:80px;resize:vertical}
   border-color:color-mix(in oklab, var(--line) 70%, #2a3a52);
 }
 
-/* ===== Tabs unificadas (móvil) ===== */
+/* ===== Tabs unificadas ===== */
 .tabsUnified{display:flex;gap:10px;align-items:center;margin-top:10px}
 .tabsLine{flex:1;min-width:0}
 .tabsToggle{white-space:nowrap;padding:10px 12px;border-radius:14px}
@@ -269,82 +270,38 @@ body.modalOn{overflow:hidden}
 .pmQtyRow{display:flex;gap:10px;align-items:center;margin-top:14px}
 .pmQty{display:flex;gap:8px;align-items:center}
 .pmQtyNum{min-width:28px;text-align:center;font-weight:1000}
-
-/* premium modal pieces */
 .pmChips{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 2px 0}
 .pmActions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
 .pmIconBtn{display:flex;align-items:center;gap:8px}
 .pmI{font-size:14px}
 .pmL{font-weight:1000;font-size:12px;color:var(--txt)}
-
-.pmSpecs{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:10px;
-  margin-top:12px;
-}
+.pmSpecs{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
 @media (max-width:720px){.pmSpecs{grid-template-columns:1fr}}
-.specCard{
-  background:var(--card2);
-  border:1px solid var(--line);
-  border-radius:14px;
-  padding:10px;
-}
+.specCard{background:var(--card2);border:1px solid var(--line);border-radius:14px;padding:10px}
 .specK{font-size:12px;color:var(--mut);font-weight:900}
 .specV{margin-top:6px;font-weight:1000;font-size:13px;color:var(--txt)}
 
 /* ===== Cart modal ===== */
 .cartLayout{display:grid;grid-template-columns:1.1fr .9fr;gap:12px;align-items:start}
 @media (max-width:900px){.cartLayout{grid-template-columns:1fr}}
-.panel{
-  background:var(--card2);
-  border:1px solid var(--line);
-  border-radius:16px;
-  padding:12px;
-}
+.panel{background:var(--card2);border:1px solid var(--line);border-radius:16px;padding:12px}
 .panelTitle{font-weight:1000;margin:0 0 10px 0;font-size:13px}
 .hr{height:1px;background:var(--line);margin:12px 0}
 .note{font-size:12px;color:var(--mut);line-height:1.35}
 .two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 @media (max-width:720px){.two{grid-template-columns:1fr}}
-
-.cartItem{
-  display:flex;gap:10px;border:1px solid var(--line);border-radius:16px;
-  padding:10px;margin-bottom:10px;align-items:center;
-  background:color-mix(in oklab, var(--card) 70%, transparent);
-}
+.cartItem{display:flex;gap:10px;border:1px solid var(--line);border-radius:16px;padding:10px;margin-bottom:10px;align-items:center;background:color-mix(in oklab, var(--card) 70%, transparent)}
 .cartItem img{width:62px;height:62px;border-radius:12px;object-fit:cover;background:#0a0f17}
 .qty{display:flex;gap:6px;align-items:center}
 .mini{padding:6px 10px;border-radius:10px;border:1px solid var(--line);background:var(--card2);color:var(--txt);cursor:pointer}
 .sum{display:flex;justify-content:space-between;margin:8px 0;color:var(--mut)}
 .total{font-size:18px;font-weight:1000;color:var(--txt)}
-
-.cartSticky{
-  position:sticky;bottom:0;
-  background:color-mix(in oklab, var(--card) 92%, transparent);
-  border-top:1px solid var(--line);
-  padding:10px;border-radius:14px;margin-top:12px;
-}
-@media (min-width:901px){
-  .cartSticky{position:static;background:transparent;border:0;padding:0;border-radius:0}
-}
-
-/* mini resumen carrito */
-.cartMini{
-  font-size:12px;
-  color:var(--mut);
-  border:1px solid var(--line);
-  background:color-mix(in oklab, var(--card2) 92%, transparent);
-  border-radius:12px;
-  padding:10px;
-}
+.cartSticky{position:sticky;bottom:0;background:color-mix(in oklab, var(--card) 92%, transparent);border-top:1px solid var(--line);padding:10px;border-radius:14px;margin-top:12px}
+@media (min-width:901px){.cartSticky{position:static;background:transparent;border:0;padding:0;border-radius:0}}
+.cartMini{font-size:12px;color:var(--mut);border:1px solid var(--line);background:color-mix(in oklab, var(--card2) 92%, transparent);border-radius:12px;padding:10px}
 
 /* ===== Toast ===== */
-.toast{
-  position:fixed;bottom:86px;left:50%;transform:translateX(-50%);
-  background:var(--card2);border:1px solid var(--line);color:var(--txt);
-  padding:10px 12px;border-radius:12px;display:none;z-index:120
-}
+.toast{position:fixed;bottom:86px;left:50%;transform:translateX(-50%);background:var(--card2);border:1px solid var(--line);color:var(--txt);padding:10px 12px;border-radius:12px;display:none;z-index:120}
 .toast.show{display:block}
 
 /* ===== Skeleton ===== */
@@ -360,19 +317,7 @@ html[data-theme="light"] .skShimmer::after{background:linear-gradient(90deg,tran
 @keyframes sh{to{transform:translateX(120%)}}
 
 /* ===== ToTop ===== */
-.toTop{
-  position:fixed;right:14px;bottom:84px;z-index:140;
-  width:44px;height:44px;border-radius:14px;
-  border:1px solid var(--line);
-  background:color-mix(in oklab, var(--card) 92%, transparent);
-  color:var(--txt);
-  box-shadow:var(--shadow);
-  cursor:pointer;
-  opacity:0;
-  transform:translateY(8px);
-  pointer-events:none;
-  transition:opacity .18s ease, transform .18s ease;
-}
+.toTop{position:fixed;right:14px;bottom:84px;z-index:140;width:44px;height:44px;border-radius:14px;border:1px solid var(--line);background:color-mix(in oklab, var(--card) 92%, transparent);color:var(--txt);box-shadow:var(--shadow);cursor:pointer;opacity:0;transform:translateY(8px);pointer-events:none;transition:opacity .18s ease, transform .18s ease}
 .toTop.show{opacity:1;transform:translateY(0);pointer-events:auto}
 
 /* ===== AGOTADO gris + cinta ===== */
@@ -380,20 +325,7 @@ html[data-theme="light"] .skShimmer::after{background:linear-gradient(90deg,tran
 .card.outCard:hover{transform:none;box-shadow:none}
 .imgWrap{position:relative}
 .card.outCard .img{opacity:.55;filter:grayscale(1)}
-.card.outCard .imgWrap::after{
-  content:"AGOTADO";
-  position:absolute;
-  top:16px;
-  left:-58px;
-  padding:8px 80px;
-  font-weight:1000;
-  letter-spacing:.14em;
-  text-transform:uppercase;
-  color:#fff;
-  background:rgba(0,0,0,.75);
-  transform:rotate(-35deg);
-  border:1px solid rgba(255,255,255,.18);
-}
+.card.outCard .imgWrap::after{content:"AGOTADO";position:absolute;top:16px;left:-58px;padding:8px 80px;font-weight:1000;letter-spacing:.14em;text-transform:uppercase;color:#fff;background:rgba(0,0,0,.75);transform:rotate(-35deg);border:1px solid rgba(255,255,255,.18)}
 html[data-theme="light"] .card.outCard .imgWrap::after{background:rgba(20,25,35,.72)}
 
 /* ===== Cargar más ===== */
@@ -411,26 +343,10 @@ header.compact .filtersBar{margin-top:8px}
   .sortBox{min-width:160px}
 }
 
-/* ===== Sort modal ✓ ===== */
-.sortItem{
-  width:100%;
-  text-align:left;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  padding:12px 12px;
-  border-radius:12px;
-  margin-bottom:8px;
-}
-.sortItem.active{
-  border-color:color-mix(in oklab, var(--line) 70%, #2a3a52);
-  background:color-mix(in oklab, var(--card) 70%, transparent);
-}
-.sortItem.active::after{
-  content:"✓";
-  font-weight:1000;
-  color:var(--acc);
-}
+/* Sort modal ✓ */
+.sortItem{width:100%;text-align:left;display:flex;align-items:center;justify-content:space-between;padding:12px 12px;border-radius:12px;margin-bottom:8px}
+.sortItem.active{border-color:color-mix(in oklab, var(--line) 70%, #2a3a52);background:color-mix(in oklab, var(--card) 70%, transparent)}
+.sortItem.active::after{content:"✓";font-weight:1000;color:var(--acc)}
 
 /* ===== MobileBar PRO ===== */
 .mobileBar{
@@ -474,10 +390,43 @@ header.compact .filtersBar{margin-top:8px}
 }
 .mobileBar .btn.ghost{background:transparent;border:1px solid var(--line)}
 .mobileBar .btn.acc{box-shadow:0 8px 20px rgba(37,211,102,.18)}
+@supports (padding: env(safe-area-inset-bottom)){ .mobileBar{bottom:calc(10px + env(safe-area-inset-bottom))} }
+@media (max-width:720px){ .toTop{bottom:calc(10px + 44px + 22px)} }
 
-@supports (padding: env(safe-area-inset-bottom)){
-  .mobileBar{bottom:calc(10px + env(safe-area-inset-bottom))}
-}
+/* ===== Mobile 1 fila + chips grandes (integrado) ===== */
 @media (max-width:720px){
-  .toTop{bottom:calc(10px + 44px + 22px)}
+  body{padding-bottom:96px}
+  .wrap{padding:10px}
+  header .wrap{padding-bottom:8px}
+  .row{gap:8px}
+
+  .headerBrand{display:none}
+  .pill{display:none}
+
+  #sortBoxDesktop{display:none}
+
+  .headerSearch{flex:1 1 auto;min-width:0}
+  #q{padding:11px 12px}
+
+  #themeBtn{display:none}
+
+  .sortMobileBtn,.cartMiniBtn{
+    height:42px;
+    padding:0 12px;
+    border-radius:14px;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:6px;
+    white-space:nowrap;
+  }
+  .cartMiniBtn .cartMiniText{display:none}
+
+  .tabsUnified{margin-top:8px}
+  .tabs{margin-top:0}
+  .tab{padding:10px 12px;font-size:13px;border-radius:999px}
+  .tabsToggle{padding:10px 12px}
+
+  .filtersBar{gap:6px}
+  .chip{padding:7px 10px;font-size:12px}
 }
