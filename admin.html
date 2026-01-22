@@ -11,9 +11,9 @@
 <header>
   <div class="wrap">
     <div class="row" style="justify-content:space-between">
-      <div class="brand">Admin - Subir Imagen (SDC)</div>
+      <div class="brand"><span class="brandDot"></span>Admin SDC</div>
       <div class="row" style="gap:8px">
-        <button class="btn" id="logoutBtn" style="display:none">Cerrar sesión</button>
+        <button class="btn ghost" id="logoutBtn" style="display:none" type="button">Cerrar sesión</button>
         <a class="btn" href="index.html">Volver</a>
       </div>
     </div>
@@ -21,31 +21,182 @@
 </header>
 
 <main class="wrap">
-  <div class="card">
-    <div class="p" id="pinBox">
-      <div class="h">PIN</div>
-      <div class="note">Ingresa tu PIN para abrir el panel.</div>
-      <div class="two" style="margin-top:10px">
-        <div><input id="pinInput" type="password" placeholder="PIN" /></div>
-        <div><button class="btn acc" id="pinBtn" style="width:100%">Entrar</button></div>
+
+  <!-- PIN -->
+  <div class="panel" id="pinBox">
+    <div class="panelTitle">Acceso</div>
+    <div class="note">Ingresa tu PIN para abrir el panel. (Bloquea tras 3 intentos fallidos)</div>
+    <div class="two" style="margin-top:10px">
+      <div><input id="pinInput" type="password" placeholder="PIN" /></div>
+      <div><button class="btn acc" id="pinBtn" type="button" style="width:100%">Entrar</button></div>
+    </div>
+  </div>
+
+  <!-- ADMIN -->
+  <div id="adminBox" style="display:none">
+
+    <!-- Subir imagen -->
+    <div class="panel">
+      <div class="panelTitle">Subir imagen a Drive</div>
+      <div class="note">La imagen se sube a Drive y te devuelve links para pegar en <b>imagen</b> o <b>galeria_1..8</b>.</div>
+
+      <div style="margin-top:10px">
+        <input type="file" id="fileUp" accept="image/*" />
+      </div>
+
+      <button class="btn warn" id="uploadBtn" type="button" style="margin-top:10px">Subir imagen</button>
+
+      <div class="hr"></div>
+
+      <div class="two">
+        <div>
+          <div class="mut">Link directo (descarga)</div>
+          <input id="outUrl" readonly />
+        </div>
+        <div>
+          <div class="mut">Link de Drive (vista)</div>
+          <input id="outView" readonly />
+        </div>
       </div>
     </div>
 
-    <div class="p" id="adminBox" style="display:none">
-      <div class="h">Subir imagen a Drive</div>
-      <div class="note">El PIN se usa como clave invisible para subir.</div>
+    <!-- Buscar/Editar -->
+    <div class="panel" style="margin-top:12px">
+      <div class="panelTitle">Editar producto por ID</div>
+      <div class="two">
+        <div>
+          <div class="mut">ID</div>
+          <input id="findId" placeholder="Ej: SDC-001" />
+        </div>
+        <div style="display:flex;gap:10px;align-items:flex-end">
+          <button class="btn ghost" id="loadBtn" type="button" style="flex:1">Cargar</button>
+          <button class="btn danger" id="deleteBtn" type="button" style="flex:1">Eliminar</button>
+        </div>
+      </div>
+      <div class="note" style="margin-top:8px">Cargar llena el formulario. Eliminar borra la fila del sheet (por ID).</div>
+    </div>
 
-      <div style="margin-top:10px"><input type="file" id="fileUp" accept="image/*" /></div>
-      <button class="btn warn" id="uploadBtn" style="margin-top:10px">Subir imagen</button>
+    <!-- Form producto -->
+    <div class="panel" style="margin-top:12px">
+      <div class="panelTitle">Crear / Actualizar producto</div>
+      <div class="note">Campos iguales a tu hoja <b>productos</b>. Puedes dejar vacíos los que no uses.</div>
 
-      <div class="hr"></div>
-      <div class="h">Resultado</div>
+      <div class="two" style="margin-top:10px">
+        <div><div class="mut">id *</div><input id="p_id" placeholder="Ej: SDC-001" /></div>
+        <div><div class="mut">nombre *</div><input id="p_nombre" placeholder="Nombre del producto" /></div>
+      </div>
 
-      <div class="note">Link directo (descarga)</div>
-      <input id="outUrl" readonly />
+      <div class="two" style="margin-top:10px">
+        <div><div class="mut">precio</div><input id="p_precio" inputmode="decimal" placeholder="Ej: 599" /></div>
+        <div><div class="mut">precio_anterior</div><input id="p_precio_anterior" inputmode="decimal" placeholder="Ej: 699" /></div>
+      </div>
 
-      <div class="note" style="margin-top:10px">Link de Drive (vista)</div>
-      <input id="outView" readonly />
+      <div class="two" style="margin-top:10px">
+        <div><div class="mut">stock</div><input id="p_stock" inputmode="numeric" placeholder="Ej: 10" /></div>
+        <div><div class="mut">orden</div><input id="p_orden" inputmode="numeric" placeholder="Ej: 1" /></div>
+      </div>
+
+      <div class="two" style="margin-top:10px">
+        <div><div class="mut">categoria *</div><input id="p_categoria" placeholder="Ej: Accesorios" /></div>
+        <div><div class="mut">subcategoria</div><input id="p_subcategoria" placeholder="Ej: Cargadores" /></div>
+      </div>
+
+      <div class="two" style="margin-top:10px">
+        <div><div class="mut">imagen</div><input id="p_imagen" placeholder="URL imagen principal" /></div>
+        <div><div class="mut">galeria (links separados por coma)</div><input id="p_galeria" placeholder="url1, url2, url3" /></div>
+      </div>
+
+      <div class="two" style="margin-top:10px">
+        <div><div class="mut">galeria_1</div><input id="p_galeria_1" placeholder="URL" /></div>
+        <div><div class="mut">galeria_2</div><input id="p_galeria_2" placeholder="URL" /></div>
+      </div>
+
+      <div class="two" style="margin-top:10px">
+        <div><div class="mut">galeria_3</div><input id="p_galeria_3" placeholder="URL" /></div>
+        <div><div class="mut">galeria_4</div><input id="p_galeria_4" placeholder="URL" /></div>
+      </div>
+
+      <div class="two" style="margin-top:10px">
+        <div><div class="mut">galeria_5</div><input id="p_galeria_5" placeholder="URL" /></div>
+        <div><div class="mut">galeria_6</div><input id="p_galeria_6" placeholder="URL" /></div>
+      </div>
+
+      <div class="two" style="margin-top:10px">
+        <div><div class="mut">galeria_7</div><input id="p_galeria_7" placeholder="URL" /></div>
+        <div><div class="mut">galeria_8</div><input id="p_galeria_8" placeholder="URL" /></div>
+      </div>
+
+      <div class="two" style="margin-top:10px">
+        <div><div class="mut">video_url</div><input id="p_video_url" placeholder="Link compartir" /></div>
+        <div><div class="mut">video</div><input id="p_video" placeholder="Link alterno" /></div>
+      </div>
+
+      <div class="two" style="margin-top:10px">
+        <div><div class="mut">video_tiktok</div><input id="p_video_tiktok" placeholder="Link TikTok" /></div>
+        <div><div class="mut">video_youtube</div><input id="p_video_youtube" placeholder="Link YouTube" /></div>
+      </div>
+
+      <div class="two" style="margin-top:10px">
+        <div><div class="mut">video_facebook</div><input id="p_video_facebook" placeholder="Link Facebook" /></div>
+        <div><div class="mut">marca</div><input id="p_marca" placeholder="Marca" /></div>
+      </div>
+
+      <div class="two" style="margin-top:10px">
+        <div><div class="mut">modelo</div><input id="p_modelo" placeholder="Modelo" /></div>
+        <div><div class="mut">compatibilidad</div><input id="p_compatibilidad" placeholder="Compatibilidad" /></div>
+      </div>
+
+      <div class="two" style="margin-top:10px">
+        <div><div class="mut">garantia</div><input id="p_garantia" placeholder="Garantía" /></div>
+        <div><div class="mut">condicion</div><input id="p_condicion" placeholder="Condición" /></div>
+      </div>
+
+      <div class="two" style="margin-top:10px">
+        <div>
+          <div class="mut">destacado</div>
+          <select id="p_destacado">
+            <option value="">(vacío)</option>
+            <option value="true">true</option>
+            <option value="false">false</option>
+            <option value="1">1</option>
+            <option value="0">0</option>
+            <option value="si">si</option>
+            <option value="no">no</option>
+          </select>
+        </div>
+        <div>
+          <div class="mut">oferta</div>
+          <select id="p_oferta">
+            <option value="">(vacío)</option>
+            <option value="true">true</option>
+            <option value="false">false</option>
+            <option value="1">1</option>
+            <option value="0">0</option>
+            <option value="si">si</option>
+            <option value="no">no</option>
+          </select>
+        </div>
+      </div>
+
+      <div style="margin-top:10px">
+        <div class="mut">tags</div>
+        <input id="p_tags" placeholder="ej: gamer, android, iphone" />
+      </div>
+
+      <div style="margin-top:10px">
+        <div class="mut">descripcion</div>
+        <textarea id="p_descripcion" placeholder="Descripción del producto..."></textarea>
+      </div>
+
+      <div style="display:flex;gap:10px;margin-top:12px;flex-wrap:wrap">
+        <button class="btn acc" id="saveBtn" type="button">Guardar / Actualizar</button>
+        <button class="btn ghost" id="clearFormBtn" type="button">Limpiar formulario</button>
+        <button class="btn ghost" id="copyJsonBtn" type="button">Copiar JSON</button>
+      </div>
+
+      <div class="note" style="margin-top:10px">
+        Tip: Si cambias imagen/galería, primero súbela arriba y pega los links.
+      </div>
     </div>
   </div>
 
