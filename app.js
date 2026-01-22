@@ -37,11 +37,11 @@
     window.SDC_CONTINUE_PLUS?.init?.();
     window.SDC_GUARD?.init?.();
 
-    // ✅ T6
-    window.SDC_BRAND?.init?.();        // filtro por marca/compatibilidad
-    window.SDC_ORDERS_PRO?.render?.(); // historial pro
-    window.SDC_THANKS_PLUS?.init?.();  // gracias pro + limpiar opcional
-    window.SDC_LIVE?.start?.(3);       // refresco cada 3 min
+    // ✅ FIX móvil (oculta barra inferior en modales)
+    window.SDC_MOBILE_FIX?.init?.();
+
+    // Live (si lo estás usando)
+    window.SDC_LIVE?.start?.(3);
 
     window.SDC_CATALOG_UI?.renderSkeletonGrid?.(10);
 
