@@ -64,7 +64,12 @@ html[data-theme="light"] .btn{
 .btn:focus{outline:none;box-shadow:var(--focus)}
 .btn.acc{background:var(--acc);color:#05210f;font-weight:1000}
 .btn.ghost{background:transparent;border:1px solid var(--line);color:var(--mut)}
-.btn.danger{background:rgba(255,107,107,.12);border:1px solid rgba(255,107,107,.35);color:color-mix(in oklab, var(--danger) 70%, var(--txt))}
+.btn.danger{
+  background:rgba(255,107,107,.12);
+  border:1px solid rgba(255,107,107,.35);
+  color:color-mix(in oklab, var(--danger) 70%, var(--txt));
+  font-weight:1000;
+}
 .btn.warn{background:var(--warn);color:#2b1a00;font-weight:1000}
 
 /* ===== INPUTS ===== */
@@ -82,7 +87,7 @@ input,select,textarea{
 input:focus,select:focus,textarea:focus{box-shadow:var(--focus)}
 textarea{min-height:90px;resize:vertical}
 
-/* search clear button created by search_ui.js */
+/* search clear */
 .searchClear{
   position:absolute;
   right:8px;top:50%;
@@ -109,6 +114,17 @@ textarea{min-height:90px;resize:vertical}
 .chip{padding:8px 10px;border-radius:999px;border:1px solid var(--line);background:transparent;color:var(--mut);cursor:pointer;font-weight:900;font-size:12px}
 .chip.active{background:color-mix(in oklab, var(--card) 70%, transparent);color:var(--txt)}
 
+/* ===== SECTIONS ===== */
+.section{margin-top:14px}
+.sectionHead{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin:10px 0}
+.sectionTitle{font-weight:1000;font-size:14px}
+.hScroll{display:flex;gap:10px;overflow:auto;padding:6px 2px 10px 2px}
+.hCard{min-width:150px;max-width:150px;background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden;cursor:pointer;box-shadow:var(--shadow)}
+.hCard img{width:100%;height:150px;object-fit:cover;background:color-mix(in oklab, var(--card2) 60%, #0a0f17)}
+.hCard .hp{padding:10px}
+.hCard .hname{font-weight:1000;font-size:13px;line-height:1.15}
+.hCard .hprice{font-weight:1000;font-size:13px;margin-top:6px}
+
 /* ===== GRID ===== */
 .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:12px}
 @media (min-width:721px){.grid{grid-template-columns:repeat(4,1fr);gap:12px}}
@@ -119,99 +135,107 @@ textarea{min-height:90px;resize:vertical}
 .name{font-weight:1000;line-height:1.1;font-size:13px}
 .mut{color:var(--mut);font-size:12px}
 .price{font-weight:1000;margin-top:6px;font-size:13px}
+
 .badge{display:inline-block;font-size:11px;padding:4px 8px;border-radius:999px;border:1px solid var(--line);color:var(--mut);margin-top:8px}
 .badge.off{border-color:#2c3a28;color:color-mix(in oklab, var(--acc) 70%, var(--txt))}
 .badge.out{border-color:#3a2a2a;color:color-mix(in oklab, var(--danger) 70%, var(--txt))}
 .badge.low{border-color:rgba(255,204,102,.6);color:var(--warn);font-weight:1000}
 
+/* Poco stock pill en card */
+.lowTag{
+  position:absolute;
+  top:10px;left:10px;
+  padding:6px 10px;
+  border-radius:999px;
+  font-weight:1000;
+  font-size:11px;
+  background:rgba(255,204,102,.20);
+  border:1px solid rgba(255,204,102,.45);
+  color:var(--warn);
+}
+
 /* ===== MODALS ===== */
-.modal{position:fixed;inset:0;background:rgba(0,0,0,.58);display:flex;align-items:flex-end;justify-content:center;z-index:100;opacity:0;visibility:hidden;pointer-events:none;transition:opacity .18s ease, visibility .18s ease}
+.modal{
+  position:fixed;inset:0;
+  background:rgba(0,0,0,.58);
+  display:flex;align-items:flex-end;justify-content:center;
+  z-index:100;
+  opacity:0;visibility:hidden;pointer-events:none;
+  transition:opacity .18s ease, visibility .18s ease;
+}
 .modal.open{opacity:1;visibility:visible;pointer-events:auto}
-.sheet{width:min(980px,100%);max-height:92vh;overflow:auto;background:var(--card);border:1px solid var(--line);border-radius:18px 18px 0 0;box-shadow:var(--shadow)}
-.sheet .head{position:sticky;top:0;background:color-mix(in oklab, var(--card) 92%, transparent);border-bottom:1px solid var(--line);padding:12px}
+
+.sheet{
+  width:min(980px,100%);
+  max-height:92vh;
+  overflow:auto;
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:18px 18px 0 0;
+  box-shadow:var(--shadow);
+}
+.sheet .head{
+  position:sticky;top:0;
+  background:color-mix(in oklab, var(--card) 92%, transparent);
+  border-bottom:1px solid var(--line);
+  padding:12px;
+  z-index:5;
+}
 .sheet .body{padding:12px}
 
-/* ===== MOBILE BAR ===== */
-.mobileBar{
-  display:flex;
-  position:fixed;
-  left:10px;right:10px;bottom:10px;
-  z-index:130;
-  gap:10px;
-  padding:10px;
-  border-radius:18px;
+/* ===== ZOOM ===== */
+.zoomSheet{width:min(980px,100%);}
+.zoomImg{
+  width:100%;
+  max-height:70vh;
+  object-fit:contain;
+  border-radius:16px;
   border:1px solid var(--line);
-  background:color-mix(in oklab, var(--card) 92%, transparent);
-  box-shadow:var(--shadow);
-  backdrop-filter:blur(10px);
-}
-.mobileBar .btn{
-  flex:1;
-  height:44px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap:8px;
-  padding:0 12px;
-  border-radius:14px;
-  font-weight:1000;
-}
-.mobileBar .miniCount{
-  padding:2px 8px;
-  border-radius:999px;
-  border:1px solid var(--line);
-  background:color-mix(in oklab, var(--card2) 85%, transparent);
-  color:var(--mut);
-  font-size:12px;
-  font-weight:1000;
+  background:#000;
 }
 
-/* ===== TO TOP ===== */
-.toTop{position:fixed;right:14px;bottom:110px;z-index:140;width:44px;height:44px;border-radius:14px;border:1px solid var(--line);background:color-mix(in oklab, var(--card) 92%, transparent);color:var(--txt);box-shadow:var(--shadow);cursor:pointer;opacity:0;transform:translateY(8px);pointer-events:none;transition:opacity .18s ease, transform .18s ease}
-.toTop.show{opacity:1;transform:translateY(0);pointer-events:auto}
-
-/* ===== MOBILE CLEAN (lo que te gustó) ===== */
-@media (max-width:720px){
-  header .wrap{padding:10px}
-  .headerBrand{display:none}
-  #statusPill{display:none}
-  #sortBoxDesktop{display:none}
-  #viewBtn{display:none}
-  #themeBtn{display:none}
-  .headerTop{
-    display:grid;
-    grid-template-columns: 1fr 52px 1fr;
-    grid-template-areas:
-      "search search search"
-      "sort   .     cart";
-    gap:8px;
-  }
-  .headerSearch{grid-area:search}
-  #sortBtnMobile{grid-area:sort;height:44px;width:52px;border-radius:14px}
-  #cartBtn{grid-area:cart;height:44px;border-radius:14px}
-  #cartBtn .cartMiniText{display:none}
+/* ===== PRODUCT MODAL (mejorado) ===== */
+.pmWrap{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:12px;
 }
 
-/* Oculta barra inferior cuando hay modal abierto */
-body.modalOn .mobileBar{display:none !important;}
-
-/* ===== Modal producto: imagen NO gigante + layout pro ===== */
+/* Imagen NO gigante */
 .pmMainImg{
+  width:100%;
   max-height:42vh;
+  aspect-ratio:auto;
   object-fit:contain !important;
+  border-radius:16px;
+  border:1px solid var(--line);
   background:color-mix(in oklab, var(--card2) 60%, #000);
+  cursor:zoom-in;
 }
 @media (max-width:720px){
   .pmMainImg{max-height:34vh;}
 }
 
-/* Botón de “Consultar disponibilidad” en modal */
-.dangerBtn{
-  background:rgba(255,107,107,.14);
-  border:1px solid rgba(255,107,107,.35);
-  color:#ffb3b3;
-  font-weight:1000;
+.pmThumbs{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.pmThumb{
+  width:52px;height:52px;
+  border-radius:12px;
+  border:1px solid var(--line);
+  object-fit:cover;
+  cursor:pointer;
+  opacity:.9;
+  background:color-mix(in oklab, var(--card2) 60%, #0a0f17);
 }
+.pmThumb.active{outline:2px solid var(--acc);opacity:1}
+
+.pmName{font-weight:1000;font-size:16px;margin:0 0 6px 0}
+.pmPrice{font-weight:1000;font-size:16px;margin-top:8px}
+.pmBadges{margin-top:8px}
+.pmDesc{margin-top:12px;color:var(--mut);font-size:13px;line-height:1.45;white-space:pre-wrap}
+
+/* Acciones (copiar/WA) más bonitas */
+.pmActions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.pmIconBtn{display:flex;align-items:center;gap:8px;border-radius:12px}
 
 /* Calc row (Unit/Cant/Total) */
 .pmCalc{
@@ -243,12 +267,31 @@ body.modalOn .mobileBar{display:none !important;}
   display:none;
 }
 
+/* ===== STICKY BUY AREA (nuevo) ===== */
+/* Este contenedor se crea visualmente “pegado” usando sticky sobre la fila de qty + botón */
+.pmBuySticky{
+  position:sticky;
+  bottom:0;
+  z-index:6;
+  margin-top:12px;
+  padding-top:10px;
+  background:linear-gradient(to top,
+    color-mix(in oklab, var(--card) 96%, transparent) 60%,
+    transparent 100%
+  );
+}
+
 /* Mejor look de qty (-/+) */
 .pmQtyRow{
+  display:flex;
   gap:12px !important;
   align-items:center;
+  margin-top:0;
 }
 .pmQty{
+  display:flex;
+  gap:8px;
+  align-items:center;
   border:1px solid var(--line);
   background:color-mix(in oklab, var(--card) 92%, transparent);
   padding:6px;
@@ -260,24 +303,161 @@ body.modalOn .mobileBar{display:none !important;}
   border-radius:12px;
   font-size:18px;
   font-weight:1000;
+  border:1px solid var(--line);
+  background:var(--card2);
+  color:var(--txt);
+  cursor:pointer;
 }
 .pmQtyNum{
   min-width:34px !important;
+  text-align:center;
   font-size:16px;
   font-weight:1000;
 }
 
-/* Botón añadir siempre visible y bonito en móvil */
+/* Botón añadir/consultar */
 #pmAddBtn{
   height:46px;
   border-radius:14px;
   font-weight:1000;
+  width:100%;
 }
 
-/* Mejor contraste en modo día (modal + botones) */
-html[data-theme="light"] .sheet{
-  background:var(--card);
+/* “Consultar disponibilidad” */
+.dangerBtn{
+  background:rgba(255,107,107,.14);
+  border:1px solid rgba(255,107,107,.35);
+  color:#ffb3b3;
+  font-weight:1000;
 }
-html[data-theme="light"] .btn.ghost{
-  color:var(--mut);
+
+/* ===== CART ===== */
+.cartLayout{display:grid;grid-template-columns:1fr;gap:12px}
+.panel{background:var(--card2);border:1px solid var(--line);border-radius:16px;padding:12px}
+.panelTitle{font-weight:1000;margin:0 0 10px 0;font-size:13px}
+.hr{height:1px;background:var(--line);margin:12px 0}
+.note{font-size:12px;color:var(--mut);line-height:1.35}
+.two{display:grid;grid-template-columns:1fr;gap:10px}
+
+.cartItem{
+  display:flex;
+  gap:10px;
+  border:1px solid var(--line);
+  border-radius:16px;
+  padding:10px;
+  margin-bottom:10px;
+  align-items:center;
+  background:color-mix(in oklab, var(--card) 70%, transparent);
 }
+.cartItem img{
+  width:56px;height:56px;
+  border-radius:12px;
+  object-fit:cover;
+  background:color-mix(in oklab, var(--card2) 60%, #0a0f17);
+  cursor:pointer;
+}
+.cartTitle{font-weight:1000;cursor:pointer}
+.cartMeta{margin-top:6px;font-size:12px;color:var(--mut)}
+.cartMeta b{color:var(--txt)}
+.qty{display:flex;gap:6px;align-items:center}
+.mini{
+  padding:6px 10px;
+  border-radius:10px;
+  border:1px solid var(--line);
+  background:var(--card2);
+  color:var(--txt);
+  cursor:pointer;
+}
+.sum{display:flex;justify-content:space-between;margin:8px 0;color:var(--mut)}
+.total{font-size:18px;font-weight:1000;color:var(--txt)}
+.cartMini{
+  font-size:12px;color:var(--mut);
+  border:1px solid var(--line);
+  background:color-mix(in oklab, var(--card2) 92%, transparent);
+  border-radius:12px;
+  padding:10px;
+}
+
+/* ===== TOAST ===== */
+.toast{
+  position:fixed;
+  bottom:96px;left:50%;
+  transform:translateX(-50%);
+  background:var(--card2);
+  border:1px solid var(--line);
+  color:var(--txt);
+  padding:10px 12px;
+  border-radius:12px;
+  display:none;
+  z-index:120;
+}
+.toast.show{display:block}
+
+/* ===== TO TOP ===== */
+.toTop{
+  position:fixed;right:14px;bottom:110px;
+  z-index:140;
+  width:44px;height:44px;
+  border-radius:14px;
+  border:1px solid var(--line);
+  background:color-mix(in oklab, var(--card) 92%, transparent);
+  color:var(--txt);
+  box-shadow:var(--shadow);
+  cursor:pointer;
+  opacity:0;
+  transform:translateY(8px);
+  pointer-events:none;
+  transition:opacity .18s ease, transform .18s ease;
+}
+.toTop.show{opacity:1;transform:translateY(0);pointer-events:auto}
+
+/* ===== MOBILE BAR ===== */
+.mobileBar{
+  display:flex;
+  position:fixed;
+  left:10px;right:10px;bottom:10px;
+  z-index:130;
+  gap:10px;
+  padding:10px;
+  border-radius:18px;
+  border:1px solid var(--line);
+  background:color-mix(in oklab, var(--card) 92%, transparent);
+  box-shadow:var(--shadow);
+  backdrop-filter:blur(10px);
+}
+.mobileBar .btn{
+  flex:1;height:44px;
+  display:flex;align-items:center;justify-content:center;
+  gap:8px;padding:0 12px;border-radius:14px;font-weight:1000;
+}
+.mobileBar .miniCount{
+  padding:2px 8px;border-radius:999px;border:1px solid var(--line);
+  background:color-mix(in oklab, var(--card2) 85%, transparent);
+  color:var(--mut);font-size:12px;font-weight:1000;
+}
+
+/* ===== MOBILE CLEANUP ===== */
+@media (max-width:720px){
+  header .wrap{padding:10px}
+  .headerBrand{display:none}
+  #statusPill{display:none}
+  #sortBoxDesktop{display:none}
+  #viewBtn{display:none}
+  #themeBtn{display:none}
+
+  .headerTop{
+    display:grid;
+    grid-template-columns: 1fr 52px 1fr;
+    grid-template-areas:
+      "search search search"
+      "sort   .     cart";
+    gap:8px;
+  }
+  .headerSearch{grid-area:search}
+  #sortBtnMobile{grid-area:sort;height:44px;width:52px;border-radius:14px}
+  #cartBtn{grid-area:cart;height:44px;border-radius:14px}
+  #cartBtn .cartMiniText{display:none}
+}
+
+/* Oculta barra inferior cuando hay modal abierto */
+body.modalOn .mobileBar{display:none !important;}
