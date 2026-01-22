@@ -15,11 +15,8 @@
       if (open && !wasOpen) {
         savedY = window.scrollY || document.documentElement.scrollTop || 0;
       }
-
       if (!open && wasOpen) {
-        setTimeout(() => {
-          window.scrollTo({ top: savedY, behavior: "auto" });
-        }, 0);
+        setTimeout(() => window.scrollTo({ top: savedY, behavior: "auto" }), 0);
       }
 
       wasOpen = open;
@@ -30,7 +27,6 @@
       const m = document.getElementById(id);
       if (m) obs.observe(m, { attributes: true, attributeFilter: ["class"] });
     });
-
     onChange();
   }
 
@@ -46,15 +42,20 @@
     window.SDC_HEADER?.init?.();
     initScrollRestore();
 
-    // Banner + filtros
+    // Banner + filtros + paginación
     window.SDC_BANNER?.init?.();
     window.SDC_FILTERS?.init?.();
-
-    // Paginación
     window.SDC_PAGER?.setPageSize?.(24);
 
-    // Menú ordenar móvil (con ✓)
+    // Menú ordenar móvil
     window.SDC_SORT_MENU?.init?.();
+
+    // Tabs unificadas móvil
+    window.SDC_TABS?.init?.();
+
+    // Search clear (X) + Result counter
+    window.SDC_SEARCH_UI?.init?.();
+    window.SDC_RESULTS?.init?.();
 
     // Skeleton
     window.SDC_CATALOG_UI?.renderSkeletonGrid?.(10);
@@ -75,14 +76,12 @@
       }
     });
 
-    // Cargar catálogo
     await window.SDC_CATALOG.load();
-
-    // Delivery
     window.SDC_DELIVERY.initSelectors();
-
-    // Count
     window.SDC_STORE.updateCartCountUI();
+
+    // Al finalizar carga, actualiza contador
+    window.SDC_RESULTS?.refresh?.();
   }
 
   init().catch(err => {
