@@ -7,15 +7,14 @@
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="tanda3.css">
   <link rel="stylesheet" href="tanda4.css">
+  <link rel="stylesheet" href="tanda5.css">
 </head>
 <body>
 
 <header>
   <div class="wrap">
     <div class="row headerTop">
-      <div class="brand headerBrand">
-        <span class="brandDot"></span><span class="brandText">Soluciones Digitales Comayagua</span>
-      </div>
+      <div class="brand headerBrand"><span class="brandDot"></span><span class="brandText">Soluciones Digitales Comayagua</span></div>
 
       <div class="search headerSearch">
         <input id="q" placeholder="Buscar..." />
@@ -57,9 +56,6 @@
     </div>
 
     <div class="filtersBar" id="quickFilters"></div>
-
-    <!-- ✅ filtros por precio (texto corregido) -->
-    <div class="priceFiltersBar" id="priceFilters"></div>
   </div>
 </header>
 
@@ -95,7 +91,7 @@
 <div class="toast" id="toast"></div>
 <button class="toTop" id="toTop" type="button" aria-label="Ir arriba">↑</button>
 
-<!-- ✅ THANKS MODAL (evita null en post_purchase.js) -->
+<!-- THANKS -->
 <div class="modal" id="thanksModal" aria-hidden="true">
   <div class="sheet">
     <div class="head row" style="justify-content:space-between">
@@ -279,7 +275,6 @@
 
           <button class="btn acc" id="sendWA" style="width:100%;margin-top:10px">Enviar pedido por WhatsApp</button>
 
-          <!-- ✅ Historial -->
           <div class="panel" id="orderHistory" style="margin-top:12px"></div>
         </div>
 
@@ -296,7 +291,6 @@
   </div>
 </div>
 
-<!-- Barra inferior móvil -->
 <div class="mobileBar" id="mobileBar">
   <button class="btn" id="bottomCartBtn">🛒 <span class="miniCount" id="bottomCartCount">0</span></button>
   <button class="btn ghost viewBtn" id="bottomViewBtn" type="button" aria-label="Modo catálogo">🧾</button>
@@ -336,12 +330,10 @@
 <script src="price_stock_watch.js"></script>
 
 <script src="add_confirm.js"></script>
-<script src="price_filter.js"></script>
 <script src="order_history.js"></script>
 <script src="post_purchase.js"></script>
 <script src="view_mode2.js"></script>
 
-<script src="tanda5.css"></script>
 <script src="continue_state_plus.js"></script>
 <script src="checkout_guard.js"></script>
 
