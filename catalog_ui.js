@@ -128,9 +128,6 @@ window.SDC_CATALOG_UI = (() => {
 
     list = filterQuick(list);
 
-    // ✅ TANDA 4: filtro precio
-    list = window.SDC_PRICE?.apply?.(list) || list;
-
     if(q) list=list.filter(p =>
       (p.nombre||"").toLowerCase().includes(q) ||
       (p.tags||"").toLowerCase().includes(q) ||
@@ -140,7 +137,7 @@ window.SDC_CATALOG_UI = (() => {
 
     list = sortList(list);
 
-    const pagerKey = [activeCat, activeSub, mode, sort, q, (window.SDC_PRICE?.get?.()||"all")].join("|");
+    const pagerKey = [activeCat, activeSub, mode, sort, q].join("|");
     PAGER.ensureKey(pagerKey);
     const visibleList = PAGER.slice(list);
 
