@@ -12,7 +12,6 @@
 <header>
   <div class="wrap">
 
-    <!-- ===== FILA PRINCIPAL (móvil: 1 fila) ===== -->
     <div class="row headerTop">
       <div class="brand headerBrand"><span class="brandDot"></span><span class="brandText">Soluciones Digitales Comayagua</span></div>
 
@@ -20,7 +19,6 @@
         <input id="q" placeholder="Buscar..." />
       </div>
 
-      <!-- Desktop: select visible -->
       <div class="sortBox" id="sortBoxDesktop">
         <select id="sortSel" title="Ordenar">
           <option value="relevancia">Orden: Relevancia</option>
@@ -31,28 +29,31 @@
         </select>
       </div>
 
-      <!-- Mobile: botón ordenar -->
       <button class="btn ghost sortMobileBtn" id="sortBtnMobile" type="button" aria-label="Ordenar">⚙️</button>
 
-      <!-- Tema (en móvil se oculta; se usa el de abajo) -->
       <button class="btn ghost themeBtn" id="themeBtn" type="button" aria-label="Tema">
         <span class="tIcon">🌙</span><span class="tText">Modo</span>
       </button>
 
-      <!-- Carrito (en móvil será icono) -->
       <button class="btn acc cartMiniBtn" id="cartBtn" type="button" aria-label="Carrito">
         🛒 <span class="cartMiniText">Carrito</span> (<span id="cartCount">0</span>)
       </button>
     </div>
 
-    <!-- Estado (se ocultará en móvil por CSS) -->
     <div class="pill" id="statusPill">Cargando catálogo...</div>
 
-    <!-- Tabs (se quedan, pero más compactas en móvil) -->
-    <div class="tabs" id="catTabs"></div>
-    <div class="tabs" id="subTabs"></div>
+    <!-- ✅ Tabs unificadas (1 fila en móvil) -->
+    <div class="tabsUnified">
+      <button class="btn ghost tabsToggle" id="tabsToggleBtn" type="button">
+        <span id="tabsToggleLabel">Categorías</span>
+      </button>
 
-    <!-- filtros rápidos -->
+      <div class="tabsLine">
+        <div class="tabs" id="catTabs"></div>
+        <div class="tabs" id="subTabs"></div>
+      </div>
+    </div>
+
     <div class="filtersBar" id="quickFilters"></div>
   </div>
 </header>
@@ -125,7 +126,6 @@
         <div>
           <div class="pmName" id="pmName"></div>
           <div class="pmChips" id="pmChips"></div>
-
           <div class="mut" id="pmCat"></div>
           <div class="pmPrice" id="pmPrice"></div>
 
@@ -232,12 +232,10 @@
   </div>
 </div>
 
-<!-- Barra inferior móvil (PRO) -->
+<!-- Barra inferior móvil -->
 <div class="mobileBar" id="mobileBar">
   <button class="btn" id="bottomCartBtn">🛒 <span class="miniCount" id="bottomCartCount">0</span></button>
-  <button class="btn ghost themeBtn" id="bottomThemeBtn" type="button" aria-label="Tema">
-    <span class="tIcon">🌙</span>
-  </button>
+  <button class="btn ghost themeBtn" id="bottomThemeBtn" type="button" aria-label="Tema"><span class="tIcon">🌙</span></button>
   <button class="btn acc" id="bottomSendBtn">💬</button>
 </div>
 
@@ -254,6 +252,7 @@
 <script src="pagination.js"></script>
 <script src="cart_mini.js"></script>
 <script src="sort_menu.js"></script>
+<script src="tabs_unified.js"></script>
 <script src="product_modal_ui.js"></script>
 
 <script src="store.js"></script>
