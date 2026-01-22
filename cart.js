@@ -2,7 +2,6 @@ window.SDC_CART = (() => {
   const CFG = window.SDC_CONFIG;
   const U = window.SDC_UTILS;
   const S = window.SDC_STORE;
-  const MINI = window.SDC_CART_MINI;
 
   function syncBottomCount(){
     const el = U.$("bottomCartCount");
@@ -13,10 +12,21 @@ window.SDC_CART = (() => {
     U.$("cartModal").classList.add("open");
     renderCart();
     computeSummary();
+    window.SDC_UI_BADGES?.updateCheckoutBadge?.();
+    window.SDC_CHECKOUT?.showStep?.(1);
   }
 
-  function closeCart() {
-    U.$("cartModal").classList.remove("open");
+  function closeCart() { U.$("cartModal").classList.remove("open"); }
+
+  function clearCart(){
+    const ok = confirm("¿Vaciar todo el carrito?");
+    if (!ok) return;
+    S.state.cart = new Map();
+    S.updateCartCountUI();
+    syncBottomCount();
+    renderCart();
+    computeSummary();
+    U.toast("Carrito vacío");
   }
 
   function renderCart() {
@@ -29,7 +39,6 @@ window.SDC_CART = (() => {
 
     if (cart.size === 0) {
       if (emptyNote) emptyNote.style.display = "block";
-      MINI?.set?.("");
       return;
     } else {
       if (emptyNote) emptyNote.style.display = "none";
@@ -42,7 +51,7 @@ window.SDC_CART = (() => {
       row.innerHTML = `
         <img src="${U.escAttr(p.imagen || "")}" alt="">
         <div style="flex:1">
-          <div style="font-weight:1000">${U.esc(p.nombre || "")}</div>
+          <div class="cartTitle">${U.esc(p.nombre || "")}</div>
           <div class="mut">${U.esc(p.categoria || "")}${p.subcategoria ? (" • " + U.esc(p.subcategoria)) : ""}</div>
           <div style="margin-top:6px;font-weight:1000">${U.money(p.precio, CFG.CURRENCY)} <span class="mut">x ${it.qty}</span></div>
         </div>
@@ -54,6 +63,10 @@ window.SDC_CART = (() => {
         </div>
       `;
 
+      // ✅ editar desde carrito: tocar imagen o título abre modal producto
+      row.querySelector("img").onclick = () => window.SDC_PRODUCT_MODAL?.open?.(p, { setHash:false });
+      row.querySelector(".cartTitle").onclick = () => window.SDC_PRODUCT_MODAL?.open?.(p, { setHash:false });
+
       row.querySelectorAll("button").forEach(b => {
         b.onclick = () => {
           const act = b.getAttribute("data-act");
@@ -63,25 +76,24 @@ window.SDC_CART = (() => {
 
           const stock = Number(item.p.stock || 0);
 
-          if (act === "minus") S.setCartQty(pid, Math.max(1, item.qty - 1));
+          if (act === "minus") item.qty = Math.max(1, item.qty - 1);
           if (act === "plus") {
             if (item.qty + 1 > stock) { U.toast("No hay stock suficiente"); return; }
-            S.setCartQty(pid, item.qty + 1);
+            item.qty += 1;
           }
-          if (act === "del") S.delFromCart(pid);
+          if (act === "del") { cart.delete(pid); }
 
-          renderCart();
-          computeSummary();
+          if (cart.size === 0) S.state.cart = new Map(cart);
+
           S.updateCartCountUI();
           syncBottomCount();
+          renderCart();
+          computeSummary();
         };
       });
 
       el.appendChild(row);
     }
-
-    S.updateCartCountUI();
-    syncBottomCount();
   }
 
   function computeSummary() {
@@ -90,7 +102,6 @@ window.SDC_CART = (() => {
 
     if (cart.size === 0) {
       sum.innerHTML = `<div class="note">Agrega productos para ver el total.</div>`;
-      MINI?.set?.("");
       return;
     }
 
@@ -111,19 +122,17 @@ window.SDC_CART = (() => {
 
     const totalNow = subtotal + ((!local && pay === "prepago") ? shipping : 0);
 
-    const cash = Number((U.$("cashAmount").value || "").replace(/[^\d.]/g, "") || 0);
-    const change = (local && pay === "pagar_al_recibir" && cash > 0) ? Math.max(0, cash - subtotal) : 0;
-
     sum.innerHTML = `
       <div class="sum"><div>Subtotal</div><div>${U.money(subtotal, CFG.CURRENCY)}</div></div>
       <div class="sum"><div>Envío</div><div>${(!local && pay === "prepago") ? U.money(shipping, CFG.CURRENCY) : "Se paga a empresa / coordina"}</div></div>
-      <div class="sum total"><div>Total a pagar ahora</div><div>${U.money(totalNow, CFG.CURRENCY)}</div></div>
-      ${local && pay === "pagar_al_recibir" ? (cash > 0
-        ? `<div class="note" style="margin-top:8px">Paga con: ${U.money(cash, CFG.CURRENCY)} → Cambio estimado: ${U.money(change, CFG.CURRENCY)}</div>`
-        : `<div class="note" style="margin-top:8px">Para calcular cambio, escribe “¿con cuánto pagará?”</div>`) : ""}
+      <div class="sum total"><div>Total ahora</div><div>${U.money(totalNow, CFG.CURRENCY)}</div></div>
     `;
 
-    MINI?.update?.({ itemsCount, totalNow, local, pay, shipping });
+    // mini
+    const mini = U.$("cartMiniSummary");
+    if (mini) mini.textContent = `Items: ${itemsCount} • Total ahora: ${U.money(totalNow, CFG.CURRENCY)}`;
+
+    window.SDC_UI_BADGES?.updateCheckoutBadge?.();
   }
 
   function bindEvents() {
@@ -131,10 +140,12 @@ window.SDC_CART = (() => {
     U.$("closeCart").onclick = closeCart;
     U.$("cartModal").onclick = (e) => { if (e.target.id === "cartModal") closeCart(); };
 
-    const b = U.$("bottomCartBtn");
-    if (b) b.onclick = openCart;
+    U.$("bottomCartBtn").onclick = openCart;
+    U.$("clearCartBtn").onclick = clearCart;
 
-    syncBottomCount();
+    // wizard buttons
+    U.$("nextStepBtn").onclick = () => window.SDC_CHECKOUT?.next?.();
+    U.$("prevStepBtn").onclick = () => window.SDC_CHECKOUT?.prev?.();
   }
 
   return { openCart, closeCart, renderCart, computeSummary, bindEvents };
