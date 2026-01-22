@@ -17,6 +17,7 @@
 
       <div class="search headerSearch">
         <input id="q" placeholder="Buscar..." />
+        <!-- search_ui.js crea el botón X automáticamente -->
       </div>
 
       <div class="sortBox" id="sortBoxDesktop">
@@ -42,7 +43,7 @@
 
     <div class="pill" id="statusPill">Cargando catálogo...</div>
 
-    <!-- ✅ Tabs unificadas (1 fila en móvil) -->
+    <!-- Tabs unificadas -->
     <div class="tabsUnified">
       <button class="btn ghost tabsToggle" id="tabsToggleBtn" type="button">
         <span id="tabsToggleLabel">Categorías</span>
@@ -79,6 +80,7 @@
     <div class="hScroll" id="offersRow"></div>
   </section>
 
+  <!-- results_counter.js crea el pill arriba del grid automáticamente -->
   <div class="grid" id="grid"></div>
 
   <div class="loadMoreWrap" id="loadMoreWrap" style="display:none">
@@ -164,7 +166,6 @@
 
     <div class="body">
       <div class="cartLayout">
-
         <div class="panel">
           <div class="panelTitle">Productos</div>
           <div id="cartItems"></div>
@@ -226,7 +227,6 @@
             </div>
           </div>
         </div>
-
       </div>
     </div>
   </div>
@@ -253,6 +253,11 @@
 <script src="cart_mini.js"></script>
 <script src="sort_menu.js"></script>
 <script src="tabs_unified.js"></script>
+
+<!-- ✅ nuevos -->
+<script src="search_ui.js"></script>
+<script src="results_counter.js"></script>
+
 <script src="product_modal_ui.js"></script>
 
 <script src="store.js"></script>
