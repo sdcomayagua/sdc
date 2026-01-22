@@ -2,57 +2,91 @@ window.SDC_WA = (() => {
   const CFG = window.SDC_CONFIG;
   const U = window.SDC_UTILS;
   const S = window.SDC_STORE;
+  const SHARE = window.SDC_SHARE;
+
+  function validate(){
+    const name = (U.$("name").value||"").trim();
+    const phone = (U.$("phone").value||"").trim();
+    const addr = (U.$("addr").value||"").trim();
+    if (!name) return "Falta tu nombre";
+    if (!phone) return "Falta tu teléfono";
+    if (!addr) return "Falta tu dirección";
+    return "";
+  }
 
   function buildMessage() {
     const cart = S.getCart();
 
     const dep = U.$("dep").value;
     const mun = U.$("mun").value;
-    const local = S.isLocalAllowed(dep, mun);
     const pay = U.$("payType").value;
+    const local = S.isLocalAllowed(dep, mun);
 
-    const name = U.$("name").value.trim();
-    const phone = U.$("phone").value.trim();
-    const addr = U.$("addr").value.trim();
+    const eta = window.SDC_ETA?.get?.(dep, mun, local, pay) || "";
+
+    const name = (U.$("name").value||"").trim();
+    const phone = (U.$("phone").value||"").trim();
+    const addr = (U.$("addr").value||"").trim();
+    const note = (document.getElementById("clientNote")?.value||"").trim();
+
+    let subtotal = 0;
+    let itemsCount = 0;
 
     const lines = [];
-    lines.push("🛒 *PEDIDO - Soluciones Digitales Comayagua*");
-    lines.push(`📍 *Ubicación:* ${dep} - ${mun}`);
-    lines.push(`🚚 *Entrega:* ${local ? "Entrega Local" : "Envío Nacional (Empresa)"}`);
-    lines.push(`💳 *Pago:* ${pay === "prepago" ? "PREPAGO" : "PAGAR AL RECIBIR"}`);
+    lines.push("🧾 *ORDEN - SDC*");
+    lines.push(`📍 ${dep} - ${mun}`);
+    lines.push(`🚚 ${local ? "LOCAL" : "NACIONAL"} • ${eta}`);
+    lines.push(`💳 Pago: ${pay === "prepago" ? "PREPAGO" : "PAGAR AL RECIBIR"}`);
+    lines.push("");
 
-    if (local && pay === "pagar_al_recibir") {
-      const cash = (U.$("cashAmount").value || "").trim();
-      if (cash) lines.push(`💵 *Paga con:* ${cash}`);
-    } else if (!local) {
-      lines.push("📦 *Empresa:* C807 / Cargo Expreso / Forza");
-      lines.push(`💰 *Envío:* ${pay === "prepago" ? U.money(CFG.NATIONAL_PREPAGO, CFG.CURRENCY) : U.money(CFG.NATIONAL_CONTRA_ENTREGA, CFG.CURRENCY)} (${pay === "prepago" ? "incluido en depósito" : "pagado a empresa"})`);
+    lines.push("🛒 *Productos:*");
+    for (const it of cart.values()) {
+      const p = it.p;
+      const lineTotal = Number(p.precio||0) * it.qty;
+      subtotal += lineTotal;
+      itemsCount += it.qty;
+
+      const link = SHARE.shareLinkFor(p);
+      lines.push(`• ${it.qty} x ${p.nombre}`);
+      lines.push(`  Unit: ${U.money(p.precio, CFG.CURRENCY)} • Sub: ${U.money(lineTotal, CFG.CURRENCY)}`);
+      lines.push(`  🔗 ${link}`);
     }
 
     lines.push("");
-    lines.push("🧾 *Productos:*");
-    let subtotal = 0;
-    for (const it of cart.values()) {
-      const line = Number(it.p.precio || 0) * it.qty;
-      subtotal += line;
-      lines.push(`• ${it.qty} x ${it.p.nombre} — ${U.money(line, CFG.CURRENCY)}`);
-    }
-    lines.push(`Subtotal: ${U.money(subtotal, CFG.CURRENCY)}`);
+    lines.push(`Subtotal (${itemsCount} items): ${U.money(subtotal, CFG.CURRENCY)}`);
 
-    if (!local && pay === "prepago") lines.push(`Total a depositar: ${U.money(subtotal + CFG.NATIONAL_PREPAGO, CFG.CURRENCY)}`);
-    else lines.push(`Total producto: ${U.money(subtotal, CFG.CURRENCY)}`);
+    if (!local) {
+      const ship = (pay === "prepago") ? CFG.NATIONAL_PREPAGO : CFG.NATIONAL_CONTRA_ENTREGA;
+      if (pay === "prepago") {
+        lines.push(`Envío (prepago): ${U.money(ship, CFG.CURRENCY)}`);
+        lines.push(`Total a depositar: ${U.money(subtotal + ship, CFG.CURRENCY)}`);
+      } else {
+        lines.push(`Envío (contra entrega): ${U.money(ship, CFG.CURRENCY)} (se paga a empresa)`);
+        lines.push(`Total producto: ${U.money(subtotal, CFG.CURRENCY)}`);
+      }
+    } else {
+      const cash = (U.$("cashAmount").value||"").trim();
+      if (cash) lines.push(`💵 Paga con: ${cash}`);
+      lines.push(`Total producto: ${U.money(subtotal, CFG.CURRENCY)}`);
+    }
 
     lines.push("");
     lines.push("👤 *Cliente:*");
-    if (name) lines.push(`Nombre: ${name}`);
-    if (phone) lines.push(`Tel: ${phone}`);
-    if (addr) lines.push(`Dirección: ${addr}`);
+    lines.push(`Nombre: ${name}`);
+    lines.push(`Tel: ${phone}`);
+    lines.push(`Dirección: ${addr}`);
+    if (note) lines.push(`📝 Nota: ${note}`);
 
     return lines.join("\n");
   }
 
   function send() {
     if (S.getCart().size === 0) { U.toast("Carrito vacío"); return; }
+    const err = validate();
+    if (err) { U.toast(err); return; }
+
+    window.SDC_PROFILE?.save?.();
+
     const msg = buildMessage();
     const phone = S.getWhatsapp();
     const url = "https://wa.me/" + phone.replace(/[^\d]/g, "") + "?text=" + encodeURIComponent(msg);
@@ -61,10 +95,7 @@ window.SDC_WA = (() => {
 
   function bind() {
     U.$("sendWA").onclick = send;
-
-    // A) Barra inferior
-    const b = U.$("bottomSendBtn");
-    if (b) b.onclick = send;
+    U.$("bottomSendBtn").onclick = send;
   }
 
   return { buildMessage, send, bind };
