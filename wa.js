@@ -75,7 +75,7 @@ window.SDC_WA = (() => {
     lines.push(`Dirección: ${addr}`);
     if (note) lines.push(`📝 Nota: ${note}`);
 
-    return lines.join("\n");
+    return { text: lines.join("\n"), itemsCount, totalText: U.money(subtotal, CFG.CURRENCY) };
   }
 
   function send() {
@@ -87,20 +87,20 @@ window.SDC_WA = (() => {
 
     const msg = buildMessage();
 
-    // guardar historial (18)
+    // guardar historial PRO
     const cartItems = [];
     for (const it of S.getCart().values()){
       cartItems.push({ id: it.p.id, qty: it.qty });
     }
-    window.SDC_ORDERS?.saveOrder?.({ cartItems, message: msg });
-    window.SDC_ORDERS?.render?.();
+    window.SDC_ORDERS_PRO?.saveOrder?.({ cartItems, itemsCount: msg.itemsCount, totalText: msg.totalText });
+    window.SDC_ORDERS_PRO?.render?.();
 
     const phone = S.getWhatsapp();
-    const url = "https://wa.me/" + phone.replace(/[^\d]/g, "") + "?text=" + encodeURIComponent(msg);
+    const url = "https://wa.me/" + phone.replace(/[^\d]/g, "") + "?text=" + encodeURIComponent(msg.text);
     window.open(url, "_blank");
 
-    // post compra (19)
-    window.SDC_THANKS?.open?.();
+    // thanks + limpiar opcional
+    window.SDC_THANKS_PLUS?.afterSend?.();
   }
 
   function bind() {
@@ -108,5 +108,5 @@ window.SDC_WA = (() => {
     U.$("bottomSendBtn").onclick = send;
   }
 
-  return { buildMessage, send, bind };
+  return { buildMessage: ()=>buildMessage().text, send, bind };
 })();
