@@ -19,6 +19,8 @@ window.SDC_PRODUCT_MODAL = (() => {
   let pmImages = [];
   let pmMainIndex = 0;
 
+  const originalTitle = document.title;
+
   function open(p, opts = { setHash: true }) {
     currentProduct = p;
     pmQty = 1;
@@ -30,30 +32,37 @@ window.SDC_PRODUCT_MODAL = (() => {
       if (id) window.location.hash = `p=${id}`;
     }
 
+    document.title = `${p.nombre} | SDC`;
+
     U.$("pmTitle").textContent = p.nombre || "Producto";
     U.$("pmName").textContent = p.nombre || "";
     U.$("pmCat").textContent = `${p.categoria || ""}${p.subcategoria ? (" • " + p.subcategoria) : ""}`;
     U.$("pmPrice").textContent = U.money(p.precio, CFG.CURRENCY);
 
     const stock = Number(p.stock || 0);
-    U.$("pmStockOk").style.display = stock > 0 ? "inline-block" : "none";
+    U.$("pmStockOk").style.display = stock > 3 ? "inline-block" : "none";
+    U.$("pmStockLow").style.display = (stock > 0 && stock <= 3) ? "inline-block" : "none";
     U.$("pmStockOut").style.display = stock > 0 ? "none" : "inline-block";
-    if (stock > 0) U.$("pmStockOk").textContent = `Stock: ${stock}`;
+    if (stock > 3) U.$("pmStockOk").textContent = `Stock: ${stock}`;
+    if (stock > 0 && stock <= 3) U.$("pmStockLow").textContent = `POCO STOCK (${stock})`;
 
-    const desc = String(p.descripcion || "").trim();
-    U.$("pmDesc").textContent = desc || "Sin descripción por ahora.";
+    U.$("pmDesc").textContent = String(p.descripcion || "").trim() || "Sin descripción por ahora.";
 
     UI.setChips(p);
     UI.setSpecs(p);
-
-    const video = MEDIA.bestVideo(p);
-    UI.setActions({ p, video });
+    UI.setActions({ p, video: MEDIA.bestVideo(p) });
 
     renderImages();
+
+    // ✅ zoom al tocar imagen
+    U.$("pmMainImg").onclick = () => window.SDC_ZOOM?.open?.(U.$("pmMainImg").src);
 
     U.$("pmQtyNum").textContent = String(pmQty);
     U.$("pmAddBtn").disabled = stock <= 0;
     U.$("pmNote").textContent = stock > 0 ? "Selecciona cantidad y añade al carrito." : "Este producto está agotado.";
+
+    // ✅ recomendaciones
+    window.SDC_RECO?.render?.(p, S.getProducts());
 
     U.$("productModal").classList.add("open");
   }
@@ -61,7 +70,7 @@ window.SDC_PRODUCT_MODAL = (() => {
   function close() {
     U.$("productModal").classList.remove("open");
     currentProduct = null;
-
+    document.title = originalTitle;
     if (String(window.location.hash || "").startsWith("#p=")) {
       history.replaceState(null, "", window.location.pathname);
     }
@@ -107,7 +116,12 @@ window.SDC_PRODUCT_MODAL = (() => {
     U.$("pmAddBtn").onclick = () => {
       if (!currentProduct) return;
       const ok = S.addToCart(currentProduct, pmQty);
-      if (ok) close();
+      if (ok) {
+        window.SDC_FX?.flyFrom?.(U.$("pmMainImg"));
+        window.SDC_FX?.vibrate?.(30);
+        window.SDC_CART?.renderCart?.();
+        close();
+      }
     };
 
     window.addEventListener("hashchange", openFromHash);
@@ -120,7 +134,6 @@ window.SDC_PRODUCT_MODAL = (() => {
     const list = S.getProducts();
     const p = list.find(x => String(x.id || "").trim() === id) || list.find(x => String(x.nombre||"").trim() === id);
     if (!p) return;
-
     open(p, { setHash: false });
   }
 
