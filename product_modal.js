@@ -17,16 +17,13 @@ window.SDC_PRODUCT_MODAL = (() => {
   const originalTitle = document.title;
 
   function ensureCalcUI() {
-    // Crea una fila de cálculo debajo del precio si no existe
     let calc = document.getElementById("pmCalc");
     if (!calc) {
       calc = document.createElement("div");
       calc.id = "pmCalc";
       calc.className = "pmCalc";
       const priceEl = document.getElementById("pmPrice");
-      if (priceEl && priceEl.parentElement) {
-        priceEl.insertAdjacentElement("afterend", calc);
-      }
+      if (priceEl && priceEl.parentElement) priceEl.insertAdjacentElement("afterend", calc);
     }
     return calc;
   }
@@ -38,11 +35,31 @@ window.SDC_PRODUCT_MODAL = (() => {
       out.id = "pmOutNote";
       out.className = "pmOutNote";
       const note = document.getElementById("pmNote");
-      if (note && note.parentElement) {
-        note.insertAdjacentElement("beforebegin", out);
-      }
+      if (note && note.parentElement) note.insertAdjacentElement("beforebegin", out);
     }
     return out;
+  }
+
+  // ✅ Sticky container para (qty + botón + nota)
+  function ensureBuySticky() {
+    let wrap = document.getElementById("pmBuySticky");
+    if (wrap) return wrap;
+
+    wrap = document.createElement("div");
+    wrap.id = "pmBuySticky";
+    wrap.className = "pmBuySticky";
+
+    const qtyRow = document.querySelector(".pmQtyRow");
+    const note = document.getElementById("pmNote");
+
+    // inserta antes de qtyRow y mueve qtyRow + note adentro
+    if (qtyRow && qtyRow.parentElement) {
+      qtyRow.parentElement.insertBefore(wrap, qtyRow);
+      wrap.appendChild(qtyRow);
+      if (note) wrap.appendChild(note);
+    }
+
+    return wrap;
   }
 
   function setMainImage(src) {
@@ -64,11 +81,9 @@ window.SDC_PRODUCT_MODAL = (() => {
 
     if (main) {
       main.alt = currentProduct?.nombre || "Producto";
-      // Zoom
       main.onclick = () => window.SDC_ZOOM?.open?.(main.src);
     }
 
-    // Thumbs (2 a 8)
     const list = (pmImages || []).slice(0, 8);
     list.forEach((u, idx) => {
       const t = document.createElement("img");
@@ -85,7 +100,6 @@ window.SDC_PRODUCT_MODAL = (() => {
     const num = U.$("pmQtyNum");
     if (num) num.textContent = String(pmQty);
 
-    // Total en vivo
     const calc = ensureCalcUI();
     const unit = Number(currentProduct?.precio || 0);
     const total = unit * pmQty;
@@ -130,15 +144,12 @@ window.SDC_PRODUCT_MODAL = (() => {
     const inStock = stock > 0;
     const low = inStock && stock <= 3;
 
-    // Badges
     U.$("pmStockOk").style.display = inStock && !low ? "inline-block" : "none";
     U.$("pmStockLow").style.display = low ? "inline-block" : "none";
     U.$("pmStockOut").style.display = inStock ? "none" : "inline-block";
-
     if (inStock && !low) U.$("pmStockOk").textContent = `Stock: ${stock}`;
     if (low) U.$("pmStockLow").textContent = `POCO STOCK (${stock})`;
 
-    // Desc
     U.$("pmDesc").textContent = String(p.descripcion || "").trim() || "Sin descripción por ahora.";
 
     UI.setChips(p);
@@ -148,10 +159,12 @@ window.SDC_PRODUCT_MODAL = (() => {
     renderImages();
     updateQtyUI();
 
+    // ✅ asegurar sticky después de que exista el qtyRow y note
+    ensureBuySticky();
+
     const addBtn = U.$("pmAddBtn");
     const outNote = ensureOutNote();
 
-    // Si NO hay stock: botón rojo Consultar
     if (!inStock) {
       if (addBtn) {
         addBtn.disabled = false;
@@ -162,6 +175,7 @@ window.SDC_PRODUCT_MODAL = (() => {
       }
       outNote.style.display = "block";
       outNote.textContent = "Este producto aparece agotado. Puedes consultar disponibilidad por WhatsApp.";
+      U.$("pmNote").textContent = "Producto agotado.";
     } else {
       if (addBtn) {
         addBtn.classList.remove("dangerBtn");
@@ -181,14 +195,9 @@ window.SDC_PRODUCT_MODAL = (() => {
       }
       outNote.style.display = "none";
       outNote.textContent = "";
+      U.$("pmNote").textContent = "Selecciona cantidad y añade al carrito.";
     }
 
-    // Nota inferior
-    U.$("pmNote").textContent = inStock
-      ? "Selecciona cantidad y añade al carrito."
-      : "Producto agotado.";
-
-    // Recomendaciones
     window.SDC_RECO?.render?.(p, S.getProducts());
 
     U.$("productModal").classList.add("open");
