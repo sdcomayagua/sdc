@@ -34,6 +34,10 @@
     window.SDC_PRICE?.init?.();
     window.SDC_THANKS?.init?.();
 
+    // ✅ T5
+    window.SDC_CONTINUE_PLUS?.init?.();
+    window.SDC_GUARD?.init?.();
+
     window.SDC_CATALOG_UI?.renderSkeletonGrid?.(10);
 
     document.getElementById("q")?.addEventListener("input", () => window.SDC_CATALOG.renderGrid());
@@ -47,7 +51,6 @@
     window.SDC_STORE.updateCartCountUI();
 
     window.SDC_RESULTS?.refresh?.();
-    window.SDC_ORDERS?.render?.();
   }
 
   init().catch(err => {
