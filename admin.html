@@ -67,7 +67,7 @@
       <div class="two">
         <div>
           <div class="mut">Buscar por ID</div>
-          <input id="findId" placeholder="Ej: SDC-001" />
+          <input id="findId" placeholder="Ej: SDC-000123" />
         </div>
         <div style="display:flex;gap:10px;align-items:flex-end">
           <button class="btn ghost" id="loadBtn" type="button" style="flex:1">Cargar</button>
@@ -83,10 +83,15 @@
     <!-- Form producto -->
     <div class="panel" style="margin-top:12px">
       <div class="panelTitle">Crear / Actualizar producto</div>
-      <div class="note">Campos igual a tu hoja <b>productos</b>. Para disponibilidad usa <b>stock</b>.</div>
+      <div class="note">Disponibilidad se controla con <b>stock</b> (0 = agotado).</div>
+
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px">
+        <button class="btn ghost" id="newBtn" type="button">➕ Crear nuevo (ID sugerido)</button>
+        <button class="btn ghost" id="duplicateBtn" type="button">Duplicar</button>
+      </div>
 
       <div class="two" style="margin-top:10px">
-        <div><div class="mut">id *</div><input id="p_id" placeholder="Ej: SDC-001" /></div>
+        <div><div class="mut">id *</div><input id="p_id" placeholder="Ej: SDC-000123" /></div>
         <div><div class="mut">nombre *</div><input id="p_nombre" placeholder="Nombre del producto" /></div>
       </div>
 
@@ -100,7 +105,6 @@
         <div><div class="mut">precio_anterior</div><input id="p_precio_anterior" inputmode="decimal" placeholder="Ej: 699" /></div>
       </div>
 
-      <!-- Disponibilidad -->
       <div class="panel" style="margin-top:12px">
         <div class="panelTitle">Disponibilidad (por stock)</div>
         <div class="two">
@@ -121,10 +125,7 @@
 
       <div class="two" style="margin-top:12px">
         <div><div class="mut">orden</div><input id="p_orden" inputmode="numeric" placeholder="Ej: 1" /></div>
-        <div>
-          <div class="mut">tags</div>
-          <input id="p_tags" placeholder="ej: gamer, android, iphone" />
-        </div>
+        <div><div class="mut">tags</div><input id="p_tags" placeholder="ej: gamer, android, iphone" /></div>
       </div>
 
       <div class="two" style="margin-top:10px">
@@ -211,13 +212,8 @@
 
       <div style="display:flex;gap:10px;margin-top:12px;flex-wrap:wrap">
         <button class="btn acc" id="saveBtn" type="button">Guardar / Actualizar</button>
-        <button class="btn ghost" id="duplicateBtn" type="button">Duplicar</button>
         <button class="btn ghost" id="clearFormBtn" type="button">Limpiar</button>
         <button class="btn ghost" id="copyJsonBtn" type="button">Copiar JSON</button>
-      </div>
-
-      <div class="note" style="margin-top:10px">
-        Duplicar crea una copia exacta con un nuevo ID.
       </div>
     </div>
   </div>
