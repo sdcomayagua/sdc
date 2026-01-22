@@ -1,4 +1,3 @@
-// cart.js (COMPLETO) — con window.SDC_WATCH?.checkCartChanges?.() integrado
 window.SDC_CART = (() => {
   const CFG = window.SDC_CONFIG;
   const U = window.SDC_UTILS;
@@ -12,14 +11,16 @@ window.SDC_CART = (() => {
   function openCart() {
     U.$("cartModal").classList.add("open");
 
-    // ✅ NUEVO: aviso si cambió precio/stock
     window.SDC_WATCH?.checkCartChanges?.();
 
     renderCart();
     computeSummary();
     window.SDC_UI_BADGES?.updateCheckoutBadge?.();
+
     window.SDC_CHECKOUT?.showStep?.(1);
     window.SDC_STEPPER?.render?.();
+    window.SDC_GUARD?.syncNextDisabled?.();
+    window.SDC_GUARD?.showErr?.("");
   }
 
   function closeCart() {
@@ -35,6 +36,7 @@ window.SDC_CART = (() => {
     renderCart();
     computeSummary();
     U.toast("Carrito vacío");
+    window.SDC_GUARD?.syncNextDisabled?.();
   }
 
   function renderCart() {
@@ -54,6 +56,9 @@ window.SDC_CART = (() => {
 
     for (const [id, it] of cart.entries()) {
       const p = it.p;
+      const unit = Number(p.precio||0);
+      const sub = unit * it.qty;
+
       const row = document.createElement("div");
       row.className = "cartItem";
       row.innerHTML = `
@@ -61,11 +66,7 @@ window.SDC_CART = (() => {
         <div style="flex:1">
           <div class="cartTitle">${U.esc(p.nombre || "")}</div>
           <div class="mut">${U.esc(p.categoria || "")}${p.subcategoria ? (" • " + U.esc(p.subcategoria)) : ""}</div>
-          <div class="cartMeta">
-            <b>Unit:</b> ${U.money(p.precio, CFG.CURRENCY)}
-            <span class="mut"> • </span>
-            <b>Sub:</b> ${U.money(Number(p.precio||0) * it.qty, CFG.CURRENCY)}
-          </div>
+          <div class="cartMeta"><b>Unit:</b> ${U.money(unit, CFG.CURRENCY)} <span class="mut">•</span> <b>Sub:</b> ${U.money(sub, CFG.CURRENCY)}</div>
         </div>
         <div class="qty">
           <button class="mini" data-act="minus" data-id="${U.escAttr(id)}">-</button>
@@ -75,7 +76,7 @@ window.SDC_CART = (() => {
         </div>
       `;
 
-      // ✅ editar desde carrito: tocar imagen o título abre modal producto
+      // editar desde carrito
       row.querySelector("img").onclick = () => window.SDC_PRODUCT_MODAL?.open?.(p, { setHash:false });
       row.querySelector(".cartTitle").onclick = () => window.SDC_PRODUCT_MODAL?.open?.(p, { setHash:false });
 
@@ -95,22 +96,17 @@ window.SDC_CART = (() => {
           }
           if (act === "del") { cart.delete(pid); }
 
-          if (cart.size === 0) S.state.cart = new Map(cart);
-
           S.updateCartCountUI();
           syncBottomCount();
           renderCart();
           computeSummary();
-
-          // ✅ re-check cambios (por si se ajustó algo)
           window.SDC_WATCH?.checkCartChanges?.();
+          window.SDC_GUARD?.syncNextDisabled?.();
         };
       });
 
       el.appendChild(row);
     }
-
-    window.SDC_RESULTS?.refresh?.();
   }
 
   function computeSummary() {
@@ -138,7 +134,6 @@ window.SDC_CART = (() => {
 
     let shipping = 0;
     if (!local) shipping = (pay === "prepago") ? CFG.NATIONAL_PREPAGO : CFG.NATIONAL_CONTRA_ENTREGA;
-
     const totalNow = subtotal + ((!local && pay === "prepago") ? shipping : 0);
 
     sum.innerHTML = `
@@ -148,9 +143,7 @@ window.SDC_CART = (() => {
     `;
 
     const mini = U.$("cartMiniSummary");
-    if (mini) {
-      mini.textContent = `Items: ${itemsCount} • Total ahora: ${U.money(totalNow, CFG.CURRENCY)}`;
-    }
+    if (mini) mini.textContent = `Items: ${itemsCount} • Total ahora: ${U.money(totalNow, CFG.CURRENCY)}`;
 
     window.SDC_UI_BADGES?.updateCheckoutBadge?.();
   }
@@ -158,26 +151,13 @@ window.SDC_CART = (() => {
   function bindEvents() {
     U.$("cartBtn").onclick = openCart;
     U.$("closeCart").onclick = closeCart;
-    U.$("cartModal").onclick = (e) => { if (e.target.id === "cartModal") closeCart(); };
-
+    U.$("cartModal").onclick = (e)=>{ if(e.target.id==="cartModal") closeCart(); };
     U.$("bottomCartBtn").onclick = openCart;
+
     U.$("clearCartBtn").onclick = clearCart;
 
-    // wizard buttons
-    U.$("nextStepBtn").onclick = () => {
-      window.SDC_CHECKOUT?.next?.();
-      setTimeout(() => window.SDC_STEPPER?.render?.(), 0);
-    };
-    U.$("prevStepBtn").onclick = () => {
-      window.SDC_CHECKOUT?.prev?.();
-      setTimeout(() => window.SDC_STEPPER?.render?.(), 0);
-    };
-
-    // cambios en checkout -> recalcular + badge
-    U.$("dep")?.addEventListener("change", () => { computeSummary(); window.SDC_WATCH?.checkCartChanges?.(); });
-    U.$("mun")?.addEventListener("change", () => { computeSummary(); window.SDC_WATCH?.checkCartChanges?.(); });
-    U.$("payType")?.addEventListener("change", () => { computeSummary(); window.SDC_WATCH?.checkCartChanges?.(); });
-    U.$("cashAmount")?.addEventListener("input", () => computeSummary());
+    // botones wizard (guard los maneja, pero por si acaso)
+    // el guard se instala en T5
   }
 
   return { openCart, closeCart, renderCart, computeSummary, bindEvents };
