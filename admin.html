@@ -90,9 +90,20 @@
         <button class="btn ghost" id="duplicateBtn" type="button">Duplicar</button>
       </div>
 
+      <!-- ID + generar -->
       <div class="two" style="margin-top:10px">
-        <div><div class="mut">id *</div><input id="p_id" placeholder="Ej: SDC-000123" /></div>
-        <div><div class="mut">nombre *</div><input id="p_nombre" placeholder="Nombre del producto" /></div>
+        <div>
+          <div class="mut">id *</div>
+          <div style="display:flex;gap:10px;align-items:center">
+            <input id="p_id" placeholder="Ej: SDC-000123" />
+            <button class="btn ghost" id="genIdBtn" type="button" style="white-space:nowrap">Generar ID</button>
+          </div>
+          <div class="note" style="margin-top:6px">Genera el próximo ID disponible sin borrar otros campos.</div>
+        </div>
+        <div>
+          <div class="mut">nombre *</div>
+          <input id="p_nombre" placeholder="Nombre del producto" />
+        </div>
       </div>
 
       <div class="two" style="margin-top:10px">
