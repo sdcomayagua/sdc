@@ -16,14 +16,19 @@
     window.SDC_SEARCH_UI?.init?.();
     window.SDC_RESULTS?.init?.();
 
-    // ✅ TANDA 1 init
+    // Tanda 1
     window.SDC_PROFILE?.load?.();
     window.SDC_CHECKOUT?.showStep?.(1);
 
-    // ✅ TANDA 2 init
+    // Tanda 2
     window.SDC_ZOOM?.init?.();
     window.SDC_CART_TOOLS?.init?.();
     window.SDC_UI_BADGES?.init?.();
+
+    // Tanda 3
+    window.SDC_VIEW?.init?.();
+    window.SDC_STEPPER?.init?.();
+    window.SDC_CONTINUE?.init?.();
 
     window.SDC_CATALOG_UI?.renderSkeletonGrid?.(10);
 
