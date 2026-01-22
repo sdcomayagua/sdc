@@ -16,19 +16,23 @@
     window.SDC_SEARCH_UI?.init?.();
     window.SDC_RESULTS?.init?.();
 
-    // Tanda 1
+    // T1
     window.SDC_PROFILE?.load?.();
     window.SDC_CHECKOUT?.showStep?.(1);
 
-    // Tanda 2
+    // T2
     window.SDC_ZOOM?.init?.();
     window.SDC_CART_TOOLS?.init?.();
     window.SDC_UI_BADGES?.init?.();
 
-    // Tanda 3
-    window.SDC_VIEW?.init?.();
+    // T3
+    window.SDC_VIEW2?.init?.();
     window.SDC_STEPPER?.init?.();
     window.SDC_CONTINUE?.init?.();
+
+    // T4
+    window.SDC_PRICE?.init?.();
+    window.SDC_THANKS?.init?.();
 
     window.SDC_CATALOG_UI?.renderSkeletonGrid?.(10);
 
@@ -43,6 +47,7 @@
     window.SDC_STORE.updateCartCountUI();
 
     window.SDC_RESULTS?.refresh?.();
+    window.SDC_ORDERS?.render?.();
   }
 
   init().catch(err => {
