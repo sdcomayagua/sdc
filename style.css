@@ -1,19 +1,25 @@
-/* style.css */
 :root{
   --bg:#0b0f14;--card:#121823;--card2:#0f1520;--txt:#e8eef7;--mut:#9fb0c6;
   --acc:#25D366;--line:#1f2a3a;--warn:#ffcc66;--danger:#ff6b6b;
   --shadow:0 10px 30px rgba(0,0,0,.35);
   --focus:0 0 0 4px rgba(37,211,102,.18);
 }
+
 html[data-theme="light"]{
-  --bg:#f6f7fb;--card:#ffffff;--card2:#f1f4fa;--txt:#0b1020;--mut:#52607a;--line:#d9e1ef;
-  --shadow:0 10px 30px rgba(12,20,45,.12);--focus:0 0 0 4px rgba(37,211,102,.22);
+  --bg:#f6f7fb;
+  --card:#ffffff;
+  --card2:#f1f4fa;
+  --txt:#0b1020;
+  --mut:#52607a;
+  --line:#d9e1ef;
+  --shadow:0 10px 30px rgba(12,20,45,.12);
+  --focus:0 0 0 4px rgba(37,211,102,.22);
 }
+
 *{box-sizing:border-box}
 body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto;background:var(--bg);color:var(--txt);padding-bottom:96px}
 a{color:var(--txt);text-decoration:none}
 
-/* Header */
 header{position:sticky;top:0;z-index:50;background:color-mix(in oklab, var(--bg) 92%, transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
 .wrap{max-width:1200px;margin:0 auto;padding:14px}
 .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
@@ -25,47 +31,37 @@ header{position:sticky;top:0;z-index:50;background:color-mix(in oklab, var(--bg)
 .btn:hover{filter:brightness(1.04)}
 .btn:focus{outline:none;box-shadow:var(--focus)}
 .btn.acc{background:var(--acc);color:#05210f;font-weight:1000}
+.btn.warn{background:var(--warn);color:#2b1a00;font-weight:1000}
 .btn.ghost{background:transparent;border:1px solid var(--line);color:var(--mut)}
+.btn.danger{background:rgba(255,107,107,.12);border:1px solid rgba(255,107,107,.35);color:#ffb3b3}
 
 .search{flex:1;min-width:200px;position:relative}
 .sortBox{min-width:190px}
 input,select,textarea{width:100%;padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:var(--card2);color:var(--txt);outline:none}
 input:focus,select:focus,textarea:focus{box-shadow:var(--focus)}
-textarea{min-height:80px;resize:vertical}
+textarea{min-height:90px;resize:vertical}
 
-/* Search clear */
 .searchClear{position:absolute;right:8px;top:50%;transform:translateY(-50%);width:34px;height:34px;border-radius:12px;border:1px solid var(--line);background:color-mix(in oklab, var(--card) 65%, transparent);color:var(--mut);display:none;align-items:center;justify-content:center;cursor:pointer}
 .searchClear.show{display:flex}
 
-/* Theme */
-.themeBtn{display:flex;align-items:center;gap:8px}
-.tIcon{font-size:14px}
-.tText{font-size:12px;color:var(--mut);font-weight:800}
-
-/* Tabs */
 .tabs{display:flex;gap:8px;flex-wrap:nowrap;overflow:auto;padding-bottom:6px;margin-top:10px;scrollbar-width:thin}
 .tabs::-webkit-scrollbar{height:6px}
 .tabs::-webkit-scrollbar-thumb{background:color-mix(in oklab, var(--mut) 25%, transparent);border-radius:999px}
 .tab{white-space:nowrap;padding:10px 12px;border-radius:999px;border:1px solid var(--line);cursor:pointer;color:var(--mut);user-select:none;background:transparent}
 .tab.active{background:color-mix(in oklab, var(--card) 60%, transparent);color:var(--txt);border-color:color-mix(in oklab, var(--line) 70%, #2a3a52)}
 
-/* Tabs unified */
 .tabsUnified{display:flex;gap:10px;align-items:center;margin-top:8px}
 .tabsLine{flex:1;min-width:0}
 .tabsToggle{white-space:nowrap;padding:10px 12px;border-radius:14px}
 
-/* Filters */
 .filtersBar{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
 .chip{padding:8px 10px;border-radius:999px;border:1px solid var(--line);background:transparent;color:var(--mut);cursor:pointer;font-weight:900;font-size:12px}
 .chip.active{background:color-mix(in oklab, var(--card) 70%, transparent);color:var(--txt);border-color:color-mix(in oklab, var(--line) 70%, #2a3a52)}
 
-/* Results pill */
-.resultsPill{display:inline-flex;align-items:center;gap:8px;margin:10px 0 0 0;padding:8px 10px;border-radius:999px;border:1px solid var(--line);background:color-mix(in oklab, var(--card) 75%, transparent);color:var(--mut);font-size:12px;font-weight:900}
-
-/* Sections */
 .section{margin-top:14px}
 .sectionHead{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin:10px 0}
 .sectionTitle{font-weight:1000;font-size:14px}
+
 .hScroll{display:flex;gap:10px;overflow:auto;padding:6px 2px 10px 2px;scroll-snap-type:x mandatory}
 .hCard{min-width:150px;max-width:150px;background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden;cursor:pointer;scroll-snap-align:start;box-shadow:var(--shadow)}
 .hCard img{width:100%;height:150px;object-fit:cover;background:#0a0f17}
@@ -73,7 +69,6 @@ textarea{min-height:80px;resize:vertical}
 .hCard .hname{font-weight:1000;font-size:13px;line-height:1.15}
 .hCard .hprice{font-weight:1000;font-size:13px;margin-top:6px}
 
-/* Grid */
 .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:12px}
 @media (min-width:721px){.grid{grid-template-columns:repeat(4,1fr);gap:12px}}
 .card{background:var(--card);border:1px solid var(--line);border-radius:18px;overflow:hidden;cursor:pointer;transition:transform .12s ease, box-shadow .12s ease, border-color .12s ease}
@@ -89,9 +84,8 @@ textarea{min-height:80px;resize:vertical}
 html[data-theme="dark"] .badge.off{color:#a9ffbf}
 .badge.out{border-color:#3a2a2a;color:#a33}
 html[data-theme="dark"] .badge.out{color:#ffb3b3}
-.badge.low{border-color:color-mix(in oklab, var(--warn) 70%, var(--line));color:color-mix(in oklab, var(--warn) 60%, var(--txt))}
+.badge.low{border-color:rgba(255,204,102,.5);color:var(--warn);font-weight:1000}
 
-/* Modal */
 .modal{position:fixed;inset:0;background:rgba(0,0,0,.58);display:flex;align-items:flex-end;justify-content:center;z-index:100;opacity:0;visibility:hidden;pointer-events:none;transition:opacity .18s ease, visibility .18s ease}
 .modal.open{opacity:1;visibility:visible;pointer-events:auto}
 .modal .sheet{transform:translateY(18px) scale(.985);transition:transform .18s ease}
@@ -101,7 +95,6 @@ body.modalOn{overflow:hidden}
 .sheet .head{position:sticky;top:0;background:color-mix(in oklab, var(--card) 92%, transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);padding:12px}
 .sheet .body{padding:12px}
 
-/* Product modal */
 .pmWrap{display:grid;grid-template-columns:1fr;gap:12px}
 .pmMainImg{width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:16px;border:1px solid var(--line);background:#0a0f17}
 .pmThumbs{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
@@ -116,16 +109,9 @@ body.modalOn{overflow:hidden}
 .pmQtyNum{min-width:28px;text-align:center;font-weight:1000}
 .pmChips{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 2px 0}
 .pmActions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
-.pmIconBtn{display:flex;align-items:center;gap:8px}
-.pmI{font-size:14px}
-.pmL{font-weight:1000;font-size:12px;color:var(--txt)}
 .pmSpecs{display:grid;grid-template-columns:1fr;gap:10px;margin-top:12px}
-.specCard{background:var(--card2);border:1px solid var(--line);border-radius:14px;padding:10px}
-.specK{font-size:12px;color:var(--mut);font-weight:900}
-.specV{margin-top:6px;font-weight:1000;font-size:13px;color:var(--txt)}
 
-/* Cart */
-.cartLayout{display:grid;grid-template-columns:1fr;gap:12px;align-items:start}
+.cartLayout{display:grid;grid-template-columns:1fr;gap:12px}
 .panel{background:var(--card2);border:1px solid var(--line);border-radius:16px;padding:12px}
 .panelTitle{font-weight:1000;margin:0 0 10px 0;font-size:13px}
 .hr{height:1px;background:var(--line);margin:12px 0}
@@ -140,64 +126,24 @@ body.modalOn{overflow:hidden}
 .cartSticky{position:sticky;bottom:0;background:color-mix(in oklab, var(--card) 92%, transparent);border-top:1px solid var(--line);padding:10px;border-radius:14px;margin-top:12px}
 .cartMini{font-size:12px;color:var(--mut);border:1px solid var(--line);background:color-mix(in oklab, var(--card2) 92%, transparent);border-radius:12px;padding:10px}
 
-/* Toast */
+.checkoutBar{display:flex;gap:8px;margin-bottom:10px}
+.chkStep{flex:1;text-align:center;padding:6px;border-radius:10px;border:1px solid var(--line);font-size:12px;color:var(--mut)}
+.chkStep.active{background:var(--acc);color:#05210f;font-weight:900}
+
+.wizardNav{display:flex;gap:10px;margin-top:12px}
+.wizardNav .btn{flex:1}
+
+.recoTitle{font-weight:1000;margin-top:12px}
+.recoRow{display:flex;gap:10px;overflow-x:auto}
+.recoItem{min-width:110px;border:1px solid var(--line);border-radius:12px;padding:6px;cursor:pointer}
+.recoItem img{width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:8px}
+
 .toast{position:fixed;bottom:96px;left:50%;transform:translateX(-50%);background:var(--card2);border:1px solid var(--line);color:var(--txt);padding:10px 12px;border-radius:12px;display:none;z-index:120}
 .toast.show{display:block}
 
-/* Skeleton */
-.skCard{border-radius:18px;border:1px solid var(--line);background:var(--card);overflow:hidden;position:relative}
-.skImg{width:100%;aspect-ratio:1/1;background:color-mix(in oklab, var(--mut) 18%, transparent)}
-.skBody{padding:12px}
-.skLine{height:10px;border-radius:999px;background:color-mix(in oklab, var(--mut) 18%, transparent);margin:10px 0}
-.skLine.sm{width:55%}.skLine.md{width:78%}.skLine.lg{width:92%}
-.skShimmer::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.12),transparent);transform:translateX(-120%);animation:sh 1.2s infinite}
-html[data-theme="light"] .skShimmer::after{background:linear-gradient(90deg,transparent,rgba(10,20,40,.08),transparent)}
-@keyframes sh{to{transform:translateX(120%)}}
-
-/* ToTop */
 .toTop{position:fixed;right:14px;bottom:110px;z-index:140;width:44px;height:44px;border-radius:14px;border:1px solid var(--line);background:color-mix(in oklab, var(--card) 92%, transparent);color:var(--txt);box-shadow:var(--shadow);cursor:pointer;opacity:0;transform:translateY(8px);pointer-events:none;transition:opacity .18s ease, transform .18s ease}
 .toTop.show{opacity:1;transform:translateY(0);pointer-events:auto}
 
-/* AGOTADO */
-.card.outCard{opacity:.62;filter:grayscale(.75)}
-.card.outCard:hover{transform:none;box-shadow:none}
-.imgWrap{position:relative}
-.card.outCard .img{opacity:.55;filter:grayscale(1)}
-.card.outCard .imgWrap::after{content:"AGOTADO";position:absolute;top:16px;left:-58px;padding:8px 80px;font-weight:1000;letter-spacing:.14em;text-transform:uppercase;color:#fff;background:rgba(0,0,0,.75);transform:rotate(-35deg);border:1px solid rgba(255,255,255,.18)}
-html[data-theme="light"] .card.outCard .imgWrap::after{background:rgba(20,25,35,.72)}
-
-/* Load more */
-.loadMoreWrap{margin-top:16px;text-align:center}
-.loadMoreWrap .btn{min-width:200px}
-
-/* Sort ✓ */
-.sortItem{width:100%;text-align:left;display:flex;align-items:center;justify-content:space-between;padding:12px 12px;border-radius:12px;margin-bottom:8px}
-.sortItem.active{border-color:color-mix(in oklab, var(--line) 70%, #2a3a52);background:color-mix(in oklab, var(--card) 70%, transparent)}
-.sortItem.active::after{content:"✓";font-weight:1000;color:var(--acc)}
-
-/* MobileBar PRO */
-.mobileBar{
-  display:flex;
-  position:fixed;
-  left:10px;right:10px;bottom:10px;
-  z-index:130;
-  gap:10px;
-  padding:10px;
-  border-radius:18px;
-  border:1px solid var(--line);
-  background:color-mix(in oklab, var(--card) 92%, transparent);
-  box-shadow:var(--shadow);
-  backdrop-filter:blur(10px);
-}
-.mobileBar .btn{
-  flex:1;height:44px;display:flex;align-items:center;justify-content:center;gap:8px;
-  padding:0 12px;border-radius:14px;font-weight:1000;line-height:1
-}
-.mobileBar .miniCount{
-  margin-left:0;padding:2px 8px;border-radius:999px;border:1px solid var(--line);
-  background:color-mix(in oklab, var(--card2) 85%, transparent);
-  color:var(--mut);font-size:12px;font-weight:1000
-}
-.mobileBar .btn.ghost{background:transparent;border:1px solid var(--line)}
-.mobileBar .btn.acc{box-shadow:0 8px 20px rgba(37,211,102,.18)}
-@supports (padding: env(safe-area-inset-bottom)){ .mobileBar{bottom:calc(10px + env(safe-area-inset-bottom))} }
+.mobileBar{display:flex;position:fixed;left:10px;right:10px;bottom:10px;z-index:130;gap:10px;padding:10px;border-radius:18px;border:1px solid var(--line);background:color-mix(in oklab, var(--card) 92%, transparent);box-shadow:var(--shadow);backdrop-filter:blur(10px)}
+.mobileBar .btn{flex:1;height:44px;display:flex;align-items:center;justify-content:center;gap:8px;padding:0 12px;border-radius:14px;font-weight:1000;line-height:1}
+.mobileBar .miniCount{margin-left:0;padding:2px 8px;border-radius:999px;border:1px solid var(--line);background:color-mix(in oklab, var(--card2) 85%, transparent);color:var(--mut);font-size:12px;font-weight:1000}
