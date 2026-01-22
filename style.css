@@ -54,6 +54,7 @@ header{
 
 .search{flex:1;min-width:200px}
 .sortBox{min-width:190px}
+
 input,select,textarea{
   width:100%;
   padding:10px 12px;
@@ -65,6 +66,11 @@ input,select,textarea{
 }
 input:focus,select:focus,textarea:focus{box-shadow:var(--focus)}
 textarea{min-height:80px;resize:vertical}
+
+/* ===== Theme button ===== */
+.themeBtn{display:flex;align-items:center;gap:8px}
+.tIcon{font-size:14px}
+.tText{font-size:12px;color:var(--mut);font-weight:800}
 
 /* ===== Tabs ===== */
 .tabs{
@@ -90,13 +96,48 @@ textarea{min-height:80px;resize:vertical}
   border-color:color-mix(in oklab, var(--line) 70%, #2a3a52);
 }
 
+/* ===== Banner ===== */
+.banner{
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+  padding:12px 12px;
+  border-radius:16px;
+  border:1px solid var(--line);
+  background:color-mix(in oklab, var(--card) 92%, transparent);
+  box-shadow:var(--shadow);
+}
+.banner .bLeft{font-weight:900;font-size:13px;color:var(--txt)}
+.banner .bClose{padding:8px 10px}
+
+/* ===== Quick filters ===== */
+.filtersBar{
+  display:flex;gap:8px;flex-wrap:wrap;
+  margin-top:10px;
+}
+.chip{
+  padding:8px 10px;
+  border-radius:999px;
+  border:1px solid var(--line);
+  background:transparent;
+  color:var(--mut);
+  cursor:pointer;
+  font-weight:900;
+  font-size:12px;
+}
+.chip.active{
+  background:color-mix(in oklab, var(--card) 70%, transparent);
+  color:var(--txt);
+  border-color:color-mix(in oklab, var(--line) 70%, #2a3a52);
+}
+
 /* ===== Sections ===== */
 .section{margin-top:14px}
 .sectionHead{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin:10px 0}
 .sectionTitle{font-weight:1000;font-size:14px}
+
 .hScroll{display:flex;gap:10px;overflow:auto;padding:6px 2px 10px 2px;scroll-snap-type:x mandatory}
 .hScroll::-webkit-scrollbar{height:6px}
 .hScroll::-webkit-scrollbar-thumb{background:color-mix(in oklab, var(--mut) 25%, transparent);border-radius:999px}
+
 .hCard{
   min-width:170px;max-width:170px;
   background:var(--card);
@@ -124,7 +165,6 @@ textarea{min-height:80px;resize:vertical}
   border-radius:18px;
   overflow:hidden;
   cursor:pointer;
-  box-shadow:0 0 0 rgba(0,0,0,0);
   transition:transform .12s ease, box-shadow .12s ease, border-color .12s ease;
 }
 .card:hover{transform:translateY(-2px);box-shadow:var(--shadow);border-color:color-mix(in oklab, var(--line) 70%, #2a3a52)}
@@ -136,7 +176,6 @@ textarea{min-height:80px;resize:vertical}
 .mut{color:var(--mut);font-size:12px}
 .price{font-weight:1000;margin-top:6px;font-size:14px}
 
-/* ===== Badges ===== */
 .badge{
   display:inline-block;
   font-size:11px;
@@ -152,8 +191,13 @@ html[data-theme="dark"] .badge.off{color:#a9ffbf}
 html[data-theme="dark"] .badge.out{color:#ffb3b3}
 
 /* ===== Modal base ===== */
-.modal{position:fixed;inset:0;background:rgba(0,0,0,.58);display:none;align-items:flex-end;justify-content:center;z-index:100}
-.modal.open{display:flex}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.58);display:flex;align-items:flex-end;justify-content:center;z-index:100}
+.modal{opacity:0;visibility:hidden;pointer-events:none;transition:opacity .18s ease, visibility .18s ease}
+.modal.open{opacity:1;visibility:visible;pointer-events:auto}
+.modal .sheet{transform:translateY(18px) scale(.985);transition:transform .18s ease}
+.modal.open .sheet{transform:translateY(0) scale(1)}
+body.modalOn{overflow:hidden}
+
 .sheet{
   width:min(980px,100%);
   max-height:92vh;
@@ -183,12 +227,34 @@ html[data-theme="dark"] .badge.out{color:#ffb3b3}
 .pmPrice{font-weight:1000;font-size:18px;margin-top:8px}
 .pmBadges{margin-top:8px}
 .pmDesc{margin-top:12px;color:var(--mut);font-size:13px;line-height:1.45;white-space:pre-wrap}
-.pmVideoRow{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
 .pmQtyRow{display:flex;gap:10px;align-items:center;margin-top:14px}
 .pmQty{display:flex;gap:8px;align-items:center}
 .pmQtyNum{min-width:28px;text-align:center;font-weight:1000}
 
-/* ===== Cart Modal ===== */
+/* premium modal pieces */
+.pmChips{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 2px 0}
+.pmActions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.pmIconBtn{display:flex;align-items:center;gap:8px}
+.pmI{font-size:14px}
+.pmL{font-weight:1000;font-size:12px;color:var(--txt)}
+
+.pmSpecs{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  margin-top:12px;
+}
+@media (max-width:720px){.pmSpecs{grid-template-columns:1fr}}
+.specCard{
+  background:var(--card2);
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:10px;
+}
+.specK{font-size:12px;color:var(--mut);font-weight:900}
+.specV{margin-top:6px;font-weight:1000;font-size:13px;color:var(--txt)}
+
+/* ===== Cart modal ===== */
 .cartLayout{display:grid;grid-template-columns:1.1fr .9fr;gap:12px;align-items:start}
 @media (max-width:900px){.cartLayout{grid-template-columns:1fr}}
 .panel{
@@ -210,12 +276,10 @@ html[data-theme="dark"] .badge.out{color:#ffb3b3}
 }
 .cartItem img{width:62px;height:62px;border-radius:12px;object-fit:cover;background:#0a0f17}
 .qty{display:flex;gap:6px;align-items:center}
-.mini{
-  padding:6px 10px;border-radius:10px;border:1px solid var(--line);
-  background:var(--card2);color:var(--txt);cursor:pointer
-}
+.mini{padding:6px 10px;border-radius:10px;border:1px solid var(--line);background:var(--card2);color:var(--txt);cursor:pointer}
 .sum{display:flex;justify-content:space-between;margin:8px 0;color:var(--mut)}
 .total{font-size:18px;font-weight:1000;color:var(--txt)}
+
 .cartSticky{
   position:sticky;bottom:0;
   background:color-mix(in oklab, var(--card) 92%, transparent);
@@ -224,6 +288,16 @@ html[data-theme="dark"] .badge.out{color:#ffb3b3}
 }
 @media (min-width:901px){
   .cartSticky{position:static;background:transparent;border:0;padding:0;border-radius:0}
+}
+
+/* mini resumen carrito */
+.cartMini{
+  font-size:12px;
+  color:var(--mut);
+  border:1px solid var(--line);
+  background:color-mix(in oklab, var(--card2) 92%, transparent);
+  border-radius:12px;
+  padding:10px;
 }
 
 /* ===== Toast ===== */
@@ -247,178 +321,6 @@ html[data-theme="dark"] .badge.out{color:#ffb3b3}
   border:1px solid var(--line);color:var(--mut);font-size:12px
 }
 @media (max-width:720px){.mobileBar{display:flex}}
-
-/* ===== Theme button ===== */
-.themeBtn{display:flex;align-items:center;gap:8px}
-.tIcon{font-size:14px}
-.tText{font-size:12px;color:var(--mut);font-weight:800}
-
-/* ===== (1) Animación Modales + Lock scroll ===== */
-.modal{
-  display:flex;
-  opacity:0;
-  visibility:hidden;
-  pointer-events:none;
-  transition:opacity .18s ease, visibility .18s ease;
-}
-.modal.open{
-  opacity:1;
-  visibility:visible;
-  pointer-events:auto;
-}
-.modal .sheet{
-  transform:translateY(18px) scale(.985);
-  transition:transform .18s ease;
-}
-.modal.open .sheet{
-  transform:translateY(0) scale(1);
-}
-body.modalOn{overflow:hidden}
-
-/* ===== (2) Skeleton Loading ===== */
-.skCard{
-  border-radius:18px;
-  border:1px solid var(--line);
-  background:var(--card);
-  overflow:hidden;
-  position:relative;
-}
-.skImg{width:100%;aspect-ratio:1/1;background:color-mix(in oklab, var(--mut) 18%, transparent)}
-.skBody{padding:12px}
-.skLine{height:10px;border-radius:999px;background:color-mix(in oklab, var(--mut) 18%, transparent);margin:10px 0}
-.skLine.sm{width:55%}
-.skLine.md{width:78%}
-.skLine.lg{width:92%}
-.skShimmer::after{
-  content:"";
-  position:absolute;inset:0;
-  background:linear-gradient(90deg, transparent, rgba(255,255,255,.12), transparent);
-  transform:translateX(-120%);
-  animation:sh 1.2s infinite;
-}
-html[data-theme="light"] .skShimmer::after{
-  background:linear-gradient(90deg, transparent, rgba(10,20,40,.08), transparent);
-}
-@keyframes sh{to{transform:translateX(120%)}}
-
-/* ===== (3) Botón Ir Arriba ===== */
-.toTop{
-  position:fixed;
-  right:14px;
-  bottom:84px;
-  z-index:140;
-  width:44px;height:44px;
-  border-radius:14px;
-  border:1px solid var(--line);
-  background:color-mix(in oklab, var(--card) 92%, transparent);
-  color:var(--txt);
-  box-shadow:var(--shadow);
-  cursor:pointer;
-  opacity:0;
-  transform:translateY(8px);
-  pointer-events:none;
-  transition:opacity .18s ease, transform .18s ease;
-}
-.toTop.show{
-  opacity:1;
-  transform:translateY(0);
-  pointer-events:auto;
-}
-
-/* ===== ✅ AGOTADO: gris + cinta diagonal ===== */
-.card.outCard{
-  opacity:.62;
-  filter:grayscale(.75);
-}
-.card.outCard:hover{
-  transform:none;
-  box-shadow:none;
-}
-.imgWrap{position:relative}
-.card.outCard .img{
-  opacity:.55;
-  filter:grayscale(1);
-}
-.card.outCard .imgWrap::after{
-  content:"AGOTADO";
-  position:absolute;
-  top:16px;
-  left:-58px;
-  padding:8px 80px;
-  font-weight:1000;
-  letter-spacing:.14em;
-  text-transform:uppercase;
-  color:#fff;
-  background:rgba(0,0,0,.75);
-  transform:rotate(-35deg);
-  border:1px solid rgba(255,255,255,.18);
-}
-html[data-theme="light"] .card.outCard .imgWrap::after{
-  background:rgba(20,25,35,.72);
-}
-/* ===== Banner ===== */
-.banner{
-  display:flex;align-items:center;justify-content:space-between;gap:10px;
-  padding:12px 12px;
-  border-radius:16px;
-  border:1px solid var(--line);
-  background:color-mix(in oklab, var(--card) 92%, transparent);
-  box-shadow:var(--shadow);
-}
-.banner .bLeft{font-weight:900;font-size:13px;color:var(--txt)}
-.banner .bClose{padding:8px 10px}
-
-/* ===== Filtros rápidos ===== */
-.filtersBar{
-  display:flex;gap:8px;flex-wrap:wrap;
-  margin-top:10px;
-}
-.chip{
-  padding:8px 10px;
-  border-radius:999px;
-  border:1px solid var(--line);
-  background:transparent;
-  color:var(--mut);
-  cursor:pointer;
-  font-weight:900;
-  font-size:12px;
-}
-.chip.active{
-  background:color-mix(in oklab, var(--card) 70%, transparent);
-  color:var(--txt);
-  border-color:color-mix(in oklab, var(--line) 70%, #2a3a52);
-}
-
-/* ===== Modal producto premium ===== */
-.pmChips{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 2px 0}
-.pmActions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
-.pmIconBtn{display:flex;align-items:center;gap:8px}
-.pmI{font-size:14px}
-.pmL{font-weight:1000;font-size:12px;color:var(--txt)}
-html[data-theme="light"] .pmL{color:var(--txt)}
-
-.pmSpecs{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:10px;
-  margin-top:12px;
-}
-@media (max-width:720px){.pmSpecs{grid-template-columns:1fr}}
-.specCard{
-  background:var(--card2);
-  border:1px solid var(--line);
-  border-radius:14px;
-  padding:10px;
-}
-.specK{font-size:12px;color:var(--mut);font-weight:900}
-.specV{margin-top:6px;font-weight:1000;font-size:13px;color:var(--txt)}
-
-/* ===== Animación modales + lock ===== */
-.modal{display:flex;opacity:0;visibility:hidden;pointer-events:none;transition:opacity .18s ease, visibility .18s ease}
-.modal.open{opacity:1;visibility:visible;pointer-events:auto}
-.modal .sheet{transform:translateY(18px) scale(.985);transition:transform .18s ease}
-.modal.open .sheet{transform:translateY(0) scale(1)}
-body.modalOn{overflow:hidden}
 
 /* ===== Skeleton ===== */
 .skCard{border-radius:18px;border:1px solid var(--line);background:var(--card);overflow:hidden;position:relative}
@@ -470,18 +372,5 @@ html[data-theme="light"] .skShimmer::after{background:linear-gradient(90deg,tran
 html[data-theme="light"] .card.outCard .imgWrap::after{background:rgba(20,25,35,.72)}
 
 /* ===== Cargar más ===== */
-.loadMoreWrap{
-  margin-top:16px;
-  text-align:center;
-}
-.loadMoreWrap .btn{
-  min-width:200px;
-}
-.cartMini{
-  font-size:12px;
-  color:var(--mut);
-  border:1px solid var(--line);
-  background:color-mix(in oklab, var(--card2) 92%, transparent);
-  border-radius:12px;
-  padding:10px;
-}
+.loadMoreWrap{margin-top:16px;text-align:center}
+.loadMoreWrap .btn{min-width:200px}
