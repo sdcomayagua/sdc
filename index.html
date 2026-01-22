@@ -4,6 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Soluciones Digitales Comayagua | Catálogo</title>
+
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="tanda3.css">
   <link rel="stylesheet" href="tanda4.css">
@@ -14,7 +15,9 @@
 <header>
   <div class="wrap">
     <div class="row headerTop">
-      <div class="brand headerBrand"><span class="brandDot"></span><span class="brandText">Soluciones Digitales Comayagua</span></div>
+      <div class="brand headerBrand">
+        <span class="brandDot"></span><span class="brandText">Soluciones Digitales Comayagua</span>
+      </div>
 
       <div class="search headerSearch">
         <input id="q" placeholder="Buscar..." />
@@ -56,6 +59,9 @@
     </div>
 
     <div class="filtersBar" id="quickFilters"></div>
+
+    <!-- ✅ T6: filtro por marca/compatibilidad -->
+    <select id="brandFilter" class="btn ghost" style="width:100%;margin-top:10px"></select>
   </div>
 </header>
 
@@ -91,7 +97,7 @@
 <div class="toast" id="toast"></div>
 <button class="toTop" id="toTop" type="button" aria-label="Ir arriba">↑</button>
 
-<!-- THANKS -->
+<!-- ✅ Thanks Modal -->
 <div class="modal" id="thanksModal" aria-hidden="true">
   <div class="sheet">
     <div class="head row" style="justify-content:space-between">
@@ -102,6 +108,13 @@
       <div class="thanksBox">
         <div class="thanksTitle">Gracias por tu pedido ✅</div>
         <div class="thanksText">Te contactaremos pronto para confirmar disponibilidad y envío.</div>
+
+        <!-- ✅ T6: limpiar carrito después de enviar -->
+        <label class="note" style="display:flex;gap:10px;align-items:center;margin-top:10px;justify-content:center">
+          <input type="checkbox" id="clearAfterSend">
+          Limpiar carrito después de enviar
+        </label>
+
         <button class="btn acc" id="thanksContinue" type="button" style="margin-top:12px;width:100%">Seguir comprando</button>
       </div>
     </div>
@@ -286,11 +299,11 @@
       </div>
 
       <div class="wizardErr" id="wizardErr"></div>
-
     </div>
   </div>
 </div>
 
+<!-- Barra inferior móvil -->
 <div class="mobileBar" id="mobileBar">
   <button class="btn" id="bottomCartBtn">🛒 <span class="miniCount" id="bottomCartCount">0</span></button>
   <button class="btn ghost viewBtn" id="bottomViewBtn" type="button" aria-label="Modo catálogo">🧾</button>
@@ -330,9 +343,13 @@
 <script src="price_stock_watch.js"></script>
 
 <script src="add_confirm.js"></script>
-<script src="order_history.js"></script>
-<script src="post_purchase.js"></script>
-<script src="view_mode2.js"></script>
+
+<!-- ✅ T6 scripts -->
+<script src="live_refresh.js"></script>
+<script src="view_mode3.js"></script>
+<script src="brand_filter.js"></script>
+<script src="order_history_pro.js"></script>
+<script src="post_purchase_plus.js"></script>
 
 <script src="continue_state_plus.js"></script>
 <script src="checkout_guard.js"></script>
