@@ -53,7 +53,7 @@
     // Paginación
     window.SDC_PAGER?.setPageSize?.(24);
 
-    // Menú ordenar móvil
+    // Menú ordenar móvil (con ✓)
     window.SDC_SORT_MENU?.init?.();
 
     // Skeleton
