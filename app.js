@@ -31,7 +31,6 @@
     window.SDC_CONTINUE?.init?.();
 
     // T4
-    window.SDC_PRICE?.init?.();
     window.SDC_THANKS?.init?.();
     window.SDC_ORDERS?.render?.();
 
