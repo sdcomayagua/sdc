@@ -1,0 +1,83 @@
+/* =========================
+   TANDA 3 UI (11-15)
+   ========================= */
+
+/* Stepper pro */
+.checkoutBar{
+  display:flex;
+  gap:8px;
+  margin-bottom:10px;
+}
+.chkStep{
+  flex:1;
+  display:flex;
+  gap:8px;
+  align-items:center;
+  justify-content:center;
+  padding:8px 10px;
+  border-radius:12px;
+  border:1px solid var(--line);
+  font-size:12px;
+  color:var(--mut);
+  user-select:none;
+  cursor:pointer;
+}
+.chkStep .ico{font-size:14px}
+.chkStep.active{
+  background:rgba(37,211,102,.16);
+  border-color:rgba(37,211,102,.35);
+  color:#a9ffbf;
+  font-weight:1000;
+}
+html[data-theme="light"] .chkStep.active{
+  color:#0b1020;
+  background:rgba(37,211,102,.22);
+}
+
+/* Cart alert */
+.cartAlert{
+  margin:8px 0 12px 0;
+  padding:10px 12px;
+  border-radius:14px;
+  border:1px solid rgba(255,204,102,.35);
+  background:rgba(255,204,102,.12);
+  color:var(--warn);
+  font-weight:1000;
+  font-size:12px;
+  display:none;
+}
+
+/* Unit price */
+.cartMeta{
+  margin-top:6px;
+  font-size:12px;
+  color:var(--mut);
+}
+.cartMeta b{color:var(--txt)}
+
+/* View mode buttons */
+.viewBtn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  min-width:44px;
+  height:44px;
+  padding:0 12px;
+  border-radius:14px;
+}
+
+/* Compact catalog mode */
+body[data-view="compact"] .mut{display:none;}
+body[data-view="compact"] .card .btn.acc{padding:9px 10px;}
+body[data-view="compact"] .badge{display:none;}
+body[data-view="compact"] .p{padding:10px;}
+body[data-view="compact"] .name{font-size:13px}
+body[data-view="compact"] .price{font-size:13px}
+
+/* Detail mode: keep normal (default) */
+
+/* Mobile: hide desktop view button text */
+@media (max-width:720px){
+  .viewBtn .tText{display:none;}
+}
