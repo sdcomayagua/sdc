@@ -12,7 +12,6 @@
     if (F.favorites) safe(() => window.SDC_FAV?.init?.());
     if (F.swipeImages) safe(() => window.SDC_SWIPE_IMAGES?.init?.());
 
-    // CSS features (solo marcan flags en <html> para que CSS actúe)
     const html = document.documentElement;
     html.classList.toggle("fxOn", !!F.modalFx);
     html.classList.toggle("pcListColsOn", !!F.pcListColumns);
