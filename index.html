@@ -10,6 +10,7 @@
   <link rel="stylesheet" href="tanda4.css">
   <link rel="stylesheet" href="tanda5.css">
   <link rel="stylesheet" href="mobile_fix.css">
+  <link rel="stylesheet" href="cart_fab.css">
 </head>
 <body>
 
@@ -61,6 +62,7 @@
 
     <div class="filtersBar" id="quickFilters"></div>
 
+    <!-- filtro marca/compatibilidad (se oculta automáticamente si está vacío) -->
     <select id="brandFilter" class="btn ghost" style="width:100%;margin-top:10px"></select>
   </div>
 </header>
@@ -97,6 +99,7 @@
 <div class="toast" id="toast"></div>
 <button class="toTop" id="toTop" type="button" aria-label="Ir arriba">↑</button>
 
+<!-- THANKS -->
 <div class="modal" id="thanksModal" aria-hidden="true">
   <div class="sheet">
     <div class="head row" style="justify-content:space-between">
@@ -119,6 +122,7 @@
   </div>
 </div>
 
+<!-- ORDENAR -->
 <div class="modal" id="sortModal" aria-hidden="true">
   <div class="sheet">
     <div class="head row" style="justify-content:space-between">
@@ -137,6 +141,7 @@
   </div>
 </div>
 
+<!-- ZOOM -->
 <div class="modal" id="zoomModal" aria-hidden="true">
   <div class="sheet zoomSheet">
     <div class="head row" style="justify-content:space-between">
@@ -149,6 +154,7 @@
   </div>
 </div>
 
+<!-- PRODUCTO -->
 <div class="modal" id="productModal" aria-hidden="true">
   <div class="sheet">
     <div class="head row" style="justify-content:space-between">
@@ -196,6 +202,7 @@
   </div>
 </div>
 
+<!-- CARRITO -->
 <div class="modal" id="cartModal" aria-hidden="true">
   <div class="sheet">
     <div class="head row" style="justify-content:space-between">
@@ -297,6 +304,7 @@
   </div>
 </div>
 
+<!-- Barra inferior móvil -->
 <div class="mobileBar" id="mobileBar">
   <button class="btn" id="bottomCartBtn">🛒 <span class="miniCount" id="bottomCartCount">0</span></button>
   <button class="btn ghost viewBtn" id="bottomViewBtn" type="button" aria-label="Modo catálogo">🧾</button>
@@ -306,6 +314,10 @@
 
 <script src="config.js"></script>
 <script src="utils.js"></script>
+
+<script src="fallback_image.js"></script>
+<script src="mobile_cart_badge.js"></script>
+<script src="smart_defaults.js"></script>
 
 <script src="theme.js"></script>
 <script src="motion.js"></script>
@@ -347,6 +359,8 @@
 <script src="checkout_guard.js"></script>
 
 <script src="mobile_fix.js"></script>
+<script src="cart_persist.js"></script>
+<script src="eta.js"></script>
 
 <script src="product_modal_ui.js"></script>
 
