@@ -88,6 +88,7 @@
 <div class="toast" id="toast"></div>
 <button class="toTop" id="toTop" type="button" aria-label="Ir arriba">↑</button>
 
+<!-- MODAL ORDENAR -->
 <div class="modal" id="sortModal" aria-hidden="true">
   <div class="sheet">
     <div class="head row" style="justify-content:space-between">
@@ -106,6 +107,7 @@
   </div>
 </div>
 
+<!-- MODAL PRODUCTO -->
 <div class="modal" id="productModal" aria-hidden="true">
   <div class="sheet">
     <div class="head row" style="justify-content:space-between">
@@ -146,28 +148,42 @@
           </div>
 
           <div class="note" id="pmNote" style="margin-top:10px"></div>
+
+          <!-- ✅ TANDA 1: Recomendaciones -->
+          <div id="recoBox"></div>
         </div>
       </div>
     </div>
   </div>
 </div>
 
+<!-- MODAL CARRITO (Wizard) -->
 <div class="modal" id="cartModal" aria-hidden="true">
   <div class="sheet">
     <div class="head row" style="justify-content:space-between">
       <div style="font-weight:1000">Carrito</div>
-      <button class="btn" id="closeCart">Cerrar</button>
+      <div style="display:flex;gap:8px;align-items:center">
+        <!-- ✅ Vaciar carrito -->
+        <button class="btn danger" id="clearCartBtn" type="button">Vaciar</button>
+        <button class="btn" id="closeCart">Cerrar</button>
+      </div>
     </div>
 
     <div class="body">
+      <!-- ✅ Wizard bar -->
+      <div id="checkoutBar" class="checkoutBar"></div>
+
       <div class="cartLayout">
-        <div class="panel">
+
+        <!-- STEP 1 -->
+        <div class="panel" id="stepProducts">
           <div class="panelTitle">Productos</div>
           <div id="cartItems"></div>
           <div class="note" id="cartEmptyNote" style="display:none">Tu carrito está vacío.</div>
         </div>
 
-        <div class="panel">
+        <!-- STEP 2 -->
+        <div class="panel" id="stepDelivery" style="display:none">
           <div class="panelTitle">Entrega y pago</div>
 
           <div class="two">
@@ -197,6 +213,13 @@
           </div>
 
           <div class="hr"></div>
+          <div class="panelTitle">Resumen</div>
+          <div id="summary"></div>
+          <div class="cartMini" id="cartMiniSummary" style="margin-top:10px"></div>
+        </div>
+
+        <!-- STEP 3 -->
+        <div class="panel" id="stepConfirm" style="display:none">
           <div class="panelTitle">Datos del cliente</div>
 
           <div class="two">
@@ -209,24 +232,29 @@
             <textarea id="addr" placeholder="Colonia, barrio, referencias..."></textarea>
           </div>
 
-          <div class="hr"></div>
-          <div class="panelTitle">Resumen</div>
-
-          <div id="summary"></div>
-
-          <div class="cartSticky">
-            <div class="cartMini" id="cartMiniSummary"></div>
-            <button class="btn acc" id="sendWA" style="width:100%;margin-top:10px">Enviar pedido por WhatsApp</button>
-            <div class="note" style="margin-top:8px">
-              Envío nacional: contra entrega (L 160) o prepago (L 110).
-            </div>
+          <!-- ✅ Nota extra -->
+          <div style="margin-top:10px">
+            <label class="mut">Instrucciones de entrega (opcional)</label>
+            <textarea id="clientNote" placeholder="Ej: llamar antes / dejar en portón / color casa..."></textarea>
           </div>
+
+          <div class="hr"></div>
+          <button class="btn acc" id="sendWA" style="width:100%">Enviar pedido por WhatsApp</button>
         </div>
+
       </div>
+
+      <!-- Navegación del wizard -->
+      <div class="wizardNav">
+        <button class="btn ghost" id="prevStepBtn" type="button">Atrás</button>
+        <button class="btn acc" id="nextStepBtn" type="button">Continuar</button>
+      </div>
+
     </div>
   </div>
 </div>
 
+<!-- Barra inferior móvil -->
 <div class="mobileBar" id="mobileBar">
   <button class="btn" id="bottomCartBtn">🛒 <span class="miniCount" id="bottomCartCount">0</span></button>
   <button class="btn ghost themeBtn" id="bottomThemeBtn" type="button" aria-label="Tema"><span class="tIcon">🌙</span></button>
@@ -244,13 +272,18 @@
 <script src="banner.js"></script>
 <script src="filters.js"></script>
 <script src="pagination.js"></script>
-<script src="cart_persist.js"></script>
 <script src="cart_mini.js"></script>
-<script src="eta.js"></script>
 <script src="sort_menu.js"></script>
 <script src="tabs_unified.js"></script>
+
 <script src="search_ui.js"></script>
 <script src="results_counter.js"></script>
+
+<!-- ✅ TANDA 1 -->
+<script src="checkout_steps.js"></script>
+<script src="customer_profile.js"></script>
+<script src="product_reco.js"></script>
+
 <script src="product_modal_ui.js"></script>
 
 <script src="store.js"></script>
