@@ -1,0 +1,66 @@
+/* ============ TANDA 4 (16-20) ============ */
+
+/* add to cart pulse */
+.pulse{
+  animation:pulseCart .42s ease;
+}
+@keyframes pulseCart{
+  0%{transform:scale(1)}
+  40%{transform:scale(1.06)}
+  100%{transform:scale(1)}
+}
+
+/* price filters bar */
+.priceFiltersBar{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  margin-top:10px;
+}
+
+/* order history */
+.orderList{
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  margin-top:8px;
+}
+
+/* thanks modal */
+.thanksBox{
+  text-align:center;
+  padding:10px;
+}
+.thanksTitle{
+  font-weight:1000;
+  font-size:16px;
+}
+.thanksText{
+  margin-top:8px;
+  color:var(--mut);
+  font-size:13px;
+  line-height:1.4;
+}
+
+/* list view for catalog */
+body[data-view="list"] .grid{
+  grid-template-columns:1fr !important;
+}
+body[data-view="list"] .card{
+  display:flex;
+  flex-direction:row;
+  gap:10px;
+}
+body[data-view="list"] .imgWrap,
+body[data-view="list"] .img{
+  width:120px;
+  min-width:120px;
+  height:120px;
+  aspect-ratio:auto;
+}
+body[data-view="list"] .p{
+  flex:1;
+}
+body[data-view="list"] .card .btn.acc{
+  width:auto !important;
+}
