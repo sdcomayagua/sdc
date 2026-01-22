@@ -38,7 +38,7 @@
     <!-- Subir imagen -->
     <div class="panel">
       <div class="panelTitle">Subir imagen a Drive</div>
-      <div class="note">La imagen se sube a Drive y te devuelve links para pegar en <b>imagen</b> o <b>galeria_1..8</b>.</div>
+      <div class="note">Sube imagen y copia links para <b>imagen</b> o <b>galeria_1..8</b>.</div>
 
       <div style="margin-top:10px">
         <input type="file" id="fileUp" accept="image/*" />
@@ -60,12 +60,13 @@
       </div>
     </div>
 
-    <!-- Buscar/Editar -->
+    <!-- Buscar/Eliminar -->
     <div class="panel" style="margin-top:12px">
-      <div class="panelTitle">Editar producto por ID</div>
+      <div class="panelTitle">Cargar / Eliminar producto</div>
+
       <div class="two">
         <div>
-          <div class="mut">ID</div>
+          <div class="mut">Buscar por ID</div>
           <input id="findId" placeholder="Ej: SDC-001" />
         </div>
         <div style="display:flex;gap:10px;align-items:flex-end">
@@ -73,27 +74,20 @@
           <button class="btn danger" id="deleteBtn" type="button" style="flex:1">Eliminar</button>
         </div>
       </div>
-      <div class="note" style="margin-top:8px">Cargar llena el formulario. Eliminar borra la fila del sheet (por ID).</div>
+
+      <div class="note" style="margin-top:8px">
+        “Cargar” llena el formulario. “Eliminar” borra el producto por ID.
+      </div>
     </div>
 
     <!-- Form producto -->
     <div class="panel" style="margin-top:12px">
       <div class="panelTitle">Crear / Actualizar producto</div>
-      <div class="note">Campos iguales a tu hoja <b>productos</b>. Puedes dejar vacíos los que no uses.</div>
+      <div class="note">Campos igual a tu hoja <b>productos</b>. Para disponibilidad usa <b>stock</b>.</div>
 
       <div class="two" style="margin-top:10px">
         <div><div class="mut">id *</div><input id="p_id" placeholder="Ej: SDC-001" /></div>
         <div><div class="mut">nombre *</div><input id="p_nombre" placeholder="Nombre del producto" /></div>
-      </div>
-
-      <div class="two" style="margin-top:10px">
-        <div><div class="mut">precio</div><input id="p_precio" inputmode="decimal" placeholder="Ej: 599" /></div>
-        <div><div class="mut">precio_anterior</div><input id="p_precio_anterior" inputmode="decimal" placeholder="Ej: 699" /></div>
-      </div>
-
-      <div class="two" style="margin-top:10px">
-        <div><div class="mut">stock</div><input id="p_stock" inputmode="numeric" placeholder="Ej: 10" /></div>
-        <div><div class="mut">orden</div><input id="p_orden" inputmode="numeric" placeholder="Ej: 1" /></div>
       </div>
 
       <div class="two" style="margin-top:10px">
@@ -102,8 +96,40 @@
       </div>
 
       <div class="two" style="margin-top:10px">
+        <div><div class="mut">precio</div><input id="p_precio" inputmode="decimal" placeholder="Ej: 599" /></div>
+        <div><div class="mut">precio_anterior</div><input id="p_precio_anterior" inputmode="decimal" placeholder="Ej: 699" /></div>
+      </div>
+
+      <!-- Disponibilidad -->
+      <div class="panel" style="margin-top:12px">
+        <div class="panelTitle">Disponibilidad (por stock)</div>
+        <div class="two">
+          <div>
+            <div class="mut">stock</div>
+            <input id="p_stock" inputmode="numeric" placeholder="Ej: 10 (0 = AGOTADO)" />
+            <div class="note" style="margin-top:6px" id="stockStatusNote">Estado: —</div>
+          </div>
+          <div>
+            <div class="mut">Acciones rápidas</div>
+            <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:8px">
+              <button class="btn ghost" id="setAvailableBtn" type="button">✅ Disponible (stock=1)</button>
+              <button class="btn danger" id="setOutBtn" type="button">⛔ Agotado (stock=0)</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="two" style="margin-top:12px">
+        <div><div class="mut">orden</div><input id="p_orden" inputmode="numeric" placeholder="Ej: 1" /></div>
+        <div>
+          <div class="mut">tags</div>
+          <input id="p_tags" placeholder="ej: gamer, android, iphone" />
+        </div>
+      </div>
+
+      <div class="two" style="margin-top:10px">
         <div><div class="mut">imagen</div><input id="p_imagen" placeholder="URL imagen principal" /></div>
-        <div><div class="mut">galeria (links separados por coma)</div><input id="p_galeria" placeholder="url1, url2, url3" /></div>
+        <div><div class="mut">galeria (links por coma)</div><input id="p_galeria" placeholder="url1, url2, url3" /></div>
       </div>
 
       <div class="two" style="margin-top:10px">
@@ -178,24 +204,23 @@
         </div>
       </div>
 
-      <div style="margin-top:10px">
-        <div class="mut">tags</div>
-        <input id="p_tags" placeholder="ej: gamer, android, iphone" />
-      </div>
-
-      <div style="margin-top:10px">
-        <div class="mut">descripcion</div>
-        <textarea id="p_descripcion" placeholder="Descripción del producto..."></textarea>
+      <!-- ✅ Editor de descripción grande -->
+      <div style="margin-top:12px">
+        <div class="mut">descripcion (editor)</div>
+        <textarea id="p_descripcion" style="min-height:180px" placeholder="Escribe aquí la descripción..."></textarea>
+        <div class="note" style="margin-top:6px">
+          Tip: usa saltos de línea y emojis si quieres (se verán en el modal del producto).
+        </div>
       </div>
 
       <div style="display:flex;gap:10px;margin-top:12px;flex-wrap:wrap">
         <button class="btn acc" id="saveBtn" type="button">Guardar / Actualizar</button>
-        <button class="btn ghost" id="clearFormBtn" type="button">Limpiar formulario</button>
+        <button class="btn ghost" id="clearFormBtn" type="button">Limpiar</button>
         <button class="btn ghost" id="copyJsonBtn" type="button">Copiar JSON</button>
       </div>
 
       <div class="note" style="margin-top:10px">
-        Tip: Si cambias imagen/galería, primero súbela arriba y pega los links.
+        Recomendación: si quieres “AGOTADO”, pon stock=0.
       </div>
     </div>
   </div>
