@@ -3,8 +3,6 @@
 
   async function init() {
     window.SDC_THEME?.init?.("dark");
-    document.getElementById("themeBtn")?.addEventListener("click", () => window.SDC_THEME.toggle());
-    document.getElementById("bottomThemeBtn")?.addEventListener("click", () => window.SDC_THEME.toggle());
 
     window.SDC_MOTION?.observe?.();
     window.SDC_UX?.initToTop?.();
@@ -18,6 +16,15 @@
     window.SDC_SEARCH_UI?.init?.();
     window.SDC_RESULTS?.init?.();
 
+    // ✅ TANDA 1 init
+    window.SDC_PROFILE?.load?.();
+    window.SDC_CHECKOUT?.showStep?.(1);
+
+    // ✅ TANDA 2 init
+    window.SDC_ZOOM?.init?.();
+    window.SDC_CART_TOOLS?.init?.();
+    window.SDC_UI_BADGES?.init?.();
+
     window.SDC_CATALOG_UI?.renderSkeletonGrid?.(10);
 
     document.getElementById("q")?.addEventListener("input", () => window.SDC_CATALOG.renderGrid());
@@ -30,17 +37,6 @@
     window.SDC_DELIVERY.initSelectors();
     window.SDC_STORE.updateCartCountUI();
 
-    // Wizard init
-    window.SDC_CHECKOUT?.showStep?.(1);
-
-    // Navegación wizard
-    document.getElementById("nextStepBtn")?.addEventListener("click", () => window.SDC_CHECKOUT.next());
-    document.getElementById("prevStepBtn")?.addEventListener("click", () => window.SDC_CHECKOUT.prev());
-
-    // Guardar datos cliente al enviar pedido
-    document.getElementById("sendWA")?.addEventListener("click", () => window.SDC_PROFILE?.save?.());
-
-    // Actualiza contador
     window.SDC_RESULTS?.refresh?.();
   }
 
