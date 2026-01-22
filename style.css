@@ -461,3 +461,47 @@ textarea{min-height:90px;resize:vertical}
 
 /* Oculta barra inferior cuando hay modal abierto */
 body.modalOn .mobileBar{display:none !important;}
+
+/* ===== Cinta diagonal AGOTADO dentro del MODAL ===== */
+.pmImageWrap{
+  position:relative;
+}
+.pmImageWrap.out::after{
+  content:"AGOTADO";
+  position:absolute;
+  top:16px;
+  left:-70px;
+  padding:10px 90px;
+  font-weight:1000;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:#fff;
+  background:rgba(0,0,0,.72);
+  border:1px solid rgba(255,255,255,.18);
+  transform:rotate(-35deg);
+  pointer-events:none;
+}
+
+/* ===== Mejor modal en PC: 2 columnas (imagen izquierda, info derecha) ===== */
+@media (min-width: 900px){
+  .pmWrap{
+    grid-template-columns: 1.05fr .95fr;
+    align-items:start;
+  }
+  .pmThumbs{
+    max-width: 560px;
+  }
+}
+
+/* ===== Sticky buy block más “premium” ===== */
+.pmBuySticky{
+  position:sticky;
+  bottom:0;
+  z-index:6;
+  margin-top:12px;
+  padding-top:10px;
+  background:linear-gradient(to top,
+    color-mix(in oklab, var(--card) 96%, transparent) 60%,
+    transparent 100%
+  );
+}
