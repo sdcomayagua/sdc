@@ -40,26 +40,21 @@ window.SDC_PRODUCT_MODAL = (() => {
     return out;
   }
 
-  // ✅ Wrapper para la imagen principal (para poner la cinta diagonal)
   function ensureImageWrap() {
     let wrap = document.getElementById("pmImageWrap");
     const img = document.getElementById("pmMainImg");
     if (!img) return null;
-
     if (wrap) return wrap;
 
     wrap = document.createElement("div");
     wrap.id = "pmImageWrap";
     wrap.className = "pmImageWrap";
 
-    // Inserta wrapper antes del img y mueve el img dentro
     img.parentElement.insertBefore(wrap, img);
     wrap.appendChild(img);
-
     return wrap;
   }
 
-  // ✅ Sticky container para (qty + botón + nota)
   function ensureBuySticky() {
     let wrap = document.getElementById("pmBuySticky");
     if (wrap) return wrap;
@@ -76,7 +71,6 @@ window.SDC_PRODUCT_MODAL = (() => {
       wrap.appendChild(qtyRow);
       if (note) wrap.appendChild(note);
     }
-
     return wrap;
   }
 
@@ -131,13 +125,25 @@ window.SDC_PRODUCT_MODAL = (() => {
     `;
   }
 
-  function openConsultAvailability() {
+  function consultWA() {
     const phone = S.getWhatsapp();
     const p = currentProduct;
     const link = SHARE.shareLinkFor(p);
     const txt = `Hola, quiero consultar disponibilidad:\n• ${p.nombre}\n• ID: ${p.id}\n${link}`;
     const wa = "https://wa.me/" + phone.replace(/[^\d]/g, "") + "?text=" + encodeURIComponent(txt);
     window.open(wa, "_blank");
+  }
+
+  function buyNow() {
+    if (!currentProduct) return;
+    const stock = Number(currentProduct.stock || 0);
+    if (stock <= 0) return consultWA();
+
+    const ok = S.addToCart(currentProduct, 1);
+    if (ok) {
+      window.SDC_CART?.openCart?.();
+      close();
+    }
   }
 
   function open(p, opts = { setHash: true }) {
@@ -153,6 +159,9 @@ window.SDC_PRODUCT_MODAL = (() => {
 
     document.title = `${p.nombre} | SDC`;
 
+    // reset tabs al abrir
+    window.SDC_PRODUCT_TABS?.setActive?.("desc");
+
     U.$("pmTitle").textContent = p.nombre || "Producto";
     U.$("pmName").textContent = p.nombre || "";
     U.$("pmCat").textContent = `${p.categoria || ""}${p.subcategoria ? (" • " + p.subcategoria) : ""}`;
@@ -162,7 +171,6 @@ window.SDC_PRODUCT_MODAL = (() => {
     const inStock = stock > 0;
     const low = inStock && stock <= 3;
 
-    // Badges
     U.$("pmStockOk").style.display = inStock && !low ? "inline-block" : "none";
     U.$("pmStockLow").style.display = low ? "inline-block" : "none";
     U.$("pmStockOut").style.display = inStock ? "none" : "inline-block";
@@ -175,7 +183,6 @@ window.SDC_PRODUCT_MODAL = (() => {
     UI.setSpecs(p);
     UI.setActions({ p, video: MEDIA.bestVideo(p) });
 
-    // ✅ Wrapper de imagen + cinta agotado
     const imgWrap = ensureImageWrap();
     if (imgWrap) imgWrap.classList.toggle("out", !inStock);
 
@@ -184,15 +191,19 @@ window.SDC_PRODUCT_MODAL = (() => {
     ensureBuySticky();
 
     const addBtn = U.$("pmAddBtn");
+    const buyBtn = U.$("pmBuyNowBtn");
     const outNote = ensureOutNote();
 
     if (!inStock) {
       if (addBtn) {
-        addBtn.disabled = false;
         addBtn.classList.remove("acc");
         addBtn.classList.add("dangerBtn");
         addBtn.textContent = "Consultar disponibilidad";
-        addBtn.onclick = () => openConsultAvailability();
+        addBtn.onclick = () => consultWA();
+      }
+      if (buyBtn) {
+        buyBtn.textContent = "Comprar ahora";
+        buyBtn.onclick = () => consultWA();
       }
       outNote.style.display = "block";
       outNote.textContent = "Este producto aparece agotado. Puedes consultar disponibilidad por WhatsApp.";
@@ -202,11 +213,9 @@ window.SDC_PRODUCT_MODAL = (() => {
         addBtn.classList.remove("dangerBtn");
         addBtn.classList.add("acc");
         addBtn.textContent = "Añadir al carrito";
-        addBtn.disabled = false;
         addBtn.onclick = () => {
           const ok = S.addToCart(currentProduct, pmQty);
           if (ok) {
-            window.SDC_FX?.flyFrom?.(U.$("pmMainImg"));
             window.SDC_ADD_CONFIRM?.notify?.("Agregado ✅");
             window.SDC_CART?.renderCart?.();
             window.SDC_CART_BADGE?.apply?.();
@@ -214,13 +223,16 @@ window.SDC_PRODUCT_MODAL = (() => {
           }
         };
       }
+      if (buyBtn) {
+        buyBtn.textContent = "Comprar ahora";
+        buyBtn.onclick = () => buyNow();
+      }
       outNote.style.display = "none";
       outNote.textContent = "";
       U.$("pmNote").textContent = "Selecciona cantidad y añade al carrito.";
     }
 
     window.SDC_RECO?.render?.(p, S.getProducts());
-
     U.$("productModal").classList.add("open");
   }
 
