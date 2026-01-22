@@ -33,8 +33,9 @@
     // T4
     window.SDC_PRICE?.init?.();
     window.SDC_THANKS?.init?.();
+    window.SDC_ORDERS?.render?.();
 
-    // ✅ T5
+    // T5
     window.SDC_CONTINUE_PLUS?.init?.();
     window.SDC_GUARD?.init?.();
 
