@@ -17,6 +17,7 @@ window.SDC_CATALOG_UI = (() => {
     return v === true || s === "1" || s === "true" || s === "si" || s === "sí" || s === "yes";
   }
   function isOffer(p){ return toBool(p.oferta) || (Number(p.precio_anterior||0) > Number(p.precio||0)); }
+
   function filterQuick(list){
     const mode = window.SDC_FILTERS?.getMode?.() || "all";
     if (mode === "stock") return list.filter(p => Number(p.stock||0) > 0);
@@ -122,11 +123,13 @@ window.SDC_CATALOG_UI = (() => {
     const sort=getSortMode();
 
     let list=S.getProducts();
-
     if(activeCat!=="Todas") list=list.filter(p=>p.categoria===activeCat);
     if(activeSub!=="Todas") list=list.filter(p=>p.subcategoria===activeSub);
 
     list = filterQuick(list);
+
+    // ✅ TANDA 4: filtro precio
+    list = window.SDC_PRICE?.apply?.(list) || list;
 
     if(q) list=list.filter(p =>
       (p.nombre||"").toLowerCase().includes(q) ||
@@ -137,7 +140,7 @@ window.SDC_CATALOG_UI = (() => {
 
     list = sortList(list);
 
-    const pagerKey = [activeCat, activeSub, mode, sort, q].join("|");
+    const pagerKey = [activeCat, activeSub, mode, sort, q, (window.SDC_PRICE?.get?.()||"all")].join("|");
     PAGER.ensureKey(pagerKey);
     const visibleList = PAGER.slice(list);
 
@@ -195,7 +198,7 @@ window.SDC_CATALOG_UI = (() => {
         const ok = S.addToCart(p,1);
         if (ok) {
           window.SDC_FX?.flyFrom?.(img);
-          window.SDC_FX?.vibrate?.(25);
+          window.SDC_ADD_CONFIRM?.notify?.();
           window.SDC_CART?.renderCart?.();
         }
       };
@@ -208,7 +211,6 @@ window.SDC_CATALOG_UI = (() => {
       el.appendChild(card);
     });
 
-    // cargar más
     const wrap = U.$("loadMoreWrap");
     const btn = U.$("loadMoreBtn");
     const note = U.$("loadMoreNote");
