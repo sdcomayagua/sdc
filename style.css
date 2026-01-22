@@ -52,7 +52,7 @@ header{
 .btn.ghost{background:transparent;border:1px solid var(--line);color:var(--mut)}
 .btn.danger{background:color-mix(in oklab, rgba(255,107,107,.18) 80%, transparent);border:1px solid rgba(255,107,107,.35);color:color-mix(in oklab, #ff6b6b 65%, var(--txt))}
 
-.search{flex:1;min-width:200px}
+.search{flex:1;min-width:200px;position:relative}
 .sortBox{min-width:190px}
 
 input,select,textarea{
@@ -66,6 +66,25 @@ input,select,textarea{
 }
 input:focus,select:focus,textarea:focus{box-shadow:var(--focus)}
 textarea{min-height:80px;resize:vertical}
+
+/* ===== Search clear (X) ===== */
+.searchClear{
+  position:absolute;
+  right:8px;
+  top:50%;
+  transform:translateY(-50%);
+  width:34px;height:34px;
+  border-radius:12px;
+  border:1px solid var(--line);
+  background:color-mix(in oklab, var(--card) 65%, transparent);
+  color:var(--mut);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+}
+.searchClear.show{display:flex}
+.searchClear:focus{outline:none;box-shadow:var(--focus)}
 
 /* ===== Theme button ===== */
 .themeBtn{display:flex;align-items:center;gap:8px}
@@ -95,6 +114,11 @@ textarea{min-height:80px;resize:vertical}
   color:var(--txt);
   border-color:color-mix(in oklab, var(--line) 70%, #2a3a52);
 }
+
+/* ===== Tabs unificadas (móvil) ===== */
+.tabsUnified{display:flex;gap:10px;align-items:center;margin-top:10px}
+.tabsLine{flex:1;min-width:0}
+.tabsToggle{white-space:nowrap;padding:10px 12px;border-radius:14px}
 
 /* ===== Banner ===== */
 .banner{
@@ -127,6 +151,21 @@ textarea{min-height:80px;resize:vertical}
   background:color-mix(in oklab, var(--card) 70%, transparent);
   color:var(--txt);
   border-color:color-mix(in oklab, var(--line) 70%, #2a3a52);
+}
+
+/* ===== Results pill ===== */
+.resultsPill{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  margin:10px 0 0 0;
+  padding:8px 10px;
+  border-radius:999px;
+  border:1px solid var(--line);
+  background:color-mix(in oklab, var(--card) 75%, transparent);
+  color:var(--mut);
+  font-size:12px;
+  font-weight:900;
 }
 
 /* ===== Sections ===== */
@@ -308,20 +347,6 @@ body.modalOn{overflow:hidden}
 }
 .toast.show{display:block}
 
-/* ===== Mobile bottom bar ===== */
-.mobileBar{
-  position:fixed;left:0;right:0;bottom:0;z-index:130;
-  background:color-mix(in oklab, var(--bg) 92%, transparent);
-  border-top:1px solid var(--line);backdrop-filter:blur(10px);
-  padding:10px;display:none;gap:10px
-}
-.mobileBar .btn{flex:1}
-.miniCount{
-  display:inline-block;margin-left:8px;padding:2px 8px;border-radius:999px;
-  border:1px solid var(--line);color:var(--mut);font-size:12px
-}
-@media (max-width:720px){.mobileBar{display:flex}}
-
 /* ===== Skeleton ===== */
 .skCard{border-radius:18px;border:1px solid var(--line);background:var(--card);overflow:hidden;position:relative}
 .skImg{width:100%;aspect-ratio:1/1;background:color-mix(in oklab, var(--mut) 18%, transparent)}
@@ -374,14 +399,6 @@ html[data-theme="light"] .card.outCard .imgWrap::after{background:rgba(20,25,35,
 /* ===== Cargar más ===== */
 .loadMoreWrap{margin-top:16px;text-align:center}
 .loadMoreWrap .btn{min-width:200px}
-.cartMini{
-  font-size:12px;
-  color:var(--mut);
-  border:1px solid var(--line);
-  background:color-mix(in oklab, var(--card2) 92%, transparent);
-  border-radius:12px;
-  padding:10px;
-}
 
 /* ===== Header compacto ===== */
 header.compact .wrap{padding-top:10px;padding-bottom:10px}
@@ -415,15 +432,52 @@ header.compact .filtersBar{margin-top:8px}
   color:var(--acc);
 }
 
-/* ===== Tabs unificadas ===== */
-.tabsUnified{display:flex;gap:10px;align-items:center;margin-top:10px}
-.tabsLine{flex:1;min-width:0}
-.tabsToggle{white-space:nowrap;padding:10px 12px;border-radius:14px}
+/* ===== MobileBar PRO ===== */
+.mobileBar{
+  display:none;
+  position:fixed;
+  left:10px;
+  right:10px;
+  bottom:10px;
+  z-index:130;
+  gap:10px;
+  padding:10px;
+  border-radius:18px;
+  border:1px solid var(--line);
+  background:color-mix(in oklab, var(--card) 92%, transparent);
+  box-shadow:var(--shadow);
+  backdrop-filter:blur(10px);
+}
+@media (max-width:720px){ .mobileBar{display:flex;} }
 
-/* chips más grandes en móvil */
+.mobileBar .btn{
+  flex:1;
+  height:44px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  padding:0 12px;
+  border-radius:14px;
+  font-weight:1000;
+  line-height:1;
+}
+.mobileBar .miniCount{
+  margin-left:0;
+  padding:2px 8px;
+  border-radius:999px;
+  border:1px solid var(--line);
+  background:color-mix(in oklab, var(--card2) 85%, transparent);
+  color:var(--mut);
+  font-size:12px;
+  font-weight:1000;
+}
+.mobileBar .btn.ghost{background:transparent;border:1px solid var(--line)}
+.mobileBar .btn.acc{box-shadow:0 8px 20px rgba(37,211,102,.18)}
+
+@supports (padding: env(safe-area-inset-bottom)){
+  .mobileBar{bottom:calc(10px + env(safe-area-inset-bottom))}
+}
 @media (max-width:720px){
-  .tabsUnified{margin-top:8px}
-  .tabs{margin-top:0}
-  .tab{padding:10px 12px;font-size:13px;border-radius:999px}
-  .tabsToggle{padding:10px 12px}
+  .toTop{bottom:calc(10px + 44px + 22px)}
 }
