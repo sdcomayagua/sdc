@@ -374,19 +374,27 @@ html[data-theme="light"] .card.outCard .imgWrap::after{background:rgba(20,25,35,
 /* ===== Cargar más ===== */
 .loadMoreWrap{margin-top:16px;text-align:center}
 .loadMoreWrap .btn{min-width:200px}
+.cartMini{
+  font-size:12px;
+  color:var(--mut);
+  border:1px solid var(--line);
+  background:color-mix(in oklab, var(--card2) 92%, transparent);
+  border-radius:12px;
+  padding:10px;
+}
 
-/* ===== Header compacto (no pesado) ===== */
+/* ===== Header compacto ===== */
 header.compact .wrap{padding-top:10px;padding-bottom:10px}
 header.compact .tabs{margin-top:6px}
 header.compact .filtersBar{margin-top:8px}
 
-/* Desktop: que el tema se vea como icono (más limpio) */
+/* Desktop: tema en icono */
 @media (min-width: 721px){
   .themeBtn .tText{display:none}
   .sortBox{min-width:160px}
 }
 
-/* ===== Sort modal: seleccionado con ✓ ===== */
+/* ===== Sort modal ✓ ===== */
 .sortItem{
   width:100%;
   text-align:left;
