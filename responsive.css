@@ -1,86 +1,91 @@
 @media (max-width: 720px) {
-  body { padding-bottom: 86px; }
+  body { padding-bottom: 96px; }
+
   .wrap { padding: 10px; }
   header .wrap { padding-bottom: 8px; }
+
   .row { gap: 8px; }
 
-  .brand { font-size: 13px; }
-  .brandDot { width: 8px; height: 8px; }
+  /* ✅ Header 1 fila: ocultamos marca larga */
+  .headerBrand { display:none; }
+  .pill { display:none; }
 
-  .pill { display: none; }
+  /* Buscar ocupa casi todo */
+  .headerSearch { flex: 1 1 auto; min-width: 0; }
 
-  .search { flex: 1 1 100%; min-width: 100%; }
-  .sortBox { flex: 1 1 100%; min-width: 100%; }
-
-  /* ✅ A+B: desktop select oculto en móvil */
+  /* Desktop select oculto */
   #sortBoxDesktop { display: none; }
 
-  /* ✅ botón ordenar visible en móvil */
-  .sortMobileBtn { display: inline-flex; align-items:center; gap:8px; }
+  /* Botones compactos (iconos) */
+  .sortMobileBtn, .cartMiniBtn, #themeBtn {
+    height: 42px;
+    padding: 0 12px;
+    border-radius: 14px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    white-space: nowrap;
+  }
 
-  /* Tema: solo icono en móvil */
-  .themeBtn .tText { display: none; }
-  .themeBtn { padding: 10px 12px; }
+  /* En móvil: tema se oculta arriba (se usa abajo) */
+  #themeBtn { display:none; }
 
-  #cartBtn { padding: 10px 12px; }
+  /* Carrito arriba solo icono + contador */
+  .cartMiniBtn .cartMiniText { display:none; }
 
+  /* Search input más corto */
+  #q { padding: 11px 12px; }
+
+  /* Tabs compactas */
   .tabs { margin-top: 8px; padding-bottom: 4px; }
   .tab { padding: 7px 10px; font-size: 12px; }
 
+  /* Filtros */
   .filtersBar { gap: 6px; }
   .chip { padding: 7px 10px; font-size: 12px; }
 
+  /* Secciones scroll más compactas */
   .hCard { min-width: 150px; max-width: 150px; }
   .hCard img { height: 150px; }
 
+  /* Grid */
   .grid { gap: 10px; }
   .p { padding: 10px; }
   .name { font-size: 13px; }
   .price { font-size: 13px; }
 
-  .card .btn.acc { padding: 9px 10px; border-radius: 12px; }
-
+  /* Modales */
   .sheet { border-radius: 16px 16px 0 0; }
   .sheet .head { padding: 10px; }
   .sheet .body { padding: 10px; }
 
-  .pmWrap { gap: 12px; }
   .pmName { font-size: 16px; }
   .pmPrice { font-size: 16px; }
   .pmThumb { width: 52px; height: 52px; }
-  .pmActions { gap: 6px; }
 
   .panel { padding: 10px; border-radius: 14px; }
   .cartItem { padding: 9px; border-radius: 14px; }
   .cartItem img { width: 56px; height: 56px; }
 
-  .cartSticky { border-radius: 14px; padding: 10px; }
-  #sendWA { padding: 12px 12px; font-weight: 1000; }
-
   .mobileBar { padding: 10px; gap: 8px; }
-  .mobileBar .btn { padding: 11px 10px; }
-  .miniCount { padding: 2px 7px; }
-
-  .toTop { bottom: 96px; }
+  .toTop { bottom: 110px; }
 }
 
 @media (max-width: 440px) {
   .wrap { padding: 9px; }
-  .brand { font-size: 12px; }
 
   .chip { padding: 6px 9px; font-size: 11px; }
-
   .hCard { min-width: 140px; max-width: 140px; }
   .hCard img { height: 140px; }
 
   .pmThumb { width: 48px; height: 48px; }
 
   .pmQtyRow { flex-direction: column; align-items: stretch; }
-  .pmQtyRow .pmQty { justify-content: center; }
   #pmAddBtn { width: 100%; }
 }
 
-/* Desktop: botón ordenar oculto */
+/* Desktop: botón ordenar móvil oculto */
 @media (min-width: 721px) {
   .sortMobileBtn { display: none; }
 }
