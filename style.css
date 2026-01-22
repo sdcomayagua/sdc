@@ -194,3 +194,90 @@ textarea{min-height:90px;resize:vertical}
 
 /* Oculta barra inferior cuando hay modal abierto */
 body.modalOn .mobileBar{display:none !important;}
+
+/* ===== Modal producto: imagen NO gigante + layout pro ===== */
+.pmMainImg{
+  max-height:42vh;
+  object-fit:contain !important;
+  background:color-mix(in oklab, var(--card2) 60%, #000);
+}
+@media (max-width:720px){
+  .pmMainImg{max-height:34vh;}
+}
+
+/* Botón de “Consultar disponibilidad” en modal */
+.dangerBtn{
+  background:rgba(255,107,107,.14);
+  border:1px solid rgba(255,107,107,.35);
+  color:#ffb3b3;
+  font-weight:1000;
+}
+
+/* Calc row (Unit/Cant/Total) */
+.pmCalc{
+  margin-top:10px;
+  border:1px solid var(--line);
+  background:color-mix(in oklab, var(--card) 92%, transparent);
+  border-radius:14px;
+  padding:10px;
+}
+.pmCalcRow{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  justify-content:space-between;
+  align-items:center;
+}
+.pmCalcItem b{font-weight:1000}
+
+/* Nota agotado */
+.pmOutNote{
+  margin-top:10px;
+  padding:10px 12px;
+  border-radius:14px;
+  border:1px solid rgba(255,107,107,.35);
+  background:rgba(255,107,107,.10);
+  color:#ffb3b3;
+  font-weight:1000;
+  font-size:12px;
+  display:none;
+}
+
+/* Mejor look de qty (-/+) */
+.pmQtyRow{
+  gap:12px !important;
+  align-items:center;
+}
+.pmQty{
+  border:1px solid var(--line);
+  background:color-mix(in oklab, var(--card) 92%, transparent);
+  padding:6px;
+  border-radius:14px;
+}
+.pmQty .mini{
+  width:44px;
+  height:44px;
+  border-radius:12px;
+  font-size:18px;
+  font-weight:1000;
+}
+.pmQtyNum{
+  min-width:34px !important;
+  font-size:16px;
+  font-weight:1000;
+}
+
+/* Botón añadir siempre visible y bonito en móvil */
+#pmAddBtn{
+  height:46px;
+  border-radius:14px;
+  font-weight:1000;
+}
+
+/* Mejor contraste en modo día (modal + botones) */
+html[data-theme="light"] .sheet{
+  background:var(--card);
+}
+html[data-theme="light"] .btn.ghost{
+  color:var(--mut);
+}
