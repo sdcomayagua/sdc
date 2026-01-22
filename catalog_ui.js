@@ -42,22 +42,12 @@ window.SDC_CATALOG_UI = (() => {
       if(oa!==ob) return oa-ob;
       return String(a.nombre||"").localeCompare(String(b.nombre||""));
     };
-    const byPriceAsc = (a,b) => Number(a.precio||0) - Number(b.precio||0);
-    const byPriceDesc = (a,b) => Number(b.precio||0) - Number(a.precio||0);
-    const byOrderDesc = (a,b) => Number(b.orden||0) - Number(a.orden||0);
 
     const copy = list.slice();
-    if (mode === "precio_asc") { copy.sort((a,b)=>{const s=withStockFirst(a,b); return s!==0?s:byPriceAsc(a,b)}); return copy; }
-    if (mode === "precio_desc"){ copy.sort((a,b)=>{const s=withStockFirst(a,b); return s!==0?s:byPriceDesc(a,b)}); return copy; }
-    if (mode === "orden_desc") { copy.sort((a,b)=>{const s=withStockFirst(a,b); return s!==0?s:byOrderDesc(a,b)}); return copy; }
-    if (mode === "stock_first"){ copy.sort((a,b)=>{const s=withStockFirst(a,b); return s!==0?s:byOrderThenName(a,b)}); return copy; }
-
     copy.sort((a,b)=>{
-      const sa=(Number(a.stock)>0)?0:1, sb=(Number(b.stock)>0)?0:1;
-      if(sa!==sb) return sa-sb;
-      const oa=Number(a.orden||0), ob=Number(b.orden||0);
-      if(oa!==ob) return oa-ob;
-      return String(a.nombre||"").localeCompare(String(b.nombre||""));
+      const s=withStockFirst(a,b);
+      if (s!==0) return s;
+      return byOrderThenName(a,b);
     });
     return copy;
   }
@@ -121,6 +111,14 @@ window.SDC_CATALOG_UI = (() => {
     sel.style.display = has ? "block" : "none";
   }
 
+  function consultWA(p){
+    const phone = S.getWhatsapp();
+    const link = window.SDC_SHARE?.shareLinkFor?.(p) || "";
+    const txt = `Hola, quiero consultar disponibilidad:\n• ${p.nombre}\n• ID: ${p.id}\n${link}`;
+    const wa = "https://wa.me/" + phone.replace(/[^\d]/g,"") + "?text=" + encodeURIComponent(txt);
+    window.open(wa, "_blank");
+  }
+
   function renderGrid(){
     const q=(U.$("q").value||"").trim().toLowerCase();
     const activeCat=S.getActiveCat();
@@ -129,7 +127,6 @@ window.SDC_CATALOG_UI = (() => {
     const sort=getSortMode();
 
     let list=S.getProducts();
-
     hideBrandFilterIfEmpty(list);
 
     if(activeCat!=="Todas") list=list.filter(p=>p.categoria===activeCat);
@@ -173,7 +170,6 @@ window.SDC_CATALOG_UI = (() => {
       img.src=p.imagen||FALLBACK;
       img.alt=p.nombre||"";
       img.onerror=()=>img.src=FALLBACK;
-
       imgWrap.appendChild(img);
 
       if (low) {
@@ -196,21 +192,30 @@ window.SDC_CATALOG_UI = (() => {
       badge.textContent=inStock ? (low ? `POCO STOCK (${stock})` : `Stock: ${stock}`) : "AGOTADO";
 
       const btn=document.createElement("button");
-      btn.className="btn acc";
       btn.style.width="100%";
       btn.style.marginTop="10px";
-      btn.textContent=inStock?"Añadir al carrito":"No disponible";
-      btn.disabled=!inStock;
-      btn.onclick=(ev)=>{
-        ev.stopPropagation();
-        const ok = S.addToCart(p,1);
-        if (ok) {
-          window.SDC_FX?.flyFrom?.(img);
-          window.SDC_ADD_CONFIRM?.notify?.();
-          window.SDC_CART?.renderCart?.();
-          window.SDC_CART_BADGE?.apply?.();
-        }
-      };
+
+      if (inStock) {
+        btn.className="btn acc";
+        btn.textContent="Añadir al carrito";
+        btn.onclick=(ev)=>{
+          ev.stopPropagation();
+          const ok = S.addToCart(p,1);
+          if (ok) {
+            window.SDC_FX?.flyFrom?.(img);
+            window.SDC_ADD_CONFIRM?.notify?.("Agregado ✅");
+            window.SDC_CART?.renderCart?.();
+            window.SDC_CART_BADGE?.apply?.();
+          }
+        };
+      } else {
+        btn.className="btn danger";
+        btn.textContent="Consultar disponibilidad";
+        btn.onclick=(ev)=>{
+          ev.stopPropagation();
+          consultWA(p);
+        };
+      }
 
       box.appendChild(badge);
       box.appendChild(btn);
