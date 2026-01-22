@@ -40,6 +40,25 @@ window.SDC_PRODUCT_MODAL = (() => {
     return out;
   }
 
+  // ✅ Wrapper para la imagen principal (para poner la cinta diagonal)
+  function ensureImageWrap() {
+    let wrap = document.getElementById("pmImageWrap");
+    const img = document.getElementById("pmMainImg");
+    if (!img) return null;
+
+    if (wrap) return wrap;
+
+    wrap = document.createElement("div");
+    wrap.id = "pmImageWrap";
+    wrap.className = "pmImageWrap";
+
+    // Inserta wrapper antes del img y mueve el img dentro
+    img.parentElement.insertBefore(wrap, img);
+    wrap.appendChild(img);
+
+    return wrap;
+  }
+
   // ✅ Sticky container para (qty + botón + nota)
   function ensureBuySticky() {
     let wrap = document.getElementById("pmBuySticky");
@@ -52,7 +71,6 @@ window.SDC_PRODUCT_MODAL = (() => {
     const qtyRow = document.querySelector(".pmQtyRow");
     const note = document.getElementById("pmNote");
 
-    // inserta antes de qtyRow y mueve qtyRow + note adentro
     if (qtyRow && qtyRow.parentElement) {
       qtyRow.parentElement.insertBefore(wrap, qtyRow);
       wrap.appendChild(qtyRow);
@@ -144,6 +162,7 @@ window.SDC_PRODUCT_MODAL = (() => {
     const inStock = stock > 0;
     const low = inStock && stock <= 3;
 
+    // Badges
     U.$("pmStockOk").style.display = inStock && !low ? "inline-block" : "none";
     U.$("pmStockLow").style.display = low ? "inline-block" : "none";
     U.$("pmStockOut").style.display = inStock ? "none" : "inline-block";
@@ -156,10 +175,12 @@ window.SDC_PRODUCT_MODAL = (() => {
     UI.setSpecs(p);
     UI.setActions({ p, video: MEDIA.bestVideo(p) });
 
+    // ✅ Wrapper de imagen + cinta agotado
+    const imgWrap = ensureImageWrap();
+    if (imgWrap) imgWrap.classList.toggle("out", !inStock);
+
     renderImages();
     updateQtyUI();
-
-    // ✅ asegurar sticky después de que exista el qtyRow y note
     ensureBuySticky();
 
     const addBtn = U.$("pmAddBtn");
