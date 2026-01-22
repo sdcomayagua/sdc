@@ -5,12 +5,7 @@ window.SDC_CATALOG_UI = (() => {
   const PM = window.SDC_PRODUCT_MODAL;
   const PAGER = window.SDC_PAGER;
 
-  const fallbackSvg = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(
-    `<svg xmlns='http://www.w3.org/2000/svg' width='800' height='800'>
-      <rect width='100%' height='100%' fill='#0a0f17'/>
-      <text x='50%' y='50%' fill='#9fb0c6' font-size='28' text-anchor='middle' dominant-baseline='middle'>Sin imagen</text>
-    </svg>`
-  );
+  const FALLBACK = window.SDC_FALLBACK_IMG?.url || "";
 
   function toBool(v){
     const s = String(v ?? "").trim().toLowerCase();
@@ -24,6 +19,10 @@ window.SDC_CATALOG_UI = (() => {
     if (mode === "offers") return list.filter(p => isOffer(p));
     if (mode === "featured") return list.filter(p => toBool(p.destacado));
     return list;
+  }
+
+  function filterBrand(list){
+    return window.SDC_BRAND?.apply?.(list) || list;
   }
 
   function getSortMode(){
@@ -115,6 +114,13 @@ window.SDC_CATALOG_UI = (() => {
     });
   }
 
+  function hideBrandFilterIfEmpty(list){
+    const sel = document.getElementById("brandFilter");
+    if (!sel) return;
+    const has = (list||[]).some(p => String(p.marca||"").trim() || String(p.compatibilidad||"").trim());
+    sel.style.display = has ? "block" : "none";
+  }
+
   function renderGrid(){
     const q=(U.$("q").value||"").trim().toLowerCase();
     const activeCat=S.getActiveCat();
@@ -123,21 +129,26 @@ window.SDC_CATALOG_UI = (() => {
     const sort=getSortMode();
 
     let list=S.getProducts();
+
+    hideBrandFilterIfEmpty(list);
+
     if(activeCat!=="Todas") list=list.filter(p=>p.categoria===activeCat);
     if(activeSub!=="Todas") list=list.filter(p=>p.subcategoria===activeSub);
 
     list = filterQuick(list);
+    list = filterBrand(list);
 
     if(q) list=list.filter(p =>
       (p.nombre||"").toLowerCase().includes(q) ||
       (p.tags||"").toLowerCase().includes(q) ||
       (p.marca||"").toLowerCase().includes(q) ||
-      (p.modelo||"").toLowerCase().includes(q)
+      (p.modelo||"").toLowerCase().includes(q) ||
+      (p.compatibilidad||"").toLowerCase().includes(q)
     );
 
     list = sortList(list);
 
-    const pagerKey = [activeCat, activeSub, mode, sort, q].join("|");
+    const pagerKey = [activeCat, activeSub, mode, sort, q, (window.SDC_BRAND?.get?.()||"all")].join("|");
     PAGER.ensureKey(pagerKey);
     const visibleList = PAGER.slice(list);
 
@@ -159,9 +170,9 @@ window.SDC_CATALOG_UI = (() => {
       const img=document.createElement("img");
       img.className="img";
       img.loading="lazy";
-      img.src=p.imagen||"";
+      img.src=p.imagen||FALLBACK;
       img.alt=p.nombre||"";
-      img.onerror=()=>img.src=fallbackSvg;
+      img.onerror=()=>img.src=FALLBACK;
 
       imgWrap.appendChild(img);
 
@@ -197,6 +208,7 @@ window.SDC_CATALOG_UI = (() => {
           window.SDC_FX?.flyFrom?.(img);
           window.SDC_ADD_CONFIRM?.notify?.();
           window.SDC_CART?.renderCart?.();
+          window.SDC_CART_BADGE?.apply?.();
         }
       };
 
