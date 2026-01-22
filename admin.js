@@ -2,7 +2,6 @@
   const CFG = window.SDC_CONFIG;
   const U = window.SDC_UTILS;
 
-  // bloqueo PIN
   const MAX_ATTEMPTS = 3;
   const LOCK_MINUTES = 5;
   const LS_ATTEMPTS = "SDC_ADMIN_PIN_ATTEMPTS";
@@ -35,15 +34,13 @@
   function showPinUI(){
     U.$("pinBox").style.display = "block";
     U.$("adminBox").style.display = "none";
-    const b = U.$("logoutBtn");
-    if (b) b.style.display = "none";
+    U.$("logoutBtn").style.display = "none";
   }
 
   function showAdminUI(){
     U.$("pinBox").style.display = "none";
     U.$("adminBox").style.display = "block";
-    const b = U.$("logoutBtn");
-    if (b) b.style.display = "inline-block";
+    U.$("logoutBtn").style.display = "inline-block";
   }
 
   function unlock(pin){
@@ -59,7 +56,6 @@
     U.toast("Sesión cerrada");
   }
 
-  // ===== Helpers Admin API
   function adminKey(){
     return String(sessionStorage.getItem(SS_PIN) || "").trim();
   }
@@ -85,8 +81,8 @@
     return json;
   }
 
-  // ===== PIN flow
-  if (U.$("logoutBtn")) U.$("logoutBtn").onclick = logout;
+  // PIN
+  U.$("logoutBtn").onclick = logout;
 
   if (sessionStorage.getItem(SS_UNLOCK) === "1") showAdminUI();
   else showPinUI();
@@ -115,7 +111,7 @@
     U.toast(`Demasiados intentos. Bloqueado por ${LOCK_MINUTES} minutos.`);
   };
 
-  // ===== Upload imagen
+  // Upload imagen
   U.$("uploadBtn").onclick = async () => {
     if (sessionStorage.getItem(SS_UNLOCK) !== "1") { U.toast("Primero ingresa el PIN"); showPinUI(); return; }
 
@@ -135,7 +131,7 @@
     }
   };
 
-  // ===== Form helpers
+  // Campos
   const FIELDS = [
     "id","nombre","precio","precio_anterior","stock","categoria","subcategoria","imagen","galeria",
     "video_url","video_tiktok","video_facebook","video_youtube","descripcion","marca","modelo",
@@ -143,9 +139,7 @@
     "galeria_1","galeria_2","galeria_3","galeria_4","galeria_5","galeria_6","galeria_7","galeria_8","video"
   ];
 
-  function getField(name){
-    return document.getElementById("p_" + name);
-  }
+  function getField(name){ return document.getElementById("p_" + name); }
 
   function readForm(){
     const obj = {};
@@ -154,7 +148,6 @@
       if (!el) continue;
       let v = el.value;
 
-      // normaliza números
       if (["precio","precio_anterior","stock","orden"].includes(k)){
         v = String(v||"").trim();
         obj[k] = v === "" ? "" : Number(v);
@@ -172,6 +165,7 @@
       const v = p[k];
       el.value = (v === undefined || v === null) ? "" : String(v);
     }
+    updateStockNote();
   }
 
   function clearForm(){
@@ -179,9 +173,29 @@
       const el = getField(k);
       if (el) el.value = "";
     }
+    updateStockNote();
   }
 
-  // ===== Cargar producto por ID
+  function updateStockNote(){
+    const el = document.getElementById("stockStatusNote");
+    const s = Number((getField("stock")?.value || "0").toString().trim() || 0);
+    if (!el) return;
+    el.textContent = s > 0 ? `Estado: DISPONIBLE (stock ${s})` : "Estado: AGOTADO (stock 0)";
+  }
+
+  getField("stock")?.addEventListener("input", updateStockNote);
+
+  document.getElementById("setAvailableBtn").onclick = () => {
+    getField("stock").value = "1";
+    updateStockNote();
+  };
+
+  document.getElementById("setOutBtn").onclick = () => {
+    getField("stock").value = "0";
+    updateStockNote();
+  };
+
+  // Cargar por ID
   U.$("loadBtn").onclick = async () => {
     const id = String(U.$("findId").value || "").trim();
     if (!id) { U.toast("Escribe un ID"); return; }
@@ -198,7 +212,7 @@
     }
   };
 
-  // ===== Guardar / Actualizar
+  // Guardar
   U.$("saveBtn").onclick = async () => {
     if (sessionStorage.getItem(SS_UNLOCK) !== "1") { U.toast("Primero ingresa el PIN"); return; }
 
@@ -220,7 +234,7 @@
     }
   };
 
-  // ===== Eliminar
+  // Eliminar
   U.$("deleteBtn").onclick = async () => {
     if (sessionStorage.getItem(SS_UNLOCK) !== "1") { U.toast("Primero ingresa el PIN"); return; }
     const id = String(U.$("findId").value || "").trim();
@@ -238,7 +252,33 @@
     }
   };
 
-  // ===== Botones extra
+  // Duplicar
+  U.$("duplicateBtn").onclick = async () => {
+    if (sessionStorage.getItem(SS_UNLOCK) !== "1") { U.toast("Primero ingresa el PIN"); return; }
+
+    const data = readForm();
+    const oldId = String(data.id||"").trim();
+    if (!oldId) { U.toast("Carga o escribe un producto primero"); return; }
+
+    const newId = prompt("Nuevo ID para la copia:", oldId + "-COPY");
+    if (!newId) return;
+
+    const nid = String(newId).trim();
+    if (!nid) { U.toast("ID inválido"); return; }
+
+    data.id = nid;
+
+    try{
+      const json = await apiPost("upsert_product", data);
+      U.toast("Producto duplicado ✅");
+      U.$("findId").value = nid;
+      getField("id").value = nid;
+    } catch(err){
+      U.toast(String(err.message || err));
+    }
+  };
+
+  // Extras
   U.$("clearFormBtn").onclick = () => { clearForm(); U.toast("Formulario limpio"); };
 
   U.$("copyJsonBtn").onclick = async () => {
@@ -250,4 +290,7 @@
       U.toast("No se pudo copiar");
     }
   };
+
+  // init note
+  updateStockNote();
 })();
