@@ -1,0 +1,11 @@
+/* modal_fx.css */
+html.fxOn .modal{
+  transition:opacity .18s ease, visibility .18s ease;
+}
+html.fxOn .modal .sheet{
+  transform:translateY(18px) scale(.985);
+  transition:transform .18s ease;
+}
+html.fxOn .modal.open .sheet{
+  transform:translateY(0) scale(1);
+}
