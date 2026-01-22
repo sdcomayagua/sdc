@@ -1,0 +1,31 @@
+/* cart_fab.css */
+.cartFab{
+  position:sticky;
+  bottom:10px;
+  margin-top:12px;
+  display:flex;
+  gap:10px;
+  align-items:center;
+  justify-content:space-between;
+  background:color-mix(in oklab, var(--card) 92%, transparent);
+  border:1px solid var(--line);
+  border-radius:16px;
+  padding:10px;
+  box-shadow:var(--shadow);
+}
+
+.cartFab .btn{
+  width:100%;
+  height:46px;
+  border-radius:14px;
+  font-weight:1000;
+}
+
+@media (max-width:720px){
+  .cartFab{
+    bottom:86px; /* arriba de la barra inferior */
+  }
+  body.modalOn .cartFab{
+    bottom:10px; /* si ocultamos mobileBar, queda normal */
+  }
+}
