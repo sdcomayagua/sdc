@@ -26,17 +26,22 @@
     window.SDC_UI_BADGES?.init?.();
 
     // T3
-    window.SDC_VIEW2?.init?.();
+    window.SDC_VIEW3?.init?.();
     window.SDC_STEPPER?.init?.();
     window.SDC_CONTINUE?.init?.();
 
     // T4
     window.SDC_THANKS?.init?.();
-    window.SDC_ORDERS?.render?.();
 
     // T5
     window.SDC_CONTINUE_PLUS?.init?.();
     window.SDC_GUARD?.init?.();
+
+    // ✅ T6
+    window.SDC_BRAND?.init?.();        // filtro por marca/compatibilidad
+    window.SDC_ORDERS_PRO?.render?.(); // historial pro
+    window.SDC_THANKS_PLUS?.init?.();  // gracias pro + limpiar opcional
+    window.SDC_LIVE?.start?.(3);       // refresco cada 3 min
 
     window.SDC_CATALOG_UI?.renderSkeletonGrid?.(10);
 
