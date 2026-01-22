@@ -81,7 +81,7 @@
     return json;
   }
 
-  // PIN
+  // ===== PIN
   U.$("logoutBtn").onclick = logout;
 
   if (sessionStorage.getItem(SS_UNLOCK) === "1") showAdminUI();
@@ -111,7 +111,7 @@
     U.toast(`Demasiados intentos. Bloqueado por ${LOCK_MINUTES} minutos.`);
   };
 
-  // Upload imagen
+  // ===== Upload
   U.$("uploadBtn").onclick = async () => {
     if (sessionStorage.getItem(SS_UNLOCK) !== "1") { U.toast("Primero ingresa el PIN"); showPinUI(); return; }
 
@@ -131,7 +131,7 @@
     }
   };
 
-  // Campos
+  // ===== Campos
   const FIELDS = [
     "id","nombre","precio","precio_anterior","stock","categoria","subcategoria","imagen","galeria",
     "video_url","video_tiktok","video_facebook","video_youtube","descripcion","marca","modelo",
@@ -195,7 +195,50 @@
     updateStockNote();
   };
 
-  // Cargar por ID
+  // ===== ID sugerido
+  function pad(n, w=6){
+    const s = String(Math.max(0, Number(n||0)));
+    return s.length >= w ? s : ("0".repeat(w - s.length) + s);
+  }
+
+  async function suggestNextId(){
+    const cat = await apiGetCatalog();
+    const list = cat.productos || [];
+    let maxNum = 0;
+
+    for (const p of list){
+      const id = String(p.id||"").trim();
+      const m = id.match(/(\d+)/g);
+      if (!m) continue;
+      const last = m[m.length-1];
+      const num = Number(last||0);
+      if (num > maxNum) maxNum = num;
+    }
+    const next = maxNum + 1;
+    return `SDC-${pad(next, 6)}`;
+  }
+
+  async function idExists(id){
+    const cat = await apiGetCatalog();
+    const list = cat.productos || [];
+    return !!list.find(p => String(p.id||"").trim() === String(id||"").trim());
+  }
+
+  // Crear nuevo
+  document.getElementById("newBtn").onclick = async () => {
+    try{
+      clearForm();
+      const id = await suggestNextId();
+      getField("id").value = id;
+      document.getElementById("findId").value = id;
+      getField("nombre").focus();
+      U.toast("Nuevo producto listo ✅");
+    } catch(err){
+      U.toast(String(err.message || err));
+    }
+  };
+
+  // ===== Cargar por ID
   U.$("loadBtn").onclick = async () => {
     const id = String(U.$("findId").value || "").trim();
     if (!id) { U.toast("Escribe un ID"); return; }
@@ -212,7 +255,7 @@
     }
   };
 
-  // Guardar
+  // ===== Guardar
   U.$("saveBtn").onclick = async () => {
     if (sessionStorage.getItem(SS_UNLOCK) !== "1") { U.toast("Primero ingresa el PIN"); return; }
 
@@ -226,6 +269,13 @@
     if (!data.categoria) { U.toast("Falta categoria"); return; }
 
     try{
+      // si no está cargado desde el mismo ID (o sea, podría ser insert), validamos duplicado
+      const findId = String(U.$("findId").value||"").trim();
+      if (findId !== data.id) {
+        const exists = await idExists(data.id);
+        if (exists) { U.toast("Ese ID ya existe. Cambia el ID."); return; }
+      }
+
       const json = await apiPost("upsert_product", data);
       U.toast(json.mode === "insert" ? "Producto creado ✅" : "Producto actualizado ✅");
       U.$("findId").value = data.id;
@@ -234,7 +284,7 @@
     }
   };
 
-  // Eliminar
+  // ===== Eliminar
   U.$("deleteBtn").onclick = async () => {
     if (sessionStorage.getItem(SS_UNLOCK) !== "1") { U.toast("Primero ingresa el PIN"); return; }
     const id = String(U.$("findId").value || "").trim();
@@ -252,7 +302,7 @@
     }
   };
 
-  // Duplicar
+  // ===== Duplicar
   U.$("duplicateBtn").onclick = async () => {
     if (sessionStorage.getItem(SS_UNLOCK) !== "1") { U.toast("Primero ingresa el PIN"); return; }
 
@@ -260,16 +310,20 @@
     const oldId = String(data.id||"").trim();
     if (!oldId) { U.toast("Carga o escribe un producto primero"); return; }
 
-    const newId = prompt("Nuevo ID para la copia:", oldId + "-COPY");
+    const sug = await suggestNextId();
+    const newId = prompt("Nuevo ID para la copia:", sug);
     if (!newId) return;
 
     const nid = String(newId).trim();
     if (!nid) { U.toast("ID inválido"); return; }
 
+    const exists = await idExists(nid);
+    if (exists) { U.toast("Ese ID ya existe"); return; }
+
     data.id = nid;
 
     try{
-      const json = await apiPost("upsert_product", data);
+      await apiPost("upsert_product", data);
       U.toast("Producto duplicado ✅");
       U.$("findId").value = nid;
       getField("id").value = nid;
@@ -278,7 +332,7 @@
     }
   };
 
-  // Extras
+  // ===== Extras
   U.$("clearFormBtn").onclick = () => { clearForm(); U.toast("Formulario limpio"); };
 
   U.$("copyJsonBtn").onclick = async () => {
@@ -291,6 +345,5 @@
     }
   };
 
-  // init note
   updateStockNote();
 })();
