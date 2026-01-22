@@ -1,0 +1,75 @@
+/* controls.css */
+
+/* Buttons */
+.btn{
+  padding:10px 12px;border:0;border-radius:12px;
+  background:color-mix(in oklab, var(--card) 30%, #1a2433);
+  color:var(--txt);
+  cursor:pointer;
+}
+html[data-theme="light"] .btn{
+  background:color-mix(in oklab, var(--card) 92%, #e9eef9);
+}
+.btn:hover{filter:brightness(1.04)}
+.btn:focus{outline:none;box-shadow:var(--focus)}
+.btn.acc{background:var(--acc);color:#05210f;font-weight:1000}
+.btn.ghost{background:transparent;border:1px solid var(--line);color:var(--mut)}
+.btn.danger{
+  background:rgba(255,107,107,.12);
+  border:1px solid rgba(255,107,107,.35);
+  color:color-mix(in oklab, var(--danger) 70%, var(--txt));
+  font-weight:1000;
+}
+.btn.warn{background:var(--warn);color:#2b1a00;font-weight:1000}
+.btn.disabled,.btn:disabled{opacity:.55;cursor:not-allowed}
+
+/* Inputs */
+.search{flex:1;min-width:200px;position:relative}
+.sortBox{min-width:190px}
+input,select,textarea{
+  width:100%;
+  padding:10px 12px;
+  border-radius:12px;
+  border:1px solid var(--line);
+  background:var(--card2);
+  color:var(--txt);
+  outline:none;
+}
+input:focus,select:focus,textarea:focus{box-shadow:var(--focus)}
+textarea{min-height:90px;resize:vertical}
+
+/* search clear created by search_ui.js */
+.searchClear{
+  position:absolute;right:8px;top:50%;
+  transform:translateY(-50%);
+  width:34px;height:34px;
+  border-radius:12px;
+  border:1px solid var(--line);
+  background:color-mix(in oklab, var(--card) 70%, transparent);
+  color:var(--mut);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+}
+.searchClear.show{display:flex}
+
+/* Tabs */
+.tabs{display:flex;gap:8px;flex-wrap:nowrap;overflow:auto;padding-bottom:6px;margin-top:10px}
+.tab{white-space:nowrap;padding:10px 12px;border-radius:999px;border:1px solid var(--line);cursor:pointer;color:var(--mut)}
+.tab.active{background:color-mix(in oklab, var(--card) 70%, transparent);color:var(--txt)}
+.tabsUnified{display:flex;gap:10px;align-items:center;margin-top:8px}
+.tabsLine{flex:1;min-width:0}
+
+/* Filters */
+.filtersBar{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.chip{padding:8px 10px;border-radius:999px;border:1px solid var(--line);background:transparent;color:var(--mut);cursor:pointer;font-weight:900;font-size:12px}
+.chip.active{background:color-mix(in oklab, var(--card) 70%, transparent);color:var(--txt)}
+
+/* Brand filter */
+#brandFilter{border-radius:14px}
+
+/* Section headers */
+.section{margin-top:14px}
+.sectionHead{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin:10px 0}
+.sectionTitle{font-weight:1000;font-size:14px}
