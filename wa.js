@@ -16,12 +16,10 @@ window.SDC_WA = (() => {
 
   function buildMessage() {
     const cart = S.getCart();
-
     const dep = U.$("dep").value;
     const mun = U.$("mun").value;
     const pay = U.$("payType").value;
     const local = S.isLocalAllowed(dep, mun);
-
     const eta = window.SDC_ETA?.get?.(dep, mun, local, pay) || "";
 
     const name = (U.$("name").value||"").trim();
@@ -88,9 +86,21 @@ window.SDC_WA = (() => {
     window.SDC_PROFILE?.save?.();
 
     const msg = buildMessage();
+
+    // guardar historial (18)
+    const cartItems = [];
+    for (const it of S.getCart().values()){
+      cartItems.push({ id: it.p.id, qty: it.qty });
+    }
+    window.SDC_ORDERS?.saveOrder?.({ cartItems, message: msg });
+    window.SDC_ORDERS?.render?.();
+
     const phone = S.getWhatsapp();
     const url = "https://wa.me/" + phone.replace(/[^\d]/g, "") + "?text=" + encodeURIComponent(msg);
     window.open(url, "_blank");
+
+    // post compra (19)
+    window.SDC_THANKS?.open?.();
   }
 
   function bind() {
