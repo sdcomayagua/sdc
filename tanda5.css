@@ -1,0 +1,29 @@
+/* ============ TANDA 5 (21-25) ============ */
+
+/* error wizard */
+.wizardErr{
+  display:none;
+  margin-top:10px;
+  padding:10px 12px;
+  border-radius:14px;
+  border:1px solid rgba(255,107,107,.35);
+  background:rgba(255,107,107,.10);
+  color:#ffb3b3;
+  font-weight:1000;
+  font-size:12px;
+}
+
+/* disabled next button */
+.btn.disabled,
+.btn:disabled{
+  opacity:.55;
+  cursor:not-allowed;
+}
+
+/* stepper clickable hint */
+.chkStep{
+  transition:transform .12s ease;
+}
+.chkStep:hover{
+  transform:translateY(-1px);
+}
