@@ -2,7 +2,10 @@
   const U = window.SDC_UTILS;
 
   async function init() {
+    // ✅ Tema
     window.SDC_THEME?.init?.("dark");
+    document.getElementById("themeBtn")?.addEventListener("click", () => window.SDC_THEME.toggle());
+    document.getElementById("bottomThemeBtn")?.addEventListener("click", () => window.SDC_THEME.toggle());
 
     window.SDC_MOTION?.observe?.();
     window.SDC_UX?.initToTop?.();
@@ -16,31 +19,25 @@
     window.SDC_SEARCH_UI?.init?.();
     window.SDC_RESULTS?.init?.();
 
-    // T1
     window.SDC_PROFILE?.load?.();
     window.SDC_CHECKOUT?.showStep?.(1);
 
-    // T2
     window.SDC_ZOOM?.init?.();
     window.SDC_CART_TOOLS?.init?.();
     window.SDC_UI_BADGES?.init?.();
 
-    // T3
     window.SDC_VIEW3?.init?.();
     window.SDC_STEPPER?.init?.();
     window.SDC_CONTINUE?.init?.();
 
-    // T4
-    window.SDC_THANKS?.init?.();
+    window.SDC_THANKS_PLUS?.init?.();
+    window.SDC_ORDERS_PRO?.render?.();
+    window.SDC_BRAND?.init?.();
 
-    // T5
     window.SDC_CONTINUE_PLUS?.init?.();
     window.SDC_GUARD?.init?.();
 
-    // ✅ FIX móvil (oculta barra inferior en modales)
     window.SDC_MOBILE_FIX?.init?.();
-
-    // Live (si lo estás usando)
     window.SDC_LIVE?.start?.(3);
 
     window.SDC_CATALOG_UI?.renderSkeletonGrid?.(10);
@@ -54,7 +51,6 @@
     await window.SDC_CATALOG.load();
     window.SDC_DELIVERY.initSelectors();
     window.SDC_STORE.updateCartCountUI();
-
     window.SDC_RESULTS?.refresh?.();
   }
 
