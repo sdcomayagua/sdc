@@ -1,0 +1,42 @@
+/* light_polish.css */
+
+/* Mejor contraste en modo día */
+html[data-theme="light"] header{
+  background:color-mix(in oklab, var(--bg) 92%, #ffffff);
+}
+
+html[data-theme="light"] .card,
+html[data-theme="light"] .panel,
+html[data-theme="light"] .sheet{
+  box-shadow: 0 8px 22px rgba(12,20,45,.10);
+}
+
+html[data-theme="light"] .btn.acc{
+  box-shadow: 0 10px 18px rgba(37,211,102,.20);
+}
+
+html[data-theme="light"] .btn.ghost{
+  color: var(--txt);
+}
+
+html[data-theme="light"] .mut{
+  color: color-mix(in oklab, var(--mut) 85%, #000);
+}
+
+/* en modo día, que se note el CTA */
+html[data-theme="light"] .btn.acc{
+  color:#05210f;
+}
+
+/* botón “No disponible / consultar” siempre visible */
+html[data-theme="light"] .btn.danger,
+html[data-theme="light"] .dangerBtn{
+  color:#8b1010;
+  background:rgba(255,107,107,.16);
+  border:1px solid rgba(255,107,107,.40);
+}
+
+/* tabs del modal */
+html[data-theme="light"] .pmTabs button{
+  background:transparent;
+}
