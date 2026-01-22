@@ -62,7 +62,6 @@
 
     <div class="filtersBar" id="quickFilters"></div>
 
-    <!-- filtro marca/compatibilidad (se oculta automáticamente si está vacío) -->
     <select id="brandFilter" class="btn ghost" style="width:100%;margin-top:10px"></select>
   </div>
 </header>
@@ -163,6 +162,7 @@
     </div>
     <div class="body">
       <div class="pmWrap">
+
         <div>
           <img id="pmMainImg" class="pmMainImg" alt="">
           <div id="pmThumbs" class="pmThumbs"></div>
@@ -181,22 +181,43 @@
             <span class="badge out" id="pmStockOut" style="display:none">AGOTADO</span>
           </div>
 
-          <div class="pmActions" id="pmActions"></div>
-          <div class="pmDesc" id="pmDesc"></div>
-          <div class="pmSpecs" id="pmSpecs" style="display:none"></div>
+          <!-- Tabs -->
+          <div class="pmTabs">
+            <button id="pmTabBtn_desc" class="active" type="button">Descripción</button>
+            <button id="pmTabBtn_specs" type="button">Especificaciones</button>
+            <button id="pmTabBtn_videos" type="button">Videos</button>
+          </div>
+
+          <div id="pmTab_desc" class="pmPanel">
+            <div class="pmDesc" id="pmDesc"></div>
+          </div>
+
+          <div id="pmTab_specs" class="pmPanel" style="display:none">
+            <div class="pmSpecs" id="pmSpecs"></div>
+          </div>
+
+          <div id="pmTab_videos" class="pmPanel" style="display:none">
+            <div class="pmActions" id="pmActions"></div>
+          </div>
+
+          <div id="recoBox"></div>
 
           <div class="pmQtyRow">
             <div class="pmQty">
-              <button class="mini" id="pmMinus">-</button>
+              <button class="mini" id="pmMinus" type="button">-</button>
               <div class="pmQtyNum" id="pmQtyNum">1</div>
-              <button class="mini" id="pmPlus">+</button>
+              <button class="mini" id="pmPlus" type="button">+</button>
             </div>
-            <button class="btn acc" id="pmAddBtn" style="flex:1">Añadir al carrito</button>
+
+            <div class="pmBtnRow">
+              <button class="btn acc" id="pmAddBtn" type="button">Añadir al carrito</button>
+              <button class="btn ghost" id="pmBuyNowBtn" type="button">Comprar ahora</button>
+            </div>
           </div>
 
           <div class="note" id="pmNote" style="margin-top:10px"></div>
-          <div id="recoBox"></div>
         </div>
+
       </div>
     </div>
   </div>
@@ -209,18 +230,16 @@
       <div style="font-weight:1000">Carrito</div>
       <div style="display:flex;gap:8px;align-items:center">
         <button class="btn danger" id="clearCartBtn" type="button">Vaciar</button>
-        <button class="btn" id="closeCart">Cerrar</button>
+        <button class="btn" id="closeCart" type="button">Cerrar</button>
       </div>
     </div>
 
     <div class="body">
       <div id="checkoutBar" class="checkoutBar"></div>
-
       <div id="cartAlert" class="cartAlert"></div>
       <div id="checkoutBadge" class="checkoutBadge"></div>
 
       <div class="cartLayout">
-
         <div class="panel" id="stepProducts">
           <div class="panelTitle">Productos</div>
           <div id="cartItems"></div>
@@ -229,7 +248,6 @@
 
         <div class="panel" id="stepDelivery" style="display:none">
           <div class="panelTitle">Entrega y pago</div>
-
           <div class="two">
             <div><label class="mut">Departamento</label><select id="dep"></select></div>
             <div><label class="mut">Municipio</label><select id="mun"></select></div>
@@ -287,11 +305,10 @@
             <button class="btn ghost" id="shareOrderBtn" type="button">Compartir</button>
           </div>
 
-          <button class="btn acc" id="sendWA" style="width:100%;margin-top:10px">Enviar pedido por WhatsApp</button>
+          <button class="btn acc" id="sendWA" style="width:100%;margin-top:10px" type="button">Enviar pedido por WhatsApp</button>
 
           <div class="panel" id="orderHistory" style="margin-top:12px"></div>
         </div>
-
       </div>
 
       <div class="wizardNav">
@@ -304,12 +321,12 @@
   </div>
 </div>
 
-<!-- Barra inferior móvil -->
+<!-- Mobile bar -->
 <div class="mobileBar" id="mobileBar">
-  <button class="btn" id="bottomCartBtn">🛒 <span class="miniCount" id="bottomCartCount">0</span></button>
+  <button class="btn" id="bottomCartBtn" type="button">🛒 <span class="miniCount" id="bottomCartCount">0</span></button>
   <button class="btn ghost viewBtn" id="bottomViewBtn" type="button" aria-label="Modo catálogo">🧾</button>
   <button class="btn ghost themeBtn" id="bottomThemeBtn" type="button" aria-label="Tema"><span class="tIcon">🌙</span></button>
-  <button class="btn acc" id="bottomSendBtn">💬</button>
+  <button class="btn acc" id="bottomSendBtn" type="button">💬</button>
 </div>
 
 <script src="config.js"></script>
@@ -361,6 +378,10 @@
 <script src="mobile_fix.js"></script>
 <script src="cart_persist.js"></script>
 <script src="eta.js"></script>
+
+<!-- ✅ nuevos -->
+<script src="product_tabs.js"></script>
+<script src="modal_swipe.js"></script>
 
 <script src="product_modal_ui.js"></script>
 
