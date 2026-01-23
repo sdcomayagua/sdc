@@ -1,4 +1,4 @@
-/* styles.bundle.css?v=20260124_fase1 */
+/* styles.bundle.css?v=20260124_fase2 */
 
 @import url("./theme.css");
 @import url("./base.css");
@@ -25,7 +25,7 @@
 @import url("./shipping_quote.css");
 @import url("./top_offers.css");
 
-/* Paquete 2 */
+/* Paquete 2 UX */
 @import url("./p2_ux.css");
 
 /* Paquete 3 */
@@ -41,5 +41,8 @@
 @import url("./p7_checkout.css");
 @import url("./p7_cart_offer.css");
 
-/* ✅ FASE 1 App Móvil */
+/* Fase 1 móvil */
 @import url("./p1_app_mobile.css");
+
+/* ✅ FASE 2 (badges) */
+@import url("./fase2_badges.css");
