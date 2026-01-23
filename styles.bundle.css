@@ -1,4 +1,4 @@
-/* styles.bundle.css?v=20260124p2 */
+/* styles.bundle.css?v=20260124p3 */
 
 @import url("./theme.css");
 @import url("./base.css");
@@ -20,10 +20,13 @@
 @import url("./news_ticker.css");
 @import url("./sticky_shop.css");
 
-/* ✅ Paquete 1 */
+/* Paquete 1 */
 @import url("./p1_sales.css");
 @import url("./shipping_quote.css");
 @import url("./top_offers.css");
 
-/* ✅ Paquete 2 */
+/* Paquete 2 */
 @import url("./p2_ux.css");
+
+/* Paquete 3 */
+@import url("./p3_product.css");
