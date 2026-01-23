@@ -35,14 +35,12 @@
       headerWrap.appendChild(s);
     }
 
-    // Mount para cotizador envío (si no existe)
     if (!document.getElementById("shipQuoteMount") && headerWrap){
       const d = document.createElement("div");
       d.id = "shipQuoteMount";
       headerWrap.insertBefore(d, headerWrap.querySelector(".tabsUnified") || null);
     }
 
-    // Sección Top Ofertas (si no existe, la creamos en main)
     if (!document.getElementById("topOffersSection")){
       const main = document.querySelector("main.wrap");
       if (main){
@@ -57,7 +55,6 @@
           </div>
           <div class="hScroll" id="topOffersRow"></div>
         `;
-        // arriba del featured
         const featured = document.getElementById("featuredSection");
         if (featured) featured.insertAdjacentElement("beforebegin", sec);
         else main.prepend(sec);
@@ -123,7 +120,6 @@
     safe("count", () => window.SDC_STORE?.updateCartCountUI?.());
     safe("results.refresh", () => window.SDC_RESULTS?.refresh?.());
 
-    // badges/favs
     safe("badges.init", () => window.SDC_BADGES?.init?.(window.SDC_STORE.getProducts?.() || []));
     safe("fav_section.init", () => window.SDC_FAV_SECTION?.init?.());
 
@@ -133,11 +129,14 @@
     safe("store_extras", () => window.SDC_STORE_EXTRAS?.init?.());
     safe("shop_polish", () => window.SDC_SHOP_POLISH?.init?.());
 
-    /* ✅ PAQUETE 1 init */
+    /* ✅ Paquete 1 */
     safe("p1_sales", () => window.SDC_P1?.init?.());
     safe("ship_quote", () => window.SDC_SHIP_QUOTE?.init?.());
     safe("top_offers", () => window.SDC_TOP_OFFERS?.render?.());
     safe("wa_plus", () => window.SDC_WA_PLUS?.init?.());
+
+    /* ✅ Paquete 2 */
+    safe("p2_ux", () => window.SDC_P2?.init?.());
   }
 
   init().catch(err => {
