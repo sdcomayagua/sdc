@@ -1,0 +1,49 @@
+/* p5_analytics.css */
+
+#statsSection{display:none;}
+#statsSection.show{display:block;}
+
+.statsGrid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+}
+@media (max-width:720px){
+  .statsGrid{grid-template-columns:1fr;}
+}
+
+.statsCard{
+  border:1px solid var(--line);
+  background:color-mix(in oklab, var(--card) 92%, transparent);
+  border-radius:18px;
+  padding:12px;
+  box-shadow: var(--shadow);
+}
+
+.statsTitle{
+  font-weight:1000;
+  margin-bottom:8px;
+  display:flex;
+  gap:8px;
+  align-items:center;
+}
+.statsSub{
+  color:var(--mut);
+  font-size:12px;
+  margin-top:-4px;
+  margin-bottom:10px;
+}
+
+.statsRow{
+  display:flex;
+  gap:10px;
+  overflow:auto;
+  padding:6px 2px 2px 2px;
+}
+
+/* usa el estilo existente de hCard si ya lo tienes, aquí lo refuerzo */
+.statsRow .hCard{
+  min-width:160px;
+  max-width:160px;
+  border-radius:18px;
+}
