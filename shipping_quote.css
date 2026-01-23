@@ -1,0 +1,49 @@
+/* shipping_quote.css */
+
+.shipQuote{
+  margin-top:10px;
+  padding:12px;
+  border-radius:18px;
+  border:1px solid var(--line);
+  background:color-mix(in oklab, var(--card) 92%, transparent);
+  box-shadow: var(--shadow);
+}
+
+.shipQuoteHead{
+  font-weight:1000;
+  display:flex;
+  gap:8px;
+  align-items:center;
+}
+
+.shipQuoteSub{
+  color:var(--mut);
+  font-size:12px;
+  margin-top:6px;
+}
+
+.shipQuoteRow{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  margin-top:10px;
+}
+
+@media (max-width:720px){
+  .shipQuoteRow{grid-template-columns:1fr;}
+}
+
+.shipQuoteResult{
+  margin-top:10px;
+  padding:10px 12px;
+  border-radius:16px;
+  border:1px solid var(--line);
+  background:color-mix(in oklab, var(--card2) 90%, transparent);
+  font-weight:1000;
+}
+.shipQuoteResult small{
+  display:block;
+  font-weight:700;
+  color:var(--mut);
+  margin-top:6px;
+}
