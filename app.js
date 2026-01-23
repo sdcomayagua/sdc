@@ -113,7 +113,6 @@
     safe("product.bind", () => window.SDC_PRODUCT_MODAL?.bindEvents?.());
     safe("catalog.bind", () => window.SDC_CATALOG?.bindProductModalEvents?.());
 
-    /* Paquete 5 perf wrapper */
     safe("p5_perf", () => window.SDC_PERF?.init?.());
 
     await window.SDC_CATALOG.load();
@@ -131,26 +130,19 @@
     safe("store_extras", () => window.SDC_STORE_EXTRAS?.init?.());
     safe("shop_polish", () => window.SDC_SHOP_POLISH?.init?.());
 
-    /* Paquete 1 */
     safe("p1_sales", () => window.SDC_P1?.init?.());
     safe("ship_quote", () => window.SDC_SHIP_QUOTE?.init?.());
     safe("top_offers", () => window.SDC_TOP_OFFERS?.render?.());
     safe("wa_plus", () => window.SDC_WA_PLUS?.init?.());
 
-    /* Paquete 2 */
     safe("p2_ux", () => window.SDC_P2?.init?.());
-
-    /* Paquete 3 */
     safe("p3_product", () => window.SDC_P3?.init?.());
-
-    /* Paquete 5 */
     safe("p5_analytics", () => window.SDC_ANALYTICS?.init?.());
-
-    /* Paquete 6 */
     safe("p6_promo", () => window.SDC_P6_PROMO?.init?.());
-
-    /* ✅ Paquete 7 */
     safe("p7_checkout", () => window.SDC_P7?.init?.());
+
+    // ✅ ESTO ES LO NUEVO: activa ofertas/ahorro dentro del carrito
+    safe("p7_cart_offer", () => window.SDC_P7_CART_OFFER?.init?.());
   }
 
   init().catch(err => {
