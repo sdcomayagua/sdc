@@ -1,6 +1,6 @@
-// loader.js?v=20260124dp
+// loader.js?v=20260124_fase1
 (() => {
-  const V = "20260124dp";
+  const V = "20260124_fase1";
 
   const SCRIPTS = [
     "config.js","utils.js",
@@ -32,31 +32,26 @@
 
     "catalog_ui.js","catalog.js","cart.js","delivery.js","wa.js",
 
-    /* Paquete 1 */
     "p1_sales.js",
     "shipping_quote.js",
     "top_offers.js",
     "wa_enhanced.js",
 
-    /* Paquete 2 */
     "p2_ux.js",
-
-    /* Paquete 3 */
     "p3_product.js",
 
-    /* Paquete 5 */
     "p5_perf.js",
     "p5_analytics.js",
 
-    /* Paquete 6 */
     "p6_promo.js",
 
-    /* Paquete 7 */
     "p7_checkout.js",
     "p7_cart_offer.js",
 
-    /* ✅ NUEVO: reglas de envío completas + punto encuentro + devuelto */
     "delivery_plus.js",
+
+    /* ✅ FASE 1 */
+    "p1_app_mobile.js",
 
     "app.js",
   ];
