@@ -1,12 +1,12 @@
-// loader.js?v=20260122z
+// loader.js?v=20260123b
 (() => {
-  const V = "20260122z";
+  const V = "20260123b";
 
   const SCRIPTS = [
     // base
     "config.js","utils.js",
 
-    // templates/modals
+    // templates (inyecta modales)
     "templates.js",
 
     // ui base
@@ -36,8 +36,11 @@
     // store UI extras
     "store_extras.js","shop_polish.js",
 
-    // ✅ NUEVO: cambios 2,4,5,6,8,9,10
+    // ✅ Tus cambios: 2,4,5,6,8,9,10 (en un solo JS)
     "extras_store.js",
+
+    // ✅ PRO PACK (lo más pro)
+    "pro_pack.js",
 
     // catalog + cart + delivery + wa
     "catalog_ui.js","catalog.js","cart.js","delivery.js","wa.js",
@@ -52,10 +55,7 @@
       s.src = `${src}?v=${encodeURIComponent(V)}`;
       s.defer = true;
       s.onload = () => resolve(true);
-      s.onerror = () => {
-        console.warn("[loader] No cargó:", src);
-        resolve(false);
-      };
+      s.onerror = () => resolve(false);
       document.head.appendChild(s);
     });
   }
