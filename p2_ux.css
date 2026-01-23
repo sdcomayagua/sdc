@@ -2,46 +2,34 @@
 
 /* ===== UX APP: Header siempre bien, sin cortarse ===== */
 
-/* Evita transforms que cortan el header */
-header{
-  transform:none !important;
-}
+header{ transform:none !important; }
 
-/* Stack sticky perfecto: ticker arriba + header debajo */
 .newsTicker{
   position:sticky;
   top:0;
   z-index:9000;
 }
 
-/* ticker compacto de 34px */
+/* ticker compacto */
 :root{ --ticker-h: 34px; }
 
-/* Header pegado debajo del ticker */
 header{
   position:sticky;
   top: var(--ticker-h);
   z-index:8000;
 }
+.newsTicker:not(.show) ~ header{ top:0; }
 
-/* Si el ticker no está visible, header vuelve a top 0 */
-.newsTicker:not(.show) ~ header{
-  top:0;
-}
-
-/* Fondo “app” cuando se queda sticky */
 header .wrap{
   background:color-mix(in oklab, var(--bg) 92%, transparent);
   backdrop-filter: blur(14px);
 }
 
-/* Separador suave */
 header .headerTop{
   border-bottom:1px solid color-mix(in oklab, var(--line) 55%, transparent);
   padding-bottom:10px;
 }
 
-/* Tabs y filtros se quedan visibles siempre */
 .tabsUnified,
 #quickFilters{
   position:sticky;
@@ -50,21 +38,14 @@ header .headerTop{
   backdrop-filter: blur(14px);
 }
 
-/* Top de tabs/filtros debajo del headerTop */
-.tabsUnified{
-  top: calc(var(--ticker-h) + 60px);
-}
-#quickFilters{
-  top: calc(var(--ticker-h) + 60px + 58px);
-}
+.tabsUnified{ top: calc(var(--ticker-h) + 60px); }
+#quickFilters{ top: calc(var(--ticker-h) + 60px + 58px); }
 
-/* En PC no hace falta offsets grandes */
 @media (min-width:900px){
   header{ top:0; }
   .tabsUnified, #quickFilters{ top:0; position:relative; }
 }
 
-/* Mejor estética del buscador */
 .search{position:relative;}
 #q{
   border-radius:18px;
@@ -74,16 +55,10 @@ header .headerTop{
   background:color-mix(in oklab, var(--card) 92%, transparent);
   box-shadow: 0 12px 24px rgba(0,0,0,.10);
 }
-html[data-theme="light"] #q{
-  box-shadow: 0 12px 24px rgba(12,20,45,.10);
-}
+html[data-theme="light"] #q{ box-shadow: 0 12px 24px rgba(12,20,45,.10); }
 
-/* Espacio arriba */
-main.wrap{
-  padding-top:12px;
-}
+main.wrap{ padding-top:12px; }
 
-/* CTA visible siempre en móvil */
 @media (max-width:720px){
   .card .btn{
     height:52px !important;
@@ -96,9 +71,7 @@ main.wrap{
     box-shadow: 0 14px 26px rgba(37,211,102,.22) !important;
     border:0 !important;
   }
-  .btn.consultBtn,
-  .btn.danger,
-  .dangerBtn{
+  .btn.consultBtn,.btn.danger,.dangerBtn{
     background: rgba(255,107,107,.18) !important;
     border: 1px solid rgba(255,107,107,.45) !important;
     color:#8b1010 !important;
@@ -106,23 +79,32 @@ main.wrap{
   }
 }
 
-/* Corrige cortes en iOS (sticky + overflow) */
-body{
-  -webkit-overflow-scrolling: touch;
-}
+body{-webkit-overflow-scrolling: touch;}
 
-/* Sugerencias siempre por encima */
-.suggestBox{
-  position:relative;
-  z-index:9001;
-}
+.suggestBox{ position:relative; z-index:9001; }
 
-/* Trust bar más compacta y “app” (si existe) */
+/* ✅ Trust bar: horizontal scroll (móvil) */
 .trustBar{
   border-radius:18px;
   padding:8px 10px;
-  gap:8px;
+  gap:10px;
+  display:flex;
+  flex-wrap:nowrap;
+  overflow:auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width:none;
 }
+.trustBar::-webkit-scrollbar{ display:none; }
+
 .trustItem{
   font-size:11.5px;
+  white-space:nowrap;
+  flex:0 0 auto;
+  padding:6px 10px;
+  border-radius:999px;
+  border:1px solid color-mix(in oklab, var(--line) 60%, transparent);
+  background:color-mix(in oklab, var(--card) 88%, transparent);
+}
+html[data-theme="light"] .trustItem{
+  background:color-mix(in oklab, var(--card) 96%, #edf2ff);
 }
