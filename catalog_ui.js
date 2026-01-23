@@ -31,7 +31,6 @@ window.SDC_CATALOG_UI = (() => {
   }
 
   function sortList(list){
-    const mode = getSortMode();
     const withStockFirst = (a,b) => {
       const sa=(Number(a.stock)>0)?0:1, sb=(Number(b.stock)>0)?0:1;
       if(sa!==sb) return sa-sb;
@@ -170,6 +169,7 @@ window.SDC_CATALOG_UI = (() => {
       img.src=p.imagen||FALLBACK;
       img.alt=p.nombre||"";
       img.onerror=()=>img.src=FALLBACK;
+
       imgWrap.appendChild(img);
 
       if (low) {
@@ -209,7 +209,7 @@ window.SDC_CATALOG_UI = (() => {
           }
         };
       } else {
-        btn.className="btn danger";
+        btn.className="btn consultBtn";
         btn.textContent="Consultar disponibilidad";
         btn.onclick=(ev)=>{
           ev.stopPropagation();
