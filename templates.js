@@ -3,12 +3,9 @@
   function mount() {
     const host = document.getElementById("templatesMount");
     if (!host) return;
-
-    // Evita duplicar si recargas con hot reload o algo
     if (document.getElementById("productModal")) return;
 
     host.innerHTML = `
-<!-- THANKS -->
 <div class="modal" id="thanksModal" aria-hidden="true">
   <div class="sheet">
     <div class="head row" style="justify-content:space-between">
@@ -19,19 +16,16 @@
       <div class="thanksBox">
         <div class="thanksTitle">Gracias por tu pedido ✅</div>
         <div class="thanksText">Te contactaremos pronto para confirmar disponibilidad y envío.</div>
-
         <label class="note" style="display:flex;gap:10px;align-items:center;margin-top:10px;justify-content:center">
           <input type="checkbox" id="clearAfterSend">
           Limpiar carrito después de enviar
         </label>
-
         <button class="btn acc" id="thanksContinue" type="button" style="margin-top:12px;width:100%">Seguir comprando</button>
       </div>
     </div>
   </div>
 </div>
 
-<!-- ORDENAR -->
 <div class="modal" id="sortModal" aria-hidden="true">
   <div class="sheet">
     <div class="head row" style="justify-content:space-between">
@@ -50,7 +44,6 @@
   </div>
 </div>
 
-<!-- ZOOM -->
 <div class="modal" id="zoomModal" aria-hidden="true">
   <div class="sheet zoomSheet">
     <div class="head row" style="justify-content:space-between">
@@ -63,7 +56,6 @@
   </div>
 </div>
 
-<!-- PRODUCTO -->
 <div class="modal" id="productModal" aria-hidden="true">
   <div class="sheet">
     <div class="head row" style="justify-content:space-between">
@@ -72,20 +64,15 @@
     </div>
     <div class="body">
       <div class="pmWrap">
-
         <div>
           <img id="pmMainImg" class="pmMainImg" alt="">
           <div id="pmThumbs" class="pmThumbs"></div>
         </div>
-
         <div>
           <div class="pmName" id="pmName"></div>
           <div class="pmChips" id="pmChips"></div>
-
           <div class="mut" id="pmCat"></div>
           <div class="pmPrice" id="pmPrice"></div>
-
-          <!-- Oferta / Ahorro (si aplica) -->
           <div id="pmSave" class="pmSave" style="display:none"></div>
 
           <div class="pmBadges">
@@ -103,11 +90,9 @@
           <div id="pmTab_desc" class="pmPanel">
             <div class="pmDesc" id="pmDesc"></div>
           </div>
-
           <div id="pmTab_specs" class="pmPanel" style="display:none">
             <div class="pmSpecs" id="pmSpecs"></div>
           </div>
-
           <div id="pmTab_videos" class="pmPanel" style="display:none">
             <div class="pmActions" id="pmActions"></div>
           </div>
@@ -129,13 +114,11 @@
 
           <div class="note" id="pmNote" style="margin-top:10px"></div>
         </div>
-
       </div>
     </div>
   </div>
 </div>
 
-<!-- CARRITO -->
 <div class="modal" id="cartModal" aria-hidden="true">
   <div class="sheet">
     <div class="head row" style="justify-content:space-between">
@@ -152,7 +135,6 @@
       <div id="checkoutBadge" class="checkoutBadge"></div>
 
       <div class="cartLayout">
-
         <div class="panel" id="stepProducts">
           <div class="panelTitle">Productos</div>
           <div id="cartItems"></div>
@@ -161,12 +143,10 @@
 
         <div class="panel" id="stepDelivery" style="display:none">
           <div class="panelTitle">Entrega y pago</div>
-
           <div class="two">
             <div><label class="mut">Departamento</label><select id="dep"></select></div>
             <div><label class="mut">Municipio</label><select id="mun"></select></div>
           </div>
-
           <div class="two" style="margin-top:10px">
             <div>
               <label class="mut">Tipo de entrega</label>
@@ -196,34 +176,26 @@
 
         <div class="panel" id="stepConfirm" style="display:none">
           <div class="panelTitle">Datos del cliente</div>
-
           <div class="two">
             <div><label class="mut">Nombre</label><input id="name" placeholder="Tu nombre" /></div>
             <div><label class="mut">Teléfono</label><input id="phone" placeholder="Ej: 9xxx-xxxx" /></div>
           </div>
-
           <div style="margin-top:10px">
             <label class="mut">Dirección / Referencia</label>
             <textarea id="addr" placeholder="Colonia, barrio, referencias..."></textarea>
           </div>
-
           <div style="margin-top:10px">
             <label class="mut">Instrucciones de entrega (opcional)</label>
             <textarea id="clientNote" placeholder="Ej: llamar antes / dejar en portón..."></textarea>
           </div>
-
           <div class="hr"></div>
-
           <div class="two">
             <button class="btn ghost" id="copyOrderBtn" type="button">Copiar pedido</button>
             <button class="btn ghost" id="shareOrderBtn" type="button">Compartir</button>
           </div>
-
           <button class="btn acc" id="sendWA" style="width:100%;margin-top:10px" type="button">Enviar pedido por WhatsApp</button>
-
           <div class="panel" id="orderHistory" style="margin-top:12px"></div>
         </div>
-
       </div>
 
       <div class="wizardNav">
@@ -237,7 +209,5 @@
 </div>
     `;
   }
-
-  // Monta inmediatamente cuando carga el script
   mount();
 })();
