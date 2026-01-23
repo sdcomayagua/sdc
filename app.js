@@ -18,10 +18,10 @@
     }
   }
 
-  async function init(){
+  async function init() {
     ensureBasics();
 
-    safe("health_check", () => window.SDC_HEALTH?.init?.());
+    safe("loading.ensure", () => window.SDC_LOADING?.ensureShell?.());
 
     safe("store_extras.early", () => window.SDC_STORE_EXTRAS?.init?.());
 
@@ -42,7 +42,9 @@
 
     safe("p5_perf", () => window.SDC_PERF?.init?.());
 
+    safe("loading.start", () => window.SDC_LOADING?.start?.());
     await window.SDC_CATALOG.load();
+    safe("loading.stop", () => window.SDC_LOADING?.stop?.());
 
     safe("delivery", () => window.SDC_DELIVERY?.initSelectors?.());
     safe("count", () => window.SDC_STORE?.updateCartCountUI?.());
@@ -62,18 +64,18 @@
     safe("p7_cart_offer", () => window.SDC_P7_CART_OFFER?.init?.());
 
     safe("delivery_plus", () => window.SDC_DELIVERY_PLUS?.init?.());
-    safe("bus_presets", () => window.SDC_BUS_PRESETS?.init?.());
 
     safe("fase1_mobile_app", () => window.SDC_APP_MOBILE?.init?.());
     safe("fase2_badges", () => window.SDC_FASE2_BADGES?.init?.());
     safe("fase3_ui", () => window.SDC_FASE3_UI?.init?.());
     safe("fase4", () => window.SDC_FASE4?.init?.());
 
-    // ✅ A) Cierre de venta
-    safe("close_sale", () => window.SDC_CLOSE_SALE?.init?.());
+    /* ✅ Pulido final */
+    safe("polish_fix", () => window.SDC_POLISH?.init?.());
   }
 
   init().catch(err => {
+    safe("loading.stop", () => window.SDC_LOADING?.stop?.());
     document.getElementById("statusPill") && (document.getElementById("statusPill").textContent = "Error cargando catálogo");
     U?.toast?.("Error: " + (err?.message || err));
   });
