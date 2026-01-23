@@ -1,6 +1,6 @@
-// loader.js?v=20260124ABCD
+// loader.js?v=20260124_loaderfix
 (() => {
-  const V = "20260124ABCD";
+  const V = "20260124_loaderfix";
 
   const SCRIPTS = [
     "config.js","utils.js",
@@ -55,10 +55,8 @@
     "fase3_ui.js",
     "fase4_checkout.js",
 
-    /* ✅ A,B,C,D extras */
-    "a_close_sale.js",
-    "c_health_check.js",
-    "d_delivery_bus_presets.js",
+    /* ✅ NUEVO: loader visual */
+    "loading_fix.js",
 
     "app.js",
   ];
