@@ -1,6 +1,6 @@
-// loader.js?v=20260124p7b
+// loader.js?v=20260124dp
 (() => {
-  const V = "20260124p7b";
+  const V = "20260124dp";
 
   const SCRIPTS = [
     "config.js","utils.js",
@@ -53,9 +53,10 @@
 
     /* Paquete 7 */
     "p7_checkout.js",
-
-    /* ✅ Extra carrito: oferta/ahorro */
     "p7_cart_offer.js",
+
+    /* ✅ NUEVO: reglas de envío completas + punto encuentro + devuelto */
+    "delivery_plus.js",
 
     "app.js",
   ];
