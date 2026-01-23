@@ -1,0 +1,62 @@
+/* fase4_checkout.css — Checkout ultra simple */
+
+/* Caja pro para “punto de encuentro” y “cambio/devuelto” */
+.dpCard{
+  margin-top:10px;
+  padding:12px;
+  border-radius:18px;
+  border:1px solid var(--line);
+  background:color-mix(in oklab, var(--card) 92%, transparent);
+  box-shadow: var(--shadow);
+}
+
+.dpCardTitle{
+  font-weight:1000;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  margin-bottom:8px;
+}
+
+.dpHint{
+  font-size:12px;
+  color:var(--mut);
+  margin-top:6px;
+  line-height:1.35;
+}
+
+/* Devuelto */
+.changeBox{
+  margin-top:10px;
+  padding:10px 12px;
+  border-radius:16px;
+  border:1px solid rgba(37,211,102,.35);
+  background: rgba(37,211,102,.10);
+  color: color-mix(in oklab, var(--txt) 70%, #a9ffbf);
+  font-weight:1000;
+}
+html[data-theme="light"] .changeBox{
+  color:#14532d;
+}
+
+/* Inputs con error */
+.fieldErr{
+  border-color: rgba(239,68,68,.55) !important;
+  box-shadow: 0 0 0 4px rgba(239,68,68,.12) !important;
+}
+
+/* Botón principal checkout sticky más limpio */
+.checkoutSticky{
+  border-radius:20px;
+}
+.checkoutSticky .checkoutTotal{
+  font-size:13px;
+}
+.checkoutStickyBtns .btn{
+  height:50px;
+}
+
+/* Compacto en móvil */
+@media (max-width:720px){
+  .dpCard{border-radius:20px;}
+}
