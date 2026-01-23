@@ -1,0 +1,85 @@
+/* pro_pack.css */
+
+/* 1) Barra checkout inferior (solo si hay items) */
+.checkoutDock{
+  position:fixed;
+  left:12px; right:12px; bottom:12px;
+  z-index:999;
+  display:none;
+  gap:10px;
+  align-items:center;
+  justify-content:space-between;
+  padding:12px;
+  border-radius:20px;
+  border:1px solid var(--line);
+  background:color-mix(in oklab, var(--card) 92%, transparent);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(12px);
+}
+.checkoutDock.show{display:flex;}
+.checkoutDock .dockLeft{display:flex;flex-direction:column;gap:2px;}
+.checkoutDock .dockTitle{font-weight:1000;}
+.checkoutDock .dockSub{font-size:12px;color:var(--mut);}
+.checkoutDock .dockBtn{height:48px;border-radius:16px;font-weight:1000;padding:0 14px;}
+
+/* en PC un poco más compacto */
+@media (min-width:900px){
+  .checkoutDock{max-width:520px;margin:0 auto;}
+}
+
+/* 2) Mini popover al añadir */
+.addPopover{
+  position:fixed;
+  left:12px; right:12px;
+  bottom:86px;
+  z-index:999;
+  display:none;
+  padding:12px;
+  border-radius:18px;
+  border:1px solid var(--line);
+  background:color-mix(in oklab, var(--card) 92%, transparent);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(12px);
+}
+.addPopover.show{display:block;}
+.addPopover .row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+}
+.addPopover .txt{
+  font-weight:1000;
+}
+.addPopover .mini{
+  height:42px;
+  border-radius:14px;
+  font-weight:1000;
+}
+
+/* 3) Recientes vistos */
+#recentSection{display:none;}
+#recentSection.show{display:block;}
+
+/* 5) Resaltado búsqueda */
+mark.hl{
+  background:rgba(255,204,102,.25);
+  color:inherit;
+  padding:0 2px;
+  border-radius:6px;
+}
+
+/* 4) Sticky WA en confirmar ya lo tenías, aquí lo reforzamos */
+#cartFab{
+  position:sticky;
+  bottom:10px;
+  z-index:6;
+}
+
+/* 6) Mejor click de tarjetas */
+.card{cursor:pointer}
+
+/* mobile spacing para dock */
+@media (max-width:720px){
+  body{padding-bottom:92px;}
+}
