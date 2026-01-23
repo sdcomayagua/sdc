@@ -1,0 +1,160 @@
+/* mega_plus.css */
+
+/* ========= 1) Barra confianza (Pago/Envío/Garantía) ========= */
+.trustBar{
+  margin-top:10px;
+  padding:10px 12px;
+  border-radius:18px;
+  border:1px solid var(--line);
+  background:color-mix(in oklab, var(--card) 92%, transparent);
+  box-shadow: var(--shadow);
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  align-items:center;
+  justify-content:space-between;
+}
+.trustItem{
+  display:flex; gap:8px; align-items:center;
+  font-weight:1000; font-size:12px;
+  color:var(--txt);
+}
+.trustItem span{color:var(--mut); font-weight:700}
+
+/* ========= 2) Precio anterior tachado + ahorro (ya lo tienes, lo refuerzo) ========= */
+.strike{font-weight:900}
+.saveLine{font-size:12px;color:var(--mut)}
+.saveLine b{color:var(--warn)}
+
+/* ========= 3) Stock urgencia ========= */
+.urgent{
+  border-color: rgba(255,204,102,.55) !important;
+}
+.urgentTag{
+  position:absolute;
+  bottom:10px;left:10px;
+  padding:6px 10px;
+  border-radius:999px;
+  font-weight:1000;
+  font-size:11px;
+  background:rgba(255,204,102,.18);
+  border:1px solid rgba(255,204,102,.45);
+  color:var(--warn);
+  z-index:2;
+}
+
+/* ========= 4) Botón compartir en cards (ya lo tienes, lo refuerzo visual) ========= */
+.shareBtn{
+  backdrop-filter: blur(10px);
+}
+
+/* ========= 5) Skeleton pro ya lo tienes (refuerzo) ========= */
+.skCard{border-radius:22px}
+
+/* ========= 6) Carrusel categorías (iconos) ========= */
+.tab{white-space:nowrap}
+
+/* ========= 7) Galería fullscreen ========= */
+.galleryFS{
+  position:fixed;inset:0;
+  z-index:99999;
+  background:rgba(0,0,0,.86);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:14px;
+}
+.galleryFS.show{display:flex}
+.galleryFS .fsBox{
+  width:min(980px,100%);
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+.galleryFS .fsTop{
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+}
+.galleryFS .fsTop .fsTitle{color:#fff;font-weight:1000}
+.galleryFS .fsTop .fsClose{
+  width:44px;height:44px;border-radius:14px;border:1px solid rgba(255,255,255,.18);
+  background:rgba(255,255,255,.08);color:#fff;cursor:pointer;
+}
+.galleryFS .fsImg{
+  width:100%;
+  max-height:74vh;
+  object-fit:contain;
+  border-radius:18px;
+  border:1px solid rgba(255,255,255,.14);
+  background:#000;
+}
+.galleryFS .fsNav{
+  display:flex;gap:10px;justify-content:center;
+}
+.galleryFS .fsBtn{
+  height:46px;
+  padding:0 14px;
+  border-radius:16px;
+  border:1px solid rgba(255,255,255,.18);
+  background:rgba(255,255,255,.08);
+  color:#fff;
+  cursor:pointer;
+  font-weight:1000;
+}
+
+/* ========= 8) Banner / ticker ya existe, solo refuerzo ========= */
+.newsTicker{border-bottom:1px solid color-mix(in oklab, var(--line) 70%, transparent)}
+
+/* ========= 9) Confirmación consultar: modal pro ========= */
+.confirmSheet{
+  position:fixed; inset:0;
+  z-index:99990;
+  display:none;
+  align-items:flex-end;
+  justify-content:center;
+  background:rgba(0,0,0,.55);
+}
+.confirmSheet.show{display:flex}
+.confirmCard{
+  width:min(520px,100%);
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:18px 18px 0 0;
+  box-shadow: var(--shadow);
+  padding:14px;
+}
+.confirmTitle{font-weight:1000}
+.confirmText{margin-top:8px;color:var(--mut);font-size:13px;line-height:1.4}
+.confirmBtns{display:flex;gap:10px;margin-top:12px}
+.confirmBtns .btn{flex:1;height:48px;border-radius:16px;font-weight:1000}
+
+/* ========= 10) Sugerencias pro ========= */
+.suggestItem:hover{background:color-mix(in oklab, var(--card) 85%, transparent)}
+
+/* ========= 11) Cache visual (sin UI) ========= */
+
+/* ========= 12) Admin (solo UI opcional, no rompe) ========= */
+.adminHint{
+  margin-top:10px;
+  padding:10px 12px;
+  border-radius:16px;
+  border:1px dashed var(--line);
+  color:var(--mut);
+  font-size:12px;
+}
+
+/* ========= CTA visible en móvil ========= */
+@media (max-width:720px){
+  .card .btn{height:52px !important;border-radius:16px !important;font-weight:1000 !important}
+  .btn.acc{
+    background: var(--acc) !important;
+    color:#05210f !important;
+    box-shadow: 0 14px 26px rgba(37,211,102,.22) !important;
+    border:0 !important;
+  }
+  .btn.consultBtn,.btn.danger,.dangerBtn{
+    background: rgba(255,107,107,.18) !important;
+    border: 1px solid rgba(255,107,107,.45) !important;
+    color:#8b1010 !important;
+    box-shadow: 0 12px 22px rgba(255,107,107,.12) !important;
+  }
+}
