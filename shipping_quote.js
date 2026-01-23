@@ -1,4 +1,4 @@
-// shipping_quote.js
+// shipping_quote.js (ACORDEÓN) — cerrado por defecto
 window.SDC_SHIP_QUOTE = (() => {
   const CFG = window.SDC_CONFIG;
 
@@ -19,16 +19,25 @@ window.SDC_SHIP_QUOTE = (() => {
   }
 
   function mount(){
-    const mount = document.getElementById("shipQuoteMount");
-    if (!mount) return;
+    const headerWrap = document.querySelector("header .wrap");
+    if (!headerWrap) return;
 
-    if (document.getElementById("shipQuote")) return;
+    // Si ya existe, no duplicar
+    if (document.getElementById("shipAcc")) return;
 
-    mount.innerHTML = `
-      <div class="shipQuote" id="shipQuote">
-        <div class="shipQuoteHead">🚚 Cotiza tu envío</div>
-        <div class="shipQuoteSub">Elige tu ubicación y te mostramos cómo se entrega.</div>
+    const box = document.createElement("div");
+    box.id = "shipAcc";
+    box.className = "shipAcc"; // cerrado por defecto (sin .open)
+    box.innerHTML = `
+      <button class="shipAccBtn" id="shipAccBtn" type="button">
+        <div>
+          🚚 Cotiza tu envío
+          <div class="mut">Toca para elegir tu ubicación</div>
+        </div>
+        <div class="shipAccChevron" id="shipChevron">+</div>
+      </button>
 
+      <div class="shipAccBody" id="shipAccBody">
         <div class="shipQuoteRow">
           <div>
             <label class="mut">Departamento</label>
@@ -43,29 +52,47 @@ window.SDC_SHIP_QUOTE = (() => {
         <div class="shipQuoteResult" id="sqResult" style="display:none"></div>
       </div>
     `;
+
+    // ✅ PONERLO DE ÚLTIMO EN EL HEADER (para que no cargue arriba)
+    headerWrap.appendChild(box);
+
+    // Toggle acordeón
+    document.getElementById("shipAccBtn").onclick = () => {
+      box.classList.toggle("open");
+      const chev = document.getElementById("shipChevron");
+      if (chev) chev.textContent = box.classList.contains("open") ? "–" : "+";
+    };
   }
 
   function fillDeps(){
     const list = getMunicipios();
     const deps = [...new Set(list.map(x=>x.departamento).filter(Boolean))].sort((a,b)=>a.localeCompare(b));
     const dep = document.getElementById("sqDep");
+    if (!dep) return;
     dep.innerHTML = deps.map(d=>`<option value="${d}">${d}</option>`).join("");
   }
 
   function fillMuns(){
     const list = getMunicipios();
-    const depV = document.getElementById("sqDep").value;
+    const depEl = document.getElementById("sqDep");
+    const munEl = document.getElementById("sqMun");
+    if (!depEl || !munEl) return;
+
+    const depV = depEl.value;
     const muns = list.filter(x=>x.departamento===depV).map(x=>x.municipio).filter(Boolean).sort((a,b)=>a.localeCompare(b));
-    const mun = document.getElementById("sqMun");
-    mun.innerHTML = muns.map(m=>`<option value="${m}">${m}</option>`).join("");
+    munEl.innerHTML = muns.map(m=>`<option value="${m}">${m}</option>`).join("");
   }
 
   function compute(){
-    const dep = document.getElementById("sqDep").value;
-    const mun = document.getElementById("sqMun").value;
+    const depEl = document.getElementById("sqDep");
+    const munEl = document.getElementById("sqMun");
+    const box = document.getElementById("sqResult");
+    if (!depEl || !munEl || !box) return;
+
+    const dep = depEl.value;
+    const mun = munEl.value;
     const key = `${dep}|${mun}`;
 
-    const box = document.getElementById("sqResult");
     box.style.display = "block";
 
     if (LOCAL_ALLOW.has(key)){
@@ -84,14 +111,20 @@ window.SDC_SHIP_QUOTE = (() => {
 
   function init(){
     mount();
-    if (!document.getElementById("sqDep")) return;
 
-    fillDeps();
-    fillMuns();
-    compute();
+    // Esperar a que ya haya data (municipios)
+    const t = setInterval(() => {
+      const ok = (getMunicipios().length > 0);
+      if (!ok) return;
+      clearInterval(t);
 
-    document.getElementById("sqDep").addEventListener("change", ()=>{ fillMuns(); compute(); });
-    document.getElementById("sqMun").addEventListener("change", compute);
+      fillDeps();
+      fillMuns();
+      compute();
+
+      document.getElementById("sqDep")?.addEventListener("change", ()=>{ fillMuns(); compute(); });
+      document.getElementById("sqMun")?.addEventListener("change", compute);
+    }, 250);
   }
 
   return { init };
