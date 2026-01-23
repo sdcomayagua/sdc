@@ -1,0 +1,96 @@
+/* mobile_ui_v3.css */
+
+/* ===== Header móvil: Título arriba + buscador pro ===== */
+@media (max-width:720px){
+  header .wrap{padding:10px}
+
+  /* Forzar marca arriba */
+  .headerBrand{
+    display:flex !important;
+    width:100%;
+    align-items:center;
+    gap:10px;
+    margin-bottom:10px;
+  }
+  .brandDot{flex:0 0 auto}
+  .brandText{
+    font-weight:1000;
+    font-size:18px;
+    line-height:1.05;
+    letter-spacing:.2px;
+  }
+
+  /* Oculta status pill */
+  #statusPill{display:none !important;}
+
+  /* Buscador PRO */
+  .headerSearch{flex:1 1 100% !important; min-width:100% !important;}
+  .search{position:relative}
+  #q{
+    padding:14px 50px 14px 44px; /* deja espacio para lupa y mic */
+    border-radius:18px;
+    font-size:14px;
+    border:1px solid color-mix(in oklab, var(--line) 75%, transparent);
+    background:color-mix(in oklab, var(--card) 90%, transparent);
+    box-shadow: 0 10px 22px rgba(0,0,0,.10);
+  }
+
+  /* Icono lupa dentro del input */
+  .search::before{
+    content:"🔎";
+    position:absolute;
+    left:14px;
+    top:50%;
+    transform:translateY(-50%);
+    font-size:16px;
+    opacity:.55;
+    pointer-events:none;
+  }
+
+  /* Oculta controles arriba que estorban */
+  #sortBoxDesktop{display:none !important;}
+  #sortBtnMobile{display:none !important;}
+  #viewBtn{display:none !important;}
+  #themeBtn{display:none !important;}
+  #cartBtn{display:none !important;} /* ya tienes FAB */
+
+  /* Tabs más compactos */
+  .tabsUnified{margin-top:10px}
+  .tab{padding:9px 12px;font-size:13px}
+  .filtersBar{margin-top:8px}
+  .chip{padding:8px 12px;font-size:12px}
+
+  /* Selector marca */
+  #brandFilter{width:100% !important; margin-top:10px !important; border-radius:18px}
+
+  /* Cards */
+  .grid{gap:12px}
+  .card{border-radius:22px}
+  .p{padding:12px}
+
+  /* CTA visible en modo día */
+  html[data-theme="light"] .btn.acc{
+    box-shadow: 0 14px 26px rgba(37,211,102,.22) !important;
+  }
+}
+
+/* Micrófono dentro del input (lo pinta voice_search.js) */
+.voiceIn{
+  position:absolute;
+  right:10px;
+  top:50%;
+  transform:translateY(-50%);
+  width:40px;
+  height:40px;
+  border-radius:14px;
+  border:1px solid var(--line);
+  background:color-mix(in oklab, var(--card2) 88%, transparent);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  font-size:18px;
+}
+html[data-theme="light"] .voiceIn{
+  background:color-mix(in oklab, var(--card) 92%, #e9eef9);
+}
