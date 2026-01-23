@@ -65,7 +65,6 @@
   async function init() {
     ensureBasics();
 
-    // AppBar/Drawer temprano
     safe("store_extras.early", () => window.SDC_STORE_EXTRAS?.init?.());
 
     safe("theme.init", () => window.SDC_THEME?.init?.("dark"));
@@ -129,14 +128,17 @@
     safe("store_extras", () => window.SDC_STORE_EXTRAS?.init?.());
     safe("shop_polish", () => window.SDC_SHOP_POLISH?.init?.());
 
-    /* ✅ Paquete 1 */
+    /* Paquete 1 */
     safe("p1_sales", () => window.SDC_P1?.init?.());
     safe("ship_quote", () => window.SDC_SHIP_QUOTE?.init?.());
     safe("top_offers", () => window.SDC_TOP_OFFERS?.render?.());
     safe("wa_plus", () => window.SDC_WA_PLUS?.init?.());
 
-    /* ✅ Paquete 2 */
+    /* Paquete 2 */
     safe("p2_ux", () => window.SDC_P2?.init?.());
+
+    /* Paquete 3 */
+    safe("p3_product", () => window.SDC_P3?.init?.());
   }
 
   init().catch(err => {
