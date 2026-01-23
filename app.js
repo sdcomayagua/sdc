@@ -1,69 +1,94 @@
 (() => {
   const U = window.SDC_UTILS;
 
+  function safe(name, fn) {
+    try { fn(); }
+    catch (e) {
+      console.error("[SDC] Error en:", name, e);
+      // no detenemos la tienda por cosas opcionales
+      U?.toast?.("Aviso: se desactivó una función opcional");
+    }
+  }
+
   async function init() {
-    window.SDC_THEME?.init?.("dark");
-    document.getElementById("themeBtn")?.addEventListener("click", () => window.SDC_THEME.toggle());
-    document.getElementById("bottomThemeBtn")?.addEventListener("click", () => window.SDC_THEME.toggle());
+    // Tema
+    safe("theme.init", () => window.SDC_THEME?.init?.("dark"));
+    safe("theme.btnTop", () => document.getElementById("themeBtn")?.addEventListener("click", () => window.SDC_THEME.toggle()));
+    safe("theme.btnBottom", () => document.getElementById("bottomThemeBtn")?.addEventListener("click", () => window.SDC_THEME.toggle()));
 
-    window.SDC_MOTION?.observe?.();
-    window.SDC_UX?.initToTop?.();
-    window.SDC_HEADER?.init?.();
+    // UX
+    safe("motion", () => window.SDC_MOTION?.observe?.());
+    safe("toTop", () => window.SDC_UX?.initToTop?.());
+    safe("header", () => window.SDC_HEADER?.init?.());
 
-    window.SDC_FILTERS?.init?.();
-    window.SDC_PAGER?.setPageSize?.(24);
-    window.SDC_SORT_MENU?.init?.();
-    window.SDC_TABS?.init?.();
+    // filtros/sort/tabs
+    safe("filters", () => window.SDC_FILTERS?.init?.());
+    safe("pager", () => window.SDC_PAGER?.setPageSize?.(24));
+    safe("sort_menu", () => window.SDC_SORT_MENU?.init?.());
+    safe("tabs_unified", () => window.SDC_TABS?.init?.());
 
-    window.SDC_SEARCH_UI?.init?.();
-    window.SDC_RESULTS?.init?.();
+    // search ui + counter
+    safe("search_ui", () => window.SDC_SEARCH_UI?.init?.());
+    safe("results_counter", () => window.SDC_RESULTS?.init?.());
 
-    window.SDC_PROFILE?.load?.();
-    window.SDC_CHECKOUT?.showStep?.(1);
+    // perfil + checkout
+    safe("profile.load", () => window.SDC_PROFILE?.load?.());
+    safe("checkout.showStep", () => window.SDC_CHECKOUT?.showStep?.(1));
 
-    window.SDC_ZOOM?.init?.();
-    window.SDC_CART_TOOLS?.init?.();
-    window.SDC_UI_BADGES?.init?.();
+    // modales auxiliares
+    safe("zoom", () => window.SDC_ZOOM?.init?.());
+    safe("cart_tools", () => window.SDC_CART_TOOLS?.init?.());
+    safe("ui_badges", () => window.SDC_UI_BADGES?.init?.());
 
-    window.SDC_VIEW3?.init?.();
-    window.SDC_STEPPER?.init?.();
-    window.SDC_CONTINUE?.init?.();
+    // view
+    safe("view3", () => window.SDC_VIEW3?.init?.());
+    safe("stepper", () => window.SDC_STEPPER?.init?.());
+    safe("continue", () => window.SDC_CONTINUE?.init?.());
 
-    window.SDC_THANKS_PLUS?.init?.();
-    window.SDC_ORDERS_PRO?.render?.();
-    window.SDC_BRAND?.init?.();
+    // thanks/history/brand/live
+    safe("thanks_plus", () => window.SDC_THANKS_PLUS?.init?.());
+    safe("orders_pro.render", () => window.SDC_ORDERS_PRO?.render?.());
+    safe("brand_filter", () => window.SDC_BRAND?.init?.());
+    safe("continue_plus", () => window.SDC_CONTINUE_PLUS?.init?.());
+    safe("checkout_guard", () => window.SDC_GUARD?.init?.());
+    safe("mobile_fix", () => window.SDC_MOBILE_FIX?.init?.());
+    safe("live_refresh", () => window.SDC_LIVE?.start?.(3));
 
-    window.SDC_CONTINUE_PLUS?.init?.();
-    window.SDC_GUARD?.init?.();
+    // carrito badge
+    safe("cart_badge.init", () => window.SDC_CART_BADGE?.init?.());
 
-    window.SDC_MOBILE_FIX?.init?.();
-    window.SDC_LIVE?.start?.(3);
+    // features on/off (voz, favoritos, swipe, etc.)
+    safe("features_boot", () => window.SDC_BOOT_FEATURES?.());
 
-    window.SDC_CART_BADGE?.init?.();
+    // skeleton
+    safe("catalog_ui.skeleton", () => window.SDC_CATALOG_UI?.renderSkeletonGrid?.(10));
 
-    window.SDC_CATALOG_UI?.renderSkeletonGrid?.(10);
+    // input buscar
+    safe("bind.search", () => document.getElementById("q")?.addEventListener("input", () => window.SDC_CATALOG.renderGrid()));
 
-    document.getElementById("q")?.addEventListener("input", () => window.SDC_CATALOG.renderGrid());
+    // binds principales
+    safe("cart.bindEvents", () => window.SDC_CART?.bindEvents?.());
+    safe("wa.bind", () => window.SDC_WA?.bind?.());
+    safe("productModal.bind", () => window.SDC_PRODUCT_MODAL?.bindEvents?.());
+    safe("catalog.bind", () => window.SDC_CATALOG?.bindProductModalEvents?.());
 
-    window.SDC_CART.bindEvents();
-    window.SDC_WA.bind();
-    window.SDC_CATALOG.bindProductModalEvents();
+    // ✅ CARGA CATALOGO (esto debe correr sí o sí)
+    const json = await window.SDC_CATALOG.load();
 
-    await window.SDC_CATALOG.load();
-    window.SDC_DELIVERY.initSelectors();
-    window.SDC_STORE.updateCartCountUI();
-    window.SDC_RESULTS?.refresh?.();
+    safe("delivery.init", () => window.SDC_DELIVERY?.initSelectors?.());
+    safe("cartCountUI", () => window.SDC_STORE?.updateCartCountUI?.());
+    safe("results.refresh", () => window.SDC_RESULTS?.refresh?.());
 
-    window.SDC_SMART?.applyMiniIfNeeded?.((window.SDC_STORE.getProducts()||[]).length);
-    window.SDC_CART_BADGE?.apply?.();
+    // mini por defecto si aplica
+    safe("smartMini", () => window.SDC_SMART?.applyMiniIfNeeded?.((window.SDC_STORE.getProducts()||[]).length));
+    safe("cartBadge.apply", () => window.SDC_CART_BADGE?.apply?.());
 
-    // ✅ ON/OFF de features (fácil quitar)
-    window.SDC_BOOT_FEATURES?.();
+    return json;
   }
 
   init().catch(err => {
     console.error(err);
     document.getElementById("statusPill") && (document.getElementById("statusPill").textContent = "Error cargando catálogo");
-    U.toast("Error: " + (err?.message || err));
+    U?.toast?.("Error: " + (err?.message || err));
   });
 })();
