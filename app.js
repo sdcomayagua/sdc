@@ -52,7 +52,6 @@
     safe("product.bind", () => window.SDC_PRODUCT_MODAL?.bindEvents?.());
     safe("catalog.bind", () => window.SDC_CATALOG?.bindProductModalEvents?.());
 
-    // catálogo (esto sí o sí)
     const json = await window.SDC_CATALOG.load();
 
     safe("delivery", () => window.SDC_DELIVERY?.initSelectors?.());
