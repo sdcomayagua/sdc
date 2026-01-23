@@ -1,6 +1,5 @@
-/* styles.bundle.css?v=20260123d */
+/* styles.bundle.css?v=20260123mega */
 
-/* ===== Base ===== */
 @import url("./theme.css");
 @import url("./base.css");
 @import url("./controls.css");
@@ -9,7 +8,6 @@
 @import url("./cart_modal.css");
 @import url("./mobile.css");
 
-/* ===== Estética tienda ===== */
 @import url("./ui_polish.css");
 @import url("./header_polish.css");
 @import url("./store_appbar.css");
@@ -18,14 +16,10 @@
 @import url("./pc_list.css");
 @import url("./promo_ui.css");
 
-/* ===== Extras 2,4,5,6,8,9,10 ===== */
 @import url("./extras_store.css");
-
-/* ===== Barra tipo noticia ===== */
 @import url("./news_ticker.css");
-
-/* ===== PRO PACK ===== */
 @import url("./pro_pack.css");
-
-/* ===== Sticky tipo app de ventas (buscador + filtros siempre arriba) ===== */
 @import url("./sticky_shop.css");
+
+/* ✅ TODO LO PRO (12/12) */
+@import url("./mega_plus.css");
