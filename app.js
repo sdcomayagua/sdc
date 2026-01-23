@@ -147,12 +147,11 @@
     safe("delivery_plus", () => window.SDC_DELIVERY_PLUS?.init?.());
 
     safe("fase1_mobile_app", () => window.SDC_APP_MOBILE?.init?.());
-
-    /* ✅ FASE 2 (badges NUEVO/OFERTA/AHORRAS) */
     safe("fase2_badges", () => window.SDC_FASE2_BADGES?.init?.());
-
-    /* ✅ FASE 3 (pulido final UI) */
     safe("fase3_ui", () => window.SDC_FASE3_UI?.init?.());
+
+    /* ✅ FASE 4 */
+    safe("fase4", () => window.SDC_FASE4?.init?.());
   }
 
   init().catch(err => {
