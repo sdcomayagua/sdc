@@ -1,116 +1,62 @@
-// loader.js
+// loader.js 20260122z
 (() => {
-  const V = "20260122x";
+  const V = "20260122z";
+  const SCRIPTS = [
+    "config.js","utils.js",
 
-  const scripts = [
-    // Templates primero (mete modales completos)
+    // UI
+    "theme.js","motion.js","ux.js","header_compact.js",
+
+    // templates/modals
     "templates.js",
 
-    // Base
-    "config.js",
-    "utils.js",
+    // core
+    "store.js","catalog_data.js","catalog_ui.js","catalog.js",
+    "filters.js","pagination.js","sort_menu.js","tabs_unified.js",
+    "search_ui.js","results_counter.js",
 
-    // Features on/off
-    "features.js",
-    "features_boot.js",
-
-    // UI base
-    "theme.js",
-    "motion.js",
-    "ux.js",
-    "header_compact.js",
-
-    // Core app modules
-    "banner.js",
-    "filters.js",
-    "pagination.js",
-    "cart_mini.js",
-    "sort_menu.js",
-    "tabs_unified.js",
-    "search_ui.js",
-    "results_counter.js",
-
-    // Checkout/cart/modal
-    "checkout_steps.js",
-    "customer_profile.js",
-    "product_reco.js",
-
+    // product
+    "gallery.js","media.js","share.js",
+    "product_tabs.js","modal_swipe.js","swipe_images.js",
+    "product_modal_ui.js","product_modal.js",
     "image_zoom.js",
-    "cart_tools.js",
-    "add_to_cart_fx.js",
-    "ui_badges.js",
 
-    "continue_state.js",
-    "stepper_pro.js",
+    // cart/checkout
+    "cart.js","delivery.js","wa.js",
+    "checkout_steps.js","checkout_guard.js",
+    "cart_tools.js","add_to_cart_fx.js","add_confirm.js",
+    "ui_badges.js","continue_state.js","continue_state_plus.js",
     "price_stock_watch.js",
-    "add_confirm.js",
+    "order_history_pro.js","post_purchase_plus.js",
+    "cart_persist.js","eta.js","live_refresh.js","view_mode3.js",
+    "brand_filter.js","mobile_fix.js","mobile_nav_v2.js",
 
-    "live_refresh.js",
-    "view_mode3.js",
-    "brand_filter.js",
-    "order_history_pro.js",
-    "post_purchase_plus.js",
+    // store UI extras
+    "store_extras.js","shop_polish.js",
+    "fallback_image.js","mobile_cart_badge.js","smart_defaults.js",
+    "favorites.js","favorites_section.js","badges_logic.js",
+    "features.js","features_boot.js",
+    "voice_search.js",
 
-    "continue_state_plus.js",
-    "checkout_guard.js",
+    // ✅ TUS CAMBIOS: 2,4,5,6,8,9,10 en 1 solo JS
+    "extras_store.js",
 
-    "mobile_fix.js",
-    "cart_persist.js",
-    "eta.js",
-
-    "product_tabs.js",
-    "modal_swipe.js",
-
-    "product_modal_ui.js",
-
-    "store.js",
-    "media.js",
-    "gallery.js",
-    "share.js",
-    "product_modal.js",
-    "catalog_data.js",
-    "catalog_ui.js",
-    "catalog.js",
-
-    "cart.js",
-    "delivery.js",
-    "wa.js",
-    "mobile_nav_v2.js",
-
-    // ✅ Extras tienda
-    "store_extras.js",
-    "shop_polish.js",
-
-    // ✅ NUEVOS (tus pedidos 2,4,5,6,8,9,10)
-    "badges_logic.js",
-    "favorites_section.js",
-    "category_icons.js",
-    "banner_sheet.js",
-    "skeleton_enhance.js",
-    "enhance_cards.js",
-    "search_suggest.js",
-    "enhancements_boot.js",
-
-    // App init al final
+    // init
     "app.js"
   ];
 
-  function loadOne(src){
-    return new Promise((resolve, reject) => {
+  function load(src){
+    return new Promise((resolve) => {
       const s = document.createElement("script");
-      s.src = `${src}?v=${V}`;
+      s.src = `${src}?v=${encodeURIComponent(V)}`;
       s.defer = true;
-      s.onload = resolve;
-      s.onerror = reject;
+      s.onload = () => resolve(true);
+      s.onerror = () => resolve(false);
       document.head.appendChild(s);
     });
   }
 
   (async () => {
-    for (const s of scripts) {
-      await loadOne(s);
-    }
-  })().catch(err => {
-    console.error("Loader error:", err);
-  });
+    for (const f of SCRIPTS) await load(f);
+  })();
 })();
