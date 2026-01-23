@@ -4,15 +4,12 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Soluciones Digitales Comayagua | Catálogo</title>
-
-  <!-- ✅ UN SOLO CSS -->
   <link rel="stylesheet" href="styles.bundle.css?v=20260122z">
 </head>
 <body>
 
 <header>
   <div class="wrap">
-    <!-- AppBar se inyecta por store_extras.js -->
     <div class="row headerTop">
       <div class="search headerSearch">
         <input id="q" placeholder="Buscar producto..." autocomplete="off" />
@@ -37,7 +34,6 @@
       </button>
     </div>
 
-    <!-- (8) Mini banner -->
     <div id="topBanner" class="topBanner" style="display:none"></div>
 
     <div class="tabsUnified">
@@ -53,13 +49,11 @@
     <div class="filtersBar" id="quickFilters"></div>
     <select id="brandFilter" class="btn ghost" style="width:100%;margin-top:10px"></select>
 
-    <!-- (10) sugerencias -->
     <div id="suggestBox" class="suggestBox" style="display:none"></div>
   </div>
 </header>
 
 <main class="wrap">
-  <!-- Favoritos se inyecta si hay -->
   <div id="favMount"></div>
 
   <section id="featuredSection" class="section" style="display:none">
@@ -89,10 +83,8 @@
 <div class="toast" id="toast"></div>
 <button class="toTop" id="toTop" type="button" aria-label="Ir arriba">↑</button>
 
-<!-- Modales inyectados -->
 <div id="templatesMount"></div>
 
-<!-- Loader -->
 <script src="loader.js?v=20260122z"></script>
 </body>
 </html>
