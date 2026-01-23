@@ -1,4 +1,4 @@
-// loading_fix.js — PRO Loader (skeleton igual a tu tienda)
+// loading_fix.js — FIX: activa loader inmediato y crea shell arriba del main
 window.SDC_LOADING = (() => {
   let startedAt = 0;
 
@@ -13,27 +13,20 @@ window.SDC_LOADING = (() => {
     shell.className = "loadingShell";
 
     shell.innerHTML = `
-      <!-- Top Ofertas skeleton -->
-      <div class="ldSection">
-        <div class="ldTitleRow">
-          <div class="ldTitle shimmer"></div>
-          <div class="ldSub shimmer"></div>
-        </div>
-        <div class="ldHRow">
-          ${Array.from({length:5}).map(()=>`
-            <div class="ldHCard shimmer">
-              <div class="ldHImg"></div>
-              <div class="ldHP">
-                <div class="ldHL1"></div>
-                <div class="ldHL2"></div>
-              </div>
-            </div>
-          `).join("")}
-        </div>
+      <div class="ldRow">
+        <div class="ldPill shimmer lg"></div>
+        <div class="ldPill shimmer sm"></div>
+        <div class="ldPill shimmer sm"></div>
       </div>
 
-      <!-- Grid skeleton (cards reales) -->
-      <div class="ldGrid" style="margin-top:14px">
+      <div class="ldRow">
+        <div class="ldPill shimmer sm"></div>
+        <div class="ldPill shimmer sm"></div>
+        <div class="ldPill shimmer sm"></div>
+        <div class="ldPill shimmer sm"></div>
+      </div>
+
+      <div class="ldGrid">
         ${Array.from({length:8}).map(()=>`
           <div class="ldCard shimmer">
             <div class="ldRibbonRow">
@@ -52,7 +45,7 @@ window.SDC_LOADING = (() => {
       </div>
     `;
 
-    // Lo ponemos justo al inicio del main para que se vea natural
+    // IMPORTANTE: insertarlo al inicio del main para que sea lo primero visible
     main.insertAdjacentElement("afterbegin", shell);
   }
 
@@ -60,13 +53,14 @@ window.SDC_LOADING = (() => {
     ensureShell();
     startedAt = Date.now();
     document.body.classList.add("is-loading");
+
     const pill = document.getElementById("statusPill");
     if (pill) pill.textContent = "Cargando catálogo…";
   }
 
-  // Evita “parpadeo”: mínimo 500ms de loader
   function stop(){
-    const minMs = 500;
+    // mínimo para evitar parpadeo
+    const minMs = 450;
     const elapsed = Date.now() - startedAt;
     const wait = Math.max(0, minMs - elapsed);
 
@@ -76,6 +70,17 @@ window.SDC_LOADING = (() => {
       if (pill && pill.textContent.includes("Cargando")) pill.textContent = "Catálogo listo ✅";
     }, wait);
   }
+
+  // ✅ Auto-start lo más temprano posible (apenas existe el body)
+  (function auto(){
+    try{
+      if (document.readyState === "loading"){
+        document.addEventListener("DOMContentLoaded", () => start(), { once:true });
+      } else {
+        start();
+      }
+    }catch{}
+  })();
 
   return { start, stop, ensureShell };
 })();
