@@ -1,4 +1,4 @@
-/* styles.bundle.css?v=20260124_loaderfix */
+/* styles.bundle.css?v=20260124_polish */
 
 @import url("./theme.css");
 @import url("./base.css");
@@ -38,5 +38,8 @@
 @import url("./fase3_ui.css");
 @import url("./fase4_checkout.css");
 
-/* ✅ NUEVO: Loader visual */
+/* Loader */
 @import url("./loading_fix.css");
+
+/* ✅ Pulido final */
+@import url("./polish_fix.css");
