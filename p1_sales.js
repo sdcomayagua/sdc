@@ -1,8 +1,13 @@
-// p1_sales.js
+// p1_sales.js (ACTUALIZADO)
+// Barra confianza arriba del AppBar + urgencia stock
+
 window.SDC_P1 = (() => {
   function trustBar(){
+    const header = document.querySelector("header");
     const headerWrap = document.querySelector("header .wrap");
-    if (!headerWrap) return;
+    if (!header || !headerWrap) return;
+
+    // si ya existe, no duplicar
     if (document.getElementById("trustBar")) return;
 
     const bar = document.createElement("div");
@@ -14,9 +19,20 @@ window.SDC_P1 = (() => {
       <div class="trustItem">🛡️ <span>Garantía</span></div>
     `;
 
-    const banner = document.getElementById("topBanner");
-    if (banner) banner.insertAdjacentElement("afterend", bar);
-    else headerWrap.appendChild(bar);
+    // ✅ PRIORIDAD: ponerla arriba de Catálogo SDC (AppBar)
+    // store_extras.js inyecta el AppBar con id="appBar"
+    const appBar = document.getElementById("appBar");
+
+    if (appBar) {
+      // la ponemos justo ANTES del AppBar
+      appBar.insertAdjacentElement("beforebegin", bar);
+      bar.style.marginTop = "0";
+      return;
+    }
+
+    // Si todavía no existe AppBar, la ponemos arriba del headerWrap
+    headerWrap.insertAdjacentElement("afterbegin", bar);
+    bar.style.marginTop = "0";
   }
 
   function applyUrgency(card){
@@ -54,9 +70,24 @@ window.SDC_P1 = (() => {
   }
 
   function init(){
+    // intenta al inicio
     trustBar();
+
+    // reintenta luego por si AppBar entra después
+    setTimeout(() => {
+      // si la barra existe pero quedó abajo del AppBar, la movemos
+      const bar = document.getElementById("trustBar");
+      const appBar = document.getElementById("appBar");
+      if (bar && appBar && bar.nextElementSibling !== appBar) {
+        appBar.insertAdjacentElement("beforebegin", bar);
+        bar.style.marginTop = "0";
+      } else {
+        trustBar();
+      }
+    }, 350);
+
     hookGrid();
-    // reaplica tras cargar productos
+
     setTimeout(() => {
       document.querySelectorAll(".card").forEach(applyUrgency);
     }, 800);
