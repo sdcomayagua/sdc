@@ -1,6 +1,6 @@
-// loader.js?v=20260124_loaderfix
+// loader.js?v=20260124_polish
 (() => {
-  const V = "20260124_loaderfix";
+  const V = "20260124_polish";
 
   const SCRIPTS = [
     "config.js","utils.js",
@@ -55,8 +55,10 @@
     "fase3_ui.js",
     "fase4_checkout.js",
 
-    /* ✅ NUEVO: loader visual */
     "loading_fix.js",
+
+    /* ✅ Pulido final */
+    "polish_fix.js",
 
     "app.js",
   ];
