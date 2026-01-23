@@ -1,0 +1,99 @@
+/* loading_fix.css — Nunca se ve vacío */
+
+/* Cuando la app está cargando */
+body.is-loading main.wrap{
+  min-height: 60vh;
+}
+
+/* Oculta la UI real (para evitar “saltos” feos) */
+body.is-loading #catTabs,
+body.is-loading #subTabs,
+body.is-loading #quickFilters,
+body.is-loading #brandFilter,
+body.is-loading #topOffersSection,
+body.is-loading #featuredSection,
+body.is-loading #offersSection,
+body.is-loading #statsSection,
+body.is-loading #grid,
+body.is-loading #loadMoreWrap{
+  display:none !important;
+}
+
+/* Skeleton general */
+.loadingShell{
+  display:none;
+  margin-top:12px;
+}
+body.is-loading .loadingShell{
+  display:block;
+}
+
+.ldRow{
+  display:flex;
+  gap:10px;
+  overflow:hidden;
+  padding:10px 0;
+}
+.ldPill{
+  height:42px;
+  width:120px;
+  border-radius:999px;
+  border:1px solid var(--line);
+  background: color-mix(in oklab, var(--card) 88%, transparent);
+  position:relative;
+  overflow:hidden;
+}
+
+.ldPill.sm{width:90px;}
+.ldPill.lg{width:170px;}
+
+.ldGrid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:12px;
+  margin-top:12px;
+}
+@media (min-width:900px){
+  .ldGrid{grid-template-columns:repeat(4,1fr);}
+}
+.ldCard{
+  border-radius:22px;
+  border:1px solid var(--line);
+  background: color-mix(in oklab, var(--card) 92%, transparent);
+  overflow:hidden;
+  position:relative;
+}
+.ldImg{
+  width:100%;
+  aspect-ratio:1/1;
+  background: color-mix(in oklab, var(--mut) 10%, transparent);
+}
+.ldBody{padding:12px}
+.ldLine{
+  height:10px;
+  border-radius:999px;
+  background: color-mix(in oklab, var(--mut) 10%, transparent);
+  margin:10px 0;
+}
+.ldLine.lg{width:92%}
+.ldLine.md{width:74%}
+.ldLine.sm{width:48%}
+.ldBtn{
+  height:46px;
+  border-radius:16px;
+  background: color-mix(in oklab, var(--mut) 12%, transparent);
+}
+
+/* Shimmer */
+.shimmer::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(90deg, transparent, rgba(255,255,255,.12), transparent);
+  transform:translateX(-120%);
+  animation:sh 1.2s infinite;
+}
+html[data-theme="light"] .shimmer::after{
+  background:linear-gradient(90deg, transparent, rgba(10,20,40,.08), transparent);
+}
+@keyframes sh{ to{ transform:translateX(120%);} }
