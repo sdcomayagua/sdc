@@ -1,7 +1,7 @@
-/* p5_analytics.css */
+/* p5_analytics.css (COMPACTO) */
 
 #statsSection{display:none;}
-#statsSection.show{display:block;}
+#statsSection .sectionHead{margin-top:16px}
 
 .statsGrid{
   display:grid;
@@ -20,19 +20,8 @@
   box-shadow: var(--shadow);
 }
 
-.statsTitle{
-  font-weight:1000;
-  margin-bottom:8px;
-  display:flex;
-  gap:8px;
-  align-items:center;
-}
-.statsSub{
-  color:var(--mut);
-  font-size:12px;
-  margin-top:-4px;
-  margin-bottom:10px;
-}
+.statsTitle{font-weight:1000;margin-bottom:6px}
+.statsSub{color:var(--mut);font-size:12px;margin-bottom:8px}
 
 .statsRow{
   display:flex;
@@ -40,10 +29,4 @@
   overflow:auto;
   padding:6px 2px 2px 2px;
 }
-
-/* usa el estilo existente de hCard si ya lo tienes, aquí lo refuerzo */
-.statsRow .hCard{
-  min-width:160px;
-  max-width:160px;
-  border-radius:18px;
-}
+.statsRow .hCard{min-width:160px;max-width:160px;border-radius:18px}
