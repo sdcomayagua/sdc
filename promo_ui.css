@@ -1,0 +1,72 @@
+/* promo_ui.css */
+
+/* Destacado (borde pro) */
+.card.featuredCard{
+  border-color: rgba(255, 204, 102, .55) !important;
+  box-shadow: 0 18px 38px rgba(255, 204, 102, .10);
+}
+html[data-theme="light"] .card.featuredCard{
+  box-shadow: 0 18px 38px rgba(12,20,45,.10);
+}
+
+/* Ribbons arriba en la imagen */
+.ribbonRow{
+  position:absolute;
+  top:10px;
+  left:10px;
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  z-index:2;
+}
+
+.ribbon{
+  padding:6px 10px;
+  border-radius:999px;
+  font-weight:1000;
+  font-size:11px;
+  border:1px solid var(--line);
+  background:color-mix(in oklab, var(--card) 70%, transparent);
+  color:var(--txt);
+}
+
+.ribbon.offer{
+  border-color: rgba(255,204,102,.55);
+  color: var(--warn);
+  background: rgba(255,204,102,.14);
+}
+.ribbon.new{
+  border-color: rgba(120,170,255,.45);
+  color: #cfe2ff;
+  background: rgba(120,170,255,.14);
+}
+html[data-theme="light"] .ribbon.new{
+  color:#153a75;
+}
+.ribbon.featured{
+  border-color: rgba(255,204,102,.55);
+  color: #ffe5a6;
+  background: rgba(255,204,102,.12);
+}
+
+/* Ahorro mini bajo el precio */
+.saveLine{
+  margin-top:6px;
+  font-size:12px;
+  color: var(--mut);
+}
+.saveLine b{
+  color: var(--warn);
+}
+
+/* Modal ahorro */
+.pmSave{
+  margin-top:8px;
+  border:1px solid rgba(255,204,102,.45);
+  background: rgba(255,204,102,.12);
+  color: var(--warn);
+  border-radius:14px;
+  padding:10px;
+  font-weight:1000;
+  font-size:12px;
+}
