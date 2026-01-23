@@ -1,4 +1,4 @@
-/* styles.bundle.css?v=20260123final */
+/* styles.bundle.css?v=20260124p1 */
 
 @import url("./theme.css");
 @import url("./base.css");
@@ -20,6 +20,7 @@
 @import url("./news_ticker.css");
 @import url("./sticky_shop.css");
 
-/* ✅ Nuevos estilos (cotizador + top ofertas + wa pro) */
+/* ✅ PAQUETE 1 */
+@import url("./p1_sales.css");
 @import url("./shipping_quote.css");
 @import url("./top_offers.css");
