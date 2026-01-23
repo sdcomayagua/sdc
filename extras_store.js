@@ -2,6 +2,7 @@
 (() => {
   const money = (n) => window.SDC_UTILS?.money?.(n, window.SDC_CONFIG?.CURRENCY) || "";
 
+  // (6) iconos por categoría
   const mapEmoji = (name) => {
     const s = (name||"").toLowerCase();
     if (s.includes("gamer") || s.includes("gaming")) return "🎮";
@@ -22,12 +23,10 @@
       return getProducts().find(p => String(p.id||p.nombre||"") === pid) || null;
     }
     const name = card.querySelector(".name")?.textContent?.trim() || "";
-    const priceTxt = card.querySelector(".price")?.textContent || "";
-    const priceNum = Number((priceTxt.match(/[\d.]+/)||["0"])[0]);
-    return getProducts().find(p => (p.nombre||"").trim() === name && Number(p.precio||0) === priceNum) || null;
+    return getProducts().find(p => (p.nombre||"").trim() === name) || null;
   }
 
-  // (2) tachado + ahorro
+  // (2) tachado precio anterior
   function applyPromo(card){
     const p = findProductForCard(card);
     if (!p) return;
@@ -69,7 +68,22 @@
     wrap.appendChild(btn);
   }
 
-  // (6) iconos en tabs
+  // (9) confirm consultar
+  function hookConsultConfirm(){
+    document.addEventListener("click", (ev) => {
+      const t = ev.target;
+      if (!(t instanceof HTMLElement)) return;
+      if (!t.classList.contains("consultBtn")) return;
+
+      const card = t.closest(".card");
+      const p = card ? findProductForCard(card) : null;
+      const name = p?.nombre || "este producto";
+      const ok = window.confirm(`¿Quieres consultar disponibilidad por WhatsApp?\n\nProducto: ${name}`);
+      if (!ok){ ev.preventDefault(); ev.stopPropagation(); }
+    }, true);
+  }
+
+  // (6) icon tabs
   function iconTabs(id){
     const el = document.getElementById(id);
     if (!el) return;
@@ -101,20 +115,6 @@
 
     el.innerHTML = `<b>${title}</b><div class="mut" style="margin-top:6px">${text}</div>`;
     el.style.display = "block";
-  }
-
-  // (9) confirm consultar
-  function hookConsultConfirm(){
-    document.addEventListener("click", (ev) => {
-      const t = ev.target;
-      if (!(t instanceof HTMLElement)) return;
-      if (!t.classList.contains("consultBtn")) return;
-      const card = t.closest(".card");
-      const p = card ? findProductForCard(card) : null;
-      const name = p?.nombre || "este producto";
-      const ok = window.confirm(`¿Quieres consultar disponibilidad por WhatsApp?\n\nProducto: ${name}`);
-      if (!ok) { ev.preventDefault(); ev.stopPropagation(); }
-    }, true);
   }
 
   // (10) suggestions
@@ -169,6 +169,7 @@
     });
   }
 
+  // hook grid for promo+share
   function hookGrid(){
     const grid = document.getElementById("grid");
     if (!grid) return;
@@ -186,6 +187,7 @@
     const t = setInterval(() => {
       if (getProducts().length === 0) return;
       clearInterval(t);
+
       hookGrid();
       hookTabsIcons();
       hookConsultConfirm();
