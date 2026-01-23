@@ -2,56 +2,45 @@
   const U = window.SDC_UTILS;
   function safe(_name, fn){ try { fn && fn(); } catch {} }
 
-  function ensureEl(id, html){
-    if (document.getElementById(id)) return;
-    const div = document.createElement("div");
-    div.id = id;
-    div.innerHTML = html || "";
-    // por defecto lo metemos al final del body
-    document.body.appendChild(div);
-  }
-
   function ensureBasics(){
-    // Evita errores de "null.textContent"
-    if (!document.getElementById("statusPill")){
-      const headerWrap = document.querySelector("header .wrap");
-      if (headerWrap){
-        const p = document.createElement("div");
-        p.className = "pill";
-        p.id = "statusPill";
-        p.textContent = "Cargando catálogo...";
-        headerWrap.appendChild(p);
-      }
+    // Evita errores de "null.textContent" si faltan elementos por cambios
+    const headerWrap = document.querySelector("header .wrap");
+
+    if (!document.getElementById("statusPill") && headerWrap){
+      const p = document.createElement("div");
+      p.className = "pill";
+      p.id = "statusPill";
+      p.textContent = "Cargando catálogo...";
+      headerWrap.appendChild(p);
     }
+
     if (!document.getElementById("templatesMount")){
-      ensureEl("templatesMount", "");
+      const m = document.createElement("div");
+      m.id = "templatesMount";
+      document.body.appendChild(m);
     }
-    if (!document.getElementById("topBanner")){
-      const headerWrap = document.querySelector("header .wrap");
-      if (headerWrap){
-        const b = document.createElement("div");
-        b.id = "topBanner";
-        b.className = "topBanner";
-        b.style.display = "none";
-        headerWrap.appendChild(b);
-      }
+
+    if (!document.getElementById("topBanner") && headerWrap){
+      const b = document.createElement("div");
+      b.id = "topBanner";
+      b.className = "topBanner";
+      b.style.display = "none";
+      headerWrap.appendChild(b);
     }
-    if (!document.getElementById("suggestBox")){
-      const headerWrap = document.querySelector("header .wrap");
-      if (headerWrap){
-        const s = document.createElement("div");
-        s.id = "suggestBox";
-        s.className = "suggestBox";
-        s.style.display = "none";
-        headerWrap.appendChild(s);
-      }
+
+    if (!document.getElementById("suggestBox") && headerWrap){
+      const s = document.createElement("div");
+      s.id = "suggestBox";
+      s.className = "suggestBox";
+      s.style.display = "none";
+      headerWrap.appendChild(s);
     }
   }
 
   async function init() {
     ensureBasics();
 
-    // ✅ AppBar/Drawer temprano para que SIEMPRE salga el botón arriba derecha
+    // ✅ AppBar/Drawer temprano (para que SIEMPRE se vea botón arriba derecha)
     safe("store_extras.early", () => window.SDC_STORE_EXTRAS?.init?.());
 
     safe("theme.init", () => window.SDC_THEME?.init?.("dark"));
@@ -113,11 +102,17 @@
     safe("smartMini", () => window.SDC_SMART?.applyMiniIfNeeded?.((window.SDC_STORE.getProducts()||[]).length));
     safe("cartBadge.apply", () => window.SDC_CART_BADGE?.apply?.());
 
+    // store UI extras
+    safe("store_extras", () => window.SDC_STORE_EXTRAS?.init?.());
     safe("shop_polish", () => window.SDC_SHOP_POLISH?.init?.());
+
+    // ✅ PRO PACK
+    safe("pro_pack", () => window.SDC_PRO_PACK?.init?.());
   }
 
   init().catch(err => {
-    document.getElementById("statusPill") && (document.getElementById("statusPill").textContent = "Error cargando catálogo");
+    const pill = document.getElementById("statusPill");
+    if (pill) pill.textContent = "Error cargando catálogo";
     U?.toast?.("Error: " + (err?.message || err));
   });
 })();
