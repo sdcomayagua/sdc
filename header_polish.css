@@ -1,0 +1,73 @@
+/* header_polish.css */
+
+/* Header más “app” */
+header{
+  border-bottom:1px solid color-mix(in oklab, var(--line) 65%, transparent);
+}
+
+/* versión móvil: marca arriba y buscador premium */
+@media (max-width:720px){
+  header .wrap{
+    padding:12px 10px;
+  }
+
+  .headerBrand{
+    display:flex !important;
+    align-items:center;
+    gap:10px;
+    margin-bottom:10px;
+  }
+  .brandText{
+    font-size:18px;
+    line-height:1.05;
+    letter-spacing:.2px;
+    font-weight:1000;
+  }
+
+  /* buscador con lupa */
+  .search{position:relative}
+  #q{
+    padding:14px 52px 14px 46px;
+    border-radius:18px;
+    font-size:14px;
+    border:1px solid color-mix(in oklab, var(--line) 70%, transparent);
+    background:color-mix(in oklab, var(--card) 92%, transparent);
+    box-shadow: 0 12px 24px rgba(0,0,0,.10);
+  }
+  html[data-theme="light"] #q{
+    box-shadow: 0 12px 24px rgba(12,20,45,.10);
+  }
+
+  .search::before{
+    content:"🔎";
+    position:absolute;
+    left:14px;
+    top:50%;
+    transform:translateY(-50%);
+    font-size:16px;
+    opacity:.55;
+    pointer-events:none;
+  }
+
+  /* ocultar cosas arriba */
+  #statusPill{display:none !important;}
+  #sortBoxDesktop{display:none !important;}
+  #sortBtnMobile{display:none !important;}
+  #viewBtn{display:none !important;}
+  #themeBtn{display:none !important;}
+  #cartBtn{display:none !important;} /* usamos FAB */
+
+  /* tabs + filtros alineados */
+  .tabsUnified{margin-top:10px}
+  .tabs{margin-top:0}
+  .filtersBar{margin-top:10px}
+  .tab{padding:9px 12px;font-size:13px}
+  .chip{padding:8px 12px;font-size:12px}
+
+  /* selector marca */
+  #brandFilter{
+    width:100% !important;
+    margin-top:10px !important;
+    border-radius:18px;
+  }
+}
