@@ -5,20 +5,20 @@
 *{box-sizing:border-box}
 body{margin:0;font-family:system-ui;background:var(--bg);color:var(--txt)}
 
-.aHeader{position:sticky;top:0;background:rgba(11,15,20,.95);border-bottom:1px solid var(--line)}
+.aHeader{position:sticky;top:0;background:rgba(11,15,20,.95);border-bottom:1px solid var(--line);z-index:50}
 .aWrap{max-width:1200px;margin:0 auto;padding:12px}
 .aTitle{font-weight:1000}
 .aActions{display:flex;gap:8px}
 
 .btn{padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:#1a2433;color:var(--txt);cursor:pointer}
-.btn.acc{background:var(--acc);color:#05210f;font-weight:1000}
+.btn.acc{background:var(--acc);color:#05210f;font-weight:1000;border:0}
 .btn.ghost{background:transparent}
-.btn.danger{background:var(--danger);color:#2b0a0a;border:0}
+.btn.danger{background:var(--danger);color:#2b0a0a;border:0;font-weight:1000}
 
 .panel{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:12px;margin-top:14px}
 .panelTitle{font-weight:1000;margin-bottom:10px}
 
-.aTools{display:flex;gap:8px;margin-bottom:10px}
+.aTools{display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap}
 .tableWrap{overflow:auto}
 .aTable{width:100%;border-collapse:collapse}
 .aTable th,.aTable td{padding:8px;border-bottom:1px solid var(--line);text-align:left;font-size:13px}
@@ -28,4 +28,27 @@ body{margin:0;font-family:system-ui;background:var(--bg);color:var(--txt)}
 label{font-size:12px;color:var(--mut)}
 input,textarea,select{width:100%;padding:10px;border-radius:12px;border:1px solid var(--line);background:#0f1520;color:var(--txt)}
 textarea{min-height:90px}
-.aRow{display:flex;gap:8px}
+
+.aRow{display:flex;gap:8px;flex-wrap:wrap}
+.previewBox{
+  border:1px solid var(--line);
+  border-radius:14px;
+  background:#0f1520;
+  padding:10px;
+  min-height:70px;
+  color:var(--txt);
+  white-space:pre-wrap;
+}
+.adminHint{
+  margin-top:10px;
+  padding:10px 12px;
+  border-radius:16px;
+  border:1px dashed var(--line);
+  color:var(--mut);
+  font-size:12px;
+}
+.smallBtn{
+  padding:8px 10px;border-radius:12px;border:1px solid var(--line);
+  background:transparent;color:var(--txt);cursor:pointer;font-weight:900
+}
+.stockInput{width:90px}
