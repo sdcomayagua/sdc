@@ -1,11 +1,10 @@
-/* shipping_quote.css (ACORDEÓN COMPACTO) */
+/* shipping_quote.css (FOOTER COMPACTO) */
 
 .shipAcc{
-  margin-top:10px;
+  margin-top:12px;
   border-radius:18px;
   border:1px solid var(--line);
-  background:color-mix(in oklab, var(--card) 92%, transparent);
-  box-shadow: var(--shadow);
+  background:color-mix(in oklab, var(--card2) 86%, transparent);
   overflow:hidden;
 }
 
@@ -27,14 +26,15 @@
   font-weight:800;
   color:var(--mut);
   font-size:12px;
+  margin-top:4px;
 }
 
 .shipAccChevron{
-  width:36px;
-  height:36px;
-  border-radius:14px;
+  width:42px;
+  height:42px;
+  border-radius:16px;
   border:1px solid var(--line);
-  background:color-mix(in oklab, var(--card2) 88%, transparent);
+  background:color-mix(in oklab, var(--card) 88%, transparent);
   display:flex;
   align-items:center;
   justify-content:center;
@@ -64,7 +64,7 @@
   padding:10px 12px;
   border-radius:16px;
   border:1px solid var(--line);
-  background:color-mix(in oklab, var(--card2) 90%, transparent);
+  background:color-mix(in oklab, var(--card) 90%, transparent);
   font-weight:1000;
 }
 .shipQuoteResult small{
