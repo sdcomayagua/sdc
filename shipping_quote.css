@@ -1,26 +1,53 @@
-/* shipping_quote.css */
+/* shipping_quote.css (ACORDEÓN COMPACTO) */
 
-.shipQuote{
+.shipAcc{
   margin-top:10px;
-  padding:12px;
   border-radius:18px;
   border:1px solid var(--line);
   background:color-mix(in oklab, var(--card) 92%, transparent);
   box-shadow: var(--shadow);
+  overflow:hidden;
 }
 
-.shipQuoteHead{
-  font-weight:1000;
+.shipAccBtn{
+  width:100%;
   display:flex;
-  gap:8px;
   align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  padding:12px;
+  background:transparent;
+  border:0;
+  cursor:pointer;
+  font-weight:1000;
+  color:var(--txt);
 }
 
-.shipQuoteSub{
+.shipAccBtn .mut{
+  font-weight:800;
   color:var(--mut);
   font-size:12px;
-  margin-top:6px;
 }
+
+.shipAccChevron{
+  width:36px;
+  height:36px;
+  border-radius:14px;
+  border:1px solid var(--line);
+  background:color-mix(in oklab, var(--card2) 88%, transparent);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:1000;
+}
+
+.shipAccBody{
+  display:none;
+  padding:0 12px 12px 12px;
+  border-top:1px solid color-mix(in oklab, var(--line) 60%, transparent);
+}
+
+.shipAcc.open .shipAccBody{ display:block; }
 
 .shipQuoteRow{
   display:grid;
@@ -28,9 +55,8 @@
   gap:10px;
   margin-top:10px;
 }
-
 @media (max-width:720px){
-  .shipQuoteRow{grid-template-columns:1fr;}
+  .shipQuoteRow{ grid-template-columns:1fr; }
 }
 
 .shipQuoteResult{
@@ -43,7 +69,7 @@
 }
 .shipQuoteResult small{
   display:block;
-  font-weight:700;
+  font-weight:800;
   color:var(--mut);
   margin-top:6px;
 }
