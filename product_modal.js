@@ -16,28 +16,15 @@ window.SDC_PRODUCT_MODAL = (() => {
 
   const originalTitle = document.title;
 
-  function ensureCalcUI() {
-    let calc = document.getElementById("pmCalc");
-    if (!calc) {
-      calc = document.createElement("div");
-      calc.id = "pmCalc";
-      calc.className = "pmCalc";
-      const priceEl = document.getElementById("pmPrice");
-      if (priceEl && priceEl.parentElement) priceEl.insertAdjacentElement("afterend", calc);
-    }
-    return calc;
-  }
-
-  function ensureOutNote() {
-    let out = document.getElementById("pmOutNote");
-    if (!out) {
-      out = document.createElement("div");
-      out.id = "pmOutNote";
-      out.className = "pmOutNote";
-      const note = document.getElementById("pmNote");
-      if (note && note.parentElement) note.insertAdjacentElement("beforebegin", out);
-    }
-    return out;
+  function ensureSaveUI(){
+    let el = document.getElementById("pmSave");
+    if (el) return el;
+    el = document.createElement("div");
+    el.id = "pmSave";
+    el.className = "pmSave";
+    const price = document.getElementById("pmPrice");
+    if (price && price.parentElement) price.insertAdjacentElement("afterend", el);
+    return el;
   }
 
   function ensureImageWrap() {
@@ -73,35 +60,6 @@ window.SDC_PRODUCT_MODAL = (() => {
     return wrap;
   }
 
-  function ensureDescMoreUI() {
-    const desc = document.getElementById("pmDesc");
-    if (!desc) return;
-
-    if (!document.getElementById("pmMoreBtn")) {
-      const row = document.createElement("div");
-      row.className = "pmMoreRow";
-      row.innerHTML = `<button class="btn ghost pmMoreBtn" id="pmMoreBtn" type="button">Ver más</button>`;
-      desc.parentElement.appendChild(row);
-
-      document.getElementById("pmMoreBtn").onclick = () => {
-        desc.classList.toggle("pmDescClamp");
-        document.getElementById("pmMoreBtn").textContent = desc.classList.contains("pmDescClamp") ? "Ver más" : "Ver menos";
-      };
-    }
-
-    // por defecto clamp si es largo
-    const text = (desc.textContent || "").trim();
-    if (text.length > 240) {
-      desc.classList.add("pmDescClamp");
-      document.getElementById("pmMoreBtn").textContent = "Ver más";
-    } else {
-      desc.classList.remove("pmDescClamp");
-      document.getElementById("pmMoreBtn").textContent = "Ver menos";
-      // si es corto, ocultamos botón
-      document.getElementById("pmMoreBtn").style.display = "none";
-    }
-  }
-
   function setMainImage(src) {
     const main = document.getElementById("pmMainImg");
     if (!main) return;
@@ -135,7 +93,6 @@ window.SDC_PRODUCT_MODAL = (() => {
       thumbs.appendChild(t);
     });
 
-    // Hook global para swipe_images.js (siguiente/prev)
     window.SDC_GALLERY_NAV = {
       next: () => { pmMainIndex = (pmMainIndex + 1) % Math.max(1, list.length); renderImages(); },
       prev: () => { pmMainIndex = (pmMainIndex - 1 + Math.max(1, list.length)) % Math.max(1, list.length); renderImages(); }
@@ -145,18 +102,6 @@ window.SDC_PRODUCT_MODAL = (() => {
   function updateQtyUI() {
     const num = document.getElementById("pmQtyNum");
     if (num) num.textContent = String(pmQty);
-
-    const calc = ensureCalcUI();
-    const unit = Number(currentProduct?.precio || 0);
-    const total = unit * pmQty;
-
-    calc.innerHTML = `
-      <div class="pmCalcRow">
-        <div class="pmCalcItem"><span class="mut">Unit:</span> <b>${U.money(unit, CFG.CURRENCY)}</b></div>
-        <div class="pmCalcItem"><span class="mut">Cant:</span> <b>${pmQty}</b></div>
-        <div class="pmCalcItem"><span class="mut">Total:</span> <b>${U.money(total, CFG.CURRENCY)}</b></div>
-      </div>
-    `;
   }
 
   function consultWA() {
@@ -200,6 +145,17 @@ window.SDC_PRODUCT_MODAL = (() => {
     document.getElementById("pmCat").textContent = `${p.categoria || ""}${p.subcategoria ? (" • " + p.subcategoria) : ""}`;
     document.getElementById("pmPrice").textContent = U.money(p.precio, CFG.CURRENCY);
 
+    // OFERTA / AHORRO en modal
+    const b = window.SDC_BADGES?.get?.(p) || { isOffer:false, saveAmt:0, savePct:0 };
+    const saveEl = ensureSaveUI();
+    if (b.isOffer && b.saveAmt > 0) {
+      saveEl.style.display = "block";
+      saveEl.textContent = `OFERTA -${b.savePct}% • Ahorras ${U.money(b.saveAmt, CFG.CURRENCY)}`;
+    } else {
+      saveEl.style.display = "none";
+      saveEl.textContent = "";
+    }
+
     const stock = Number(p.stock || 0);
     const inStock = stock > 0;
     const low = inStock && stock <= 3;
@@ -225,14 +181,11 @@ window.SDC_PRODUCT_MODAL = (() => {
     renderImages();
     updateQtyUI();
     ensureBuySticky();
-    ensureDescMoreUI();
 
-    // favoritos (si está activo)
     window.SDC_FAV?.syncModalFav?.(p);
 
     const addBtn = document.getElementById("pmAddBtn");
     const buyBtn = document.getElementById("pmBuyNowBtn");
-    const outNote = ensureOutNote();
 
     if (!inStock) {
       addBtn.classList.remove("acc");
@@ -243,8 +196,6 @@ window.SDC_PRODUCT_MODAL = (() => {
       buyBtn.textContent = "Comprar ahora";
       buyBtn.onclick = () => consultWA();
 
-      outNote.style.display = "block";
-      outNote.textContent = "Este producto aparece agotado. Puedes consultar disponibilidad por WhatsApp.";
       document.getElementById("pmNote").textContent = "Producto agotado.";
     } else {
       addBtn.classList.remove("dangerBtn");
@@ -263,13 +214,10 @@ window.SDC_PRODUCT_MODAL = (() => {
       buyBtn.textContent = "Comprar ahora";
       buyBtn.onclick = () => buyNow();
 
-      outNote.style.display = "none";
-      outNote.textContent = "";
       document.getElementById("pmNote").textContent = "Selecciona cantidad y añade al carrito.";
     }
 
     window.SDC_RECO?.render?.(p, S.getProducts());
-
     document.getElementById("productModal").classList.add("open");
   }
 
