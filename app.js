@@ -2,7 +2,58 @@
   const U = window.SDC_UTILS;
   function safe(_name, fn){ try { fn && fn(); } catch {} }
 
+  function ensureEl(id, html){
+    if (document.getElementById(id)) return;
+    const div = document.createElement("div");
+    div.id = id;
+    div.innerHTML = html || "";
+    // por defecto lo metemos al final del body
+    document.body.appendChild(div);
+  }
+
+  function ensureBasics(){
+    // Evita errores de "null.textContent"
+    if (!document.getElementById("statusPill")){
+      const headerWrap = document.querySelector("header .wrap");
+      if (headerWrap){
+        const p = document.createElement("div");
+        p.className = "pill";
+        p.id = "statusPill";
+        p.textContent = "Cargando catálogo...";
+        headerWrap.appendChild(p);
+      }
+    }
+    if (!document.getElementById("templatesMount")){
+      ensureEl("templatesMount", "");
+    }
+    if (!document.getElementById("topBanner")){
+      const headerWrap = document.querySelector("header .wrap");
+      if (headerWrap){
+        const b = document.createElement("div");
+        b.id = "topBanner";
+        b.className = "topBanner";
+        b.style.display = "none";
+        headerWrap.appendChild(b);
+      }
+    }
+    if (!document.getElementById("suggestBox")){
+      const headerWrap = document.querySelector("header .wrap");
+      if (headerWrap){
+        const s = document.createElement("div");
+        s.id = "suggestBox";
+        s.className = "suggestBox";
+        s.style.display = "none";
+        headerWrap.appendChild(s);
+      }
+    }
+  }
+
   async function init() {
+    ensureBasics();
+
+    // ✅ AppBar/Drawer temprano para que SIEMPRE salga el botón arriba derecha
+    safe("store_extras.early", () => window.SDC_STORE_EXTRAS?.init?.());
+
     safe("theme.init", () => window.SDC_THEME?.init?.("dark"));
     safe("theme.top", () => document.getElementById("themeBtn")?.addEventListener("click", () => window.SDC_THEME.toggle()));
     safe("theme.bottom", () => document.getElementById("bottomThemeBtn")?.addEventListener("click", () => window.SDC_THEME.toggle()));
@@ -55,14 +106,13 @@
     safe("count", () => window.SDC_STORE?.updateCartCountUI?.());
     safe("results.refresh", () => window.SDC_RESULTS?.refresh?.());
 
-    // ✅ inicializa badges y favoritos
+    // badges/favs
     safe("badges.init", () => window.SDC_BADGES?.init?.(window.SDC_STORE.getProducts?.() || []));
     safe("fav_section.init", () => window.SDC_FAV_SECTION?.init?.());
 
     safe("smartMini", () => window.SDC_SMART?.applyMiniIfNeeded?.((window.SDC_STORE.getProducts()||[]).length));
     safe("cartBadge.apply", () => window.SDC_CART_BADGE?.apply?.());
 
-    safe("store_extras", () => window.SDC_STORE_EXTRAS?.init?.());
     safe("shop_polish", () => window.SDC_SHOP_POLISH?.init?.());
   }
 
