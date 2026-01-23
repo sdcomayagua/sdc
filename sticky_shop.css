@@ -1,0 +1,67 @@
+/* sticky_shop.css */
+
+/* Barra sticky para tienda (móvil y PC) */
+
+/* El ticker ya es sticky, esto pega el header completo */
+header{
+  position: sticky;
+  top: 0;
+  z-index: 5000;
+}
+
+/* separa el ticker y el contenido */
+.newsTicker{
+  z-index: 6000;
+}
+
+/* Hacer que la zona del buscador + tabs también sea sticky debajo del ticker */
+header .wrap{
+  position: relative;
+}
+
+/* “Top offset” bajo ticker */
+:root{ --ticker-h: 38px; }
+
+.newsTicker.show + header .wrap{
+  padding-top: 10px;
+}
+
+/* Mantener visible buscador y filtros */
+header .headerTop,
+header .tabsUnified,
+header #quickFilters{
+  position: sticky;
+  top: var(--ticker-h);
+  z-index: 5200;
+  background: color-mix(in oklab, var(--bg) 92%, transparent);
+  backdrop-filter: blur(12px);
+}
+
+/* en PC no necesita tanto */
+@media (min-width:900px){
+  header .headerTop,
+  header .tabsUnified,
+  header #quickFilters{
+    top: 0;
+  }
+}
+
+/* que no se vea feo pegado: sombra suave */
+header .headerTop{
+  padding: 10px 0 8px 0;
+  border-bottom: 1px solid color-mix(in oklab, var(--line) 60%, transparent);
+}
+
+/* Evita que se “apile” demasiado */
+header .tabsUnified{
+  padding: 8px 0 6px 0;
+}
+
+header #quickFilters{
+  padding: 6px 0 10px 0;
+}
+
+/* espacio en el contenido para que no lo tape */
+main.wrap{
+  padding-top: 8px;
+}
