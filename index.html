@@ -5,14 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Soluciones Digitales Comayagua | Catálogo</title>
 
-  <!-- ✅ UN SOLO CSS -->
-  <link rel="stylesheet" href="styles.bundle.css?v=20260123a">
+  <link rel="stylesheet" href="styles.bundle.css?v=20260123final">
 </head>
 <body>
 
 <header>
   <div class="wrap">
-
     <div class="row headerTop">
       <div class="search headerSearch">
         <input id="q" placeholder="Buscar producto..." autocomplete="off" />
@@ -37,11 +35,13 @@
       </button>
     </div>
 
-    <!-- ✅ IMPORTANTE: este pill lo usan varios scripts -->
     <div class="pill" id="statusPill">Cargando catálogo...</div>
 
-    <!-- (8) Banner -->
+    <!-- ticker (si lo usas) -->
     <div id="topBanner" class="topBanner" style="display:none"></div>
+
+    <!-- ✅ Cotizador envío rápido -->
+    <div id="shipQuoteMount"></div>
 
     <div class="tabsUnified">
       <button class="btn ghost tabsToggle" id="tabsToggleBtn" type="button">
@@ -56,14 +56,21 @@
     <div class="filtersBar" id="quickFilters"></div>
     <select id="brandFilter" class="btn ghost" style="width:100%;margin-top:10px"></select>
 
-    <!-- (10) sugerencias -->
     <div id="suggestBox" class="suggestBox" style="display:none"></div>
-
   </div>
 </header>
 
 <main class="wrap">
   <div id="favMount"></div>
+
+  <!-- ✅ Top ofertas automático -->
+  <section id="topOffersSection" class="section" style="display:none">
+    <div class="sectionHead">
+      <div class="sectionTitle">🔥 Top Ofertas</div>
+      <div class="mut">Los mejores descuentos</div>
+    </div>
+    <div class="hScroll" id="topOffersRow"></div>
+  </section>
 
   <section id="featuredSection" class="section" style="display:none">
     <div class="sectionHead">
@@ -92,10 +99,8 @@
 <div class="toast" id="toast"></div>
 <button class="toTop" id="toTop" type="button" aria-label="Ir arriba">↑</button>
 
-<!-- ✅ Modales inyectados aquí -->
 <div id="templatesMount"></div>
 
-<!-- ✅ Loader -->
-<script src="loader.js?v=20260123a"></script>
+<script src="loader.js?v=20260123final"></script>
 </body>
 </html>
