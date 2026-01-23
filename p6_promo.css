@@ -1,0 +1,51 @@
+/* p6_promo.css */
+
+/* Barra promo (debajo del ticker o dentro del header) */
+.promoBar{
+  margin-top:10px;
+  padding:10px 12px;
+  border-radius:18px;
+  border:1px solid rgba(255,204,102,.45);
+  background: rgba(255,204,102,.12);
+  color: var(--warn);
+  font-weight:1000;
+  display:none;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+}
+.promoBar.show{display:flex;}
+.promoBar .mut{color:color-mix(in oklab, var(--warn) 45%, var(--mut)); font-weight:800;}
+
+/* Chip de contador */
+.promoChip{
+  padding:6px 10px;
+  border-radius:999px;
+  border:1px solid rgba(255,204,102,.55);
+  background: rgba(255,204,102,.10);
+  color: var(--warn);
+  font-weight:1000;
+  font-size:12px;
+  white-space:nowrap;
+}
+
+/* Reloj en cards (aparece arriba si hay promo activa) */
+.ribbon.promo{
+  border-color: rgba(255,204,102,.55);
+  color: var(--warn);
+  background: rgba(255,204,102,.14);
+}
+
+/* Contador dentro del modal */
+.pmPromo{
+  margin-top:10px;
+  padding:10px 12px;
+  border-radius:16px;
+  border:1px solid rgba(255,204,102,.45);
+  background: rgba(255,204,102,.12);
+  color: var(--warn);
+  font-weight:1000;
+  font-size:12px;
+  display:none;
+}
+.pmPromo.show{display:block;}
