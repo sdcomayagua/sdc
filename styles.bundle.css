@@ -1,4 +1,4 @@
-/* styles.bundle.css?v=20260122z */
+/* styles.bundle.css?v=20260123b */
 
 /* Base */
 @import url("./theme.css");
@@ -18,5 +18,8 @@
 @import url("./pc_list.css");
 @import url("./promo_ui.css");
 
-/* ✅ NUEVO: cambios 2,4,5,6,8,9,10 */
+/* ✅ Cambios 2,4,5,6,8,9,10 */
 @import url("./extras_store.css");
+
+/* ✅ PRO PACK (lo más pro) */
+@import url("./pro_pack.css");
