@@ -113,6 +113,9 @@
     safe("product.bind", () => window.SDC_PRODUCT_MODAL?.bindEvents?.());
     safe("catalog.bind", () => window.SDC_CATALOG?.bindProductModalEvents?.());
 
+    /* ✅ Paquete 5 performance wrapper ANTES de load() (si ya está cargado, igual funciona) */
+    safe("p5_perf", () => window.SDC_PERF?.init?.());
+
     await window.SDC_CATALOG.load();
 
     safe("delivery", () => window.SDC_DELIVERY?.initSelectors?.());
@@ -139,6 +142,9 @@
 
     /* Paquete 3 */
     safe("p3_product", () => window.SDC_P3?.init?.());
+
+    /* ✅ Paquete 5 analítica */
+    safe("p5_analytics", () => window.SDC_ANALYTICS?.init?.());
   }
 
   init().catch(err => {
