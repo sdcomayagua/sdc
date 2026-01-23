@@ -1,0 +1,53 @@
+/* news_ticker.css */
+
+/* Barra tipo noticia (marquee) arriba de todo */
+.newsTicker{
+  position:sticky;
+  top:0;
+  z-index:9999;
+  height:38px;
+  display:none;
+  align-items:center;
+  overflow:hidden;
+  border-bottom:1px solid color-mix(in oklab, var(--line) 70%, transparent);
+  background:color-mix(in oklab, var(--card) 92%, transparent);
+  backdrop-filter: blur(12px);
+}
+
+.newsTicker.show{display:flex;}
+
+.tickerInner{
+  display:flex;
+  gap:18px;
+  align-items:center;
+  white-space:nowrap;
+  will-change: transform;
+  animation: tickerMove 18s linear infinite;
+  padding-left: 100%;
+}
+
+.tickerItem{
+  display:flex;
+  gap:10px;
+  align-items:center;
+  font-weight:900;
+  font-size:12.5px;
+  color:var(--txt);
+}
+.tickerItem span{
+  color:var(--mut);
+  font-weight:700;
+}
+
+@keyframes tickerMove{
+  from{ transform: translateX(0); }
+  to{ transform: translateX(-100%); }
+}
+
+/* En modo día: texto más oscuro */
+html[data-theme="light"] .tickerItem{
+  color:#0b1020;
+}
+html[data-theme="light"] .tickerItem span{
+  color:#52607a;
+}
