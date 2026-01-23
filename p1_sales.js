@@ -1,38 +1,36 @@
-// p1_sales.js (ACTUALIZADO)
-// Barra confianza arriba del AppBar + urgencia stock
+// p1_sales.js (FOOTER)
+// Quita la barra de confianza de arriba y la pone al FINAL de la página.
+// Mantiene urgencia "Últimas unidades".
 
 window.SDC_P1 = (() => {
-  function trustBar(){
-    const header = document.querySelector("header");
-    const headerWrap = document.querySelector("header .wrap");
-    if (!header || !headerWrap) return;
+  function removeTopTrust(){
+    // Por si existe barra arriba, la quitamos
+    const old = document.getElementById("trustBar");
+    if (old) old.remove();
+  }
 
-    // si ya existe, no duplicar
-    if (document.getElementById("trustBar")) return;
+  function trustFooter(){
+    const main = document.querySelector("main.wrap");
+    if (!main) return;
 
-    const bar = document.createElement("div");
-    bar.id = "trustBar";
-    bar.className = "trustBar";
-    bar.innerHTML = `
-      <div class="trustItem">✅ <span>Pagar al recibir</span></div>
-      <div class="trustItem">🚚 <span>Envíos Honduras</span></div>
-      <div class="trustItem">🛡️ <span>Garantía</span></div>
+    // No duplicar
+    if (document.getElementById("trustFooter")) return;
+
+    const sec = document.createElement("section");
+    sec.id = "trustFooter";
+    sec.className = "trustFooter";
+    sec.innerHTML = `
+      <div class="trustFooterTitle">✅ Compra con confianza</div>
+      <div class="trustFooterRow">
+        <div class="trustFooterItem">✅ <span>Pagar al recibir</span></div>
+        <div class="trustFooterItem">🚚 <span>Envíos Honduras</span></div>
+        <div class="trustFooterItem">🛡️ <span>Garantía</span></div>
+      </div>
+      <div class="trustFooterNote">*La entrega local se coordina por WhatsApp. Envíos nacionales por empresa.*</div>
     `;
 
-    // ✅ PRIORIDAD: ponerla arriba de Catálogo SDC (AppBar)
-    // store_extras.js inyecta el AppBar con id="appBar"
-    const appBar = document.getElementById("appBar");
-
-    if (appBar) {
-      // la ponemos justo ANTES del AppBar
-      appBar.insertAdjacentElement("beforebegin", bar);
-      bar.style.marginTop = "0";
-      return;
-    }
-
-    // Si todavía no existe AppBar, la ponemos arriba del headerWrap
-    headerWrap.insertAdjacentElement("afterbegin", bar);
-    bar.style.marginTop = "0";
+    // Al final del main
+    main.appendChild(sec);
   }
 
   function applyUrgency(card){
@@ -70,24 +68,14 @@ window.SDC_P1 = (() => {
   }
 
   function init(){
-    // intenta al inicio
-    trustBar();
+    // ✅ quitar de arriba
+    removeTopTrust();
 
-    // reintenta luego por si AppBar entra después
-    setTimeout(() => {
-      // si la barra existe pero quedó abajo del AppBar, la movemos
-      const bar = document.getElementById("trustBar");
-      const appBar = document.getElementById("appBar");
-      if (bar && appBar && bar.nextElementSibling !== appBar) {
-        appBar.insertAdjacentElement("beforebegin", bar);
-        bar.style.marginTop = "0";
-      } else {
-        trustBar();
-      }
-    }, 350);
+    // ✅ poner al final
+    trustFooter();
 
+    // urgencia
     hookGrid();
-
     setTimeout(() => {
       document.querySelectorAll(".card").forEach(applyUrgency);
     }, 800);
