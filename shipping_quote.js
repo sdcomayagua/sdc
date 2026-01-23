@@ -1,4 +1,5 @@
-// shipping_quote.js (ACORDEÓN) — cerrado por defecto
+// shipping_quote.js (FOOTER)
+// Acordeón cerrado por defecto y colocado en el footer (debajo de la tienda).
 window.SDC_SHIP_QUOTE = (() => {
   const CFG = window.SDC_CONFIG;
 
@@ -19,15 +20,15 @@ window.SDC_SHIP_QUOTE = (() => {
   }
 
   function mount(){
-    const headerWrap = document.querySelector("header .wrap");
-    if (!headerWrap) return;
-
-    // Si ya existe, no duplicar
+    // No duplicar
     if (document.getElementById("shipAcc")) return;
+
+    const main = document.querySelector("main.wrap");
+    if (!main) return;
 
     const box = document.createElement("div");
     box.id = "shipAcc";
-    box.className = "shipAcc"; // cerrado por defecto (sin .open)
+    box.className = "shipAcc"; // cerrado por defecto
     box.innerHTML = `
       <button class="shipAccBtn" id="shipAccBtn" type="button">
         <div>
@@ -53,8 +54,14 @@ window.SDC_SHIP_QUOTE = (() => {
       </div>
     `;
 
-    // ✅ PONERLO DE ÚLTIMO EN EL HEADER (para que no cargue arriba)
-    headerWrap.appendChild(box);
+    // ✅ Inserta dentro del footer si existe
+    const footer = document.getElementById("trustFooter");
+    if (footer) {
+      footer.appendChild(box);
+    } else {
+      // si aún no existe, al final del main
+      main.appendChild(box);
+    }
 
     // Toggle acordeón
     document.getElementById("shipAccBtn").onclick = () => {
