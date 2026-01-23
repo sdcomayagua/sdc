@@ -1,7 +1,6 @@
 (() => {
   const U = window.SDC_UTILS;
-
-  function safe(_name, fn) { try { fn && fn(); } catch {} }
+  function safe(_name, fn){ try { fn && fn(); } catch {} }
 
   async function init() {
     safe("theme.init", () => window.SDC_THEME?.init?.("dark"));
@@ -25,7 +24,7 @@
 
     safe("zoom", () => window.SDC_ZOOM?.init?.());
     safe("cart_tools", () => window.SDC_CART_TOOLS?.init?.());
-    safe("badges", () => window.SDC_UI_BADGES?.init?.());
+    safe("badges_ui", () => window.SDC_UI_BADGES?.init?.());
 
     safe("view", () => window.SDC_VIEW3?.init?.());
     safe("stepper", () => window.SDC_STEPPER?.init?.());
@@ -50,20 +49,21 @@
     safe("product.bind", () => window.SDC_PRODUCT_MODAL?.bindEvents?.());
     safe("catalog.bind", () => window.SDC_CATALOG?.bindProductModalEvents?.());
 
-    // ✅ carga catálogo
-    const json = await window.SDC_CATALOG.load();
+    await window.SDC_CATALOG.load();
 
     safe("delivery", () => window.SDC_DELIVERY?.initSelectors?.());
     safe("count", () => window.SDC_STORE?.updateCartCountUI?.());
     safe("results.refresh", () => window.SDC_RESULTS?.refresh?.());
 
+    // ✅ inicializa badges y favoritos
+    safe("badges.init", () => window.SDC_BADGES?.init?.(window.SDC_STORE.getProducts?.() || []));
+    safe("fav_section.init", () => window.SDC_FAV_SECTION?.init?.());
+
     safe("smartMini", () => window.SDC_SMART?.applyMiniIfNeeded?.((window.SDC_STORE.getProducts()||[]).length));
     safe("cartBadge.apply", () => window.SDC_CART_BADGE?.apply?.());
 
-    // ✅ nuevo: FAB móvil (carrito + whatsapp)
-    safe("mobile_nav_v2", () => window.SDC_MOBILE_NAV2?.init?.());
-
-    return json;
+    safe("store_extras", () => window.SDC_STORE_EXTRAS?.init?.());
+    safe("shop_polish", () => window.SDC_SHOP_POLISH?.init?.());
   }
 
   init().catch(err => {
