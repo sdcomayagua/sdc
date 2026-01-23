@@ -7,11 +7,14 @@ window.SDC_CATALOG_UI = (() => {
 
   const FALLBACK = window.SDC_FALLBACK_IMG?.url || "";
 
+  function toBool(v){
+    const s = String(v ?? "").trim().toLowerCase();
+    return v === true || s === "1" || s === "true" || s === "si" || s === "sí" || s === "yes";
+  }
+  function isOffer(p){ return (Number(p.precio_anterior||0) > Number(p.precio||0)); }
+
   function filterQuick(list){
     const mode = window.SDC_FILTERS?.getMode?.() || "all";
-    const toBool = window.SDC_BADGES?.toBool || ((v)=>!!v);
-    const isOffer = (p)=>Number(p.precio_anterior||0) > Number(p.precio||0);
-
     if (mode === "stock") return list.filter(p => Number(p.stock||0) > 0);
     if (mode === "offers") return list.filter(p => isOffer(p));
     if (mode === "featured") return list.filter(p => toBool(p.destacado));
@@ -38,7 +41,6 @@ window.SDC_CATALOG_UI = (() => {
       if(oa!==ob) return oa-ob;
       return String(a.nombre||"").localeCompare(String(b.nombre||""));
     };
-
     const copy = list.slice();
     copy.sort((a,b)=>{
       const s=withStockFirst(a,b);
@@ -120,6 +122,7 @@ window.SDC_CATALOG_UI = (() => {
     const activeCat=S.getActiveCat();
     const activeSub=S.getActiveSub();
     const mode=window.SDC_FILTERS?.getMode?.() || "all";
+    const sort=getSortMode();
 
     let list=S.getProducts();
     hideBrandFilterIfEmpty(list);
@@ -140,7 +143,7 @@ window.SDC_CATALOG_UI = (() => {
 
     list = sortList(list);
 
-    const pagerKey = [activeCat, activeSub, mode, (getSortMode()), q, (window.SDC_BRAND?.get?.()||"all")].join("|");
+    const pagerKey = [activeCat, activeSub, mode, sort, q, (window.SDC_BRAND?.get?.()||"all")].join("|");
     PAGER.ensureKey(pagerKey);
     const visibleList = PAGER.slice(list);
 
@@ -152,10 +155,11 @@ window.SDC_CATALOG_UI = (() => {
       const inStock = stock > 0;
       const low = inStock && stock <= 3;
 
-      const b = window.SDC_BADGES?.get?.(p) || { isOffer:false, saveAmt:0, savePct:0, isFeatured:false, isNew:false };
-
       const card=document.createElement("div");
-      card.className="card"+(!inStock?" outCard":"")+(b.isFeatured?" featuredCard":"");
+      card.className="card"+(!inStock?" outCard":"");
+      // ✅ AQUÍ: data-pid para identificar el producto
+      card.setAttribute("data-pid", String(p.id || p.nombre || "").trim());
+
       card.onclick=()=>PM.open(p,{setHash:true});
 
       const imgWrap=document.createElement("div");
@@ -167,32 +171,8 @@ window.SDC_CATALOG_UI = (() => {
       img.src=p.imagen||FALLBACK;
       img.alt=p.nombre||"";
       img.onerror=()=>img.src=FALLBACK;
+
       imgWrap.appendChild(img);
-
-      // ribbons
-      const rr = document.createElement("div");
-      rr.className = "ribbonRow";
-
-      if (b.isFeatured) {
-        const r = document.createElement("div");
-        r.className = "ribbon featured";
-        r.textContent = "★ DESTACADO";
-        rr.appendChild(r);
-      }
-      if (b.isNew) {
-        const r = document.createElement("div");
-        r.className = "ribbon new";
-        r.textContent = "NUEVO";
-        rr.appendChild(r);
-      }
-      if (b.isOffer && b.savePct > 0) {
-        const r = document.createElement("div");
-        r.className = "ribbon offer";
-        r.textContent = `OFERTA -${b.savePct}%`;
-        rr.appendChild(r);
-      }
-
-      if (rr.childElementCount) imgWrap.appendChild(rr);
 
       if (low) {
         const tag = document.createElement("div");
@@ -208,13 +188,6 @@ window.SDC_CATALOG_UI = (() => {
         <div class="mut">${U.esc(p.categoria||"")}${p.subcategoria?(" • "+U.esc(p.subcategoria)):""}</div>
         <div class="price">${U.money(p.precio, CFG.CURRENCY)}</div>
       `;
-
-      if (b.isOffer && b.saveAmt > 0) {
-        const save = document.createElement("div");
-        save.className = "saveLine";
-        save.innerHTML = `Ahorras <b>${U.money(b.saveAmt, CFG.CURRENCY)}</b>`;
-        box.appendChild(save);
-      }
 
       const badge=document.createElement("div");
       badge.className="badge "+(inStock ? (low ? "low":"off") : "out");
@@ -233,7 +206,6 @@ window.SDC_CATALOG_UI = (() => {
           if (ok) {
             window.SDC_ADD_CONFIRM?.notify?.("Agregado ✅");
             window.SDC_CART?.renderCart?.();
-            window.SDC_CART_BADGE?.apply?.();
           }
         };
       } else {
@@ -252,9 +224,6 @@ window.SDC_CATALOG_UI = (() => {
       card.appendChild(box);
       el.appendChild(card);
     });
-
-    // refrescar favoritos
-    window.SDC_FAV_SECTION?.render?.();
 
     const wrap = U.$("loadMoreWrap");
     const btn = U.$("loadMoreBtn");
