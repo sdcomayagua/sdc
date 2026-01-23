@@ -1,4 +1,4 @@
-/* styles.bundle.css?v=20260124_fase2 */
+/* styles.bundle.css?v=20260124_fase3 */
 
 @import url("./theme.css");
 @import url("./base.css");
@@ -20,29 +20,24 @@
 @import url("./news_ticker.css");
 @import url("./sticky_shop.css");
 
-/* Paquete 1 */
 @import url("./p1_sales.css");
 @import url("./shipping_quote.css");
 @import url("./top_offers.css");
 
-/* Paquete 2 UX */
 @import url("./p2_ux.css");
 
-/* Paquete 3 */
 @import url("./p3_product.css");
 
-/* Paquete 5 */
 @import url("./p5_analytics.css");
 
-/* Paquete 6 */
 @import url("./p6_promo.css");
 
-/* Paquete 7 */
 @import url("./p7_checkout.css");
 @import url("./p7_cart_offer.css");
 
-/* Fase 1 móvil */
 @import url("./p1_app_mobile.css");
 
-/* ✅ FASE 2 (badges) */
 @import url("./fase2_badges.css");
+
+/* ✅ FASE 3 */
+@import url("./fase3_ui.css");
