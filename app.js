@@ -34,11 +34,41 @@
       s.style.display = "none";
       headerWrap.appendChild(s);
     }
+
+    // Mount para cotizador envío (si no existe)
+    if (!document.getElementById("shipQuoteMount") && headerWrap){
+      const d = document.createElement("div");
+      d.id = "shipQuoteMount";
+      headerWrap.insertBefore(d, headerWrap.querySelector(".tabsUnified") || null);
+    }
+
+    // Sección Top Ofertas (si no existe, la creamos en main)
+    if (!document.getElementById("topOffersSection")){
+      const main = document.querySelector("main.wrap");
+      if (main){
+        const sec = document.createElement("section");
+        sec.id = "topOffersSection";
+        sec.className = "section";
+        sec.style.display = "none";
+        sec.innerHTML = `
+          <div class="sectionHead">
+            <div class="sectionTitle">🔥 Top Ofertas</div>
+            <div class="mut">Los mejores descuentos</div>
+          </div>
+          <div class="hScroll" id="topOffersRow"></div>
+        `;
+        // arriba del featured
+        const featured = document.getElementById("featuredSection");
+        if (featured) featured.insertAdjacentElement("beforebegin", sec);
+        else main.prepend(sec);
+      }
+    }
   }
 
   async function init() {
     ensureBasics();
 
+    // AppBar/Drawer temprano
     safe("store_extras.early", () => window.SDC_STORE_EXTRAS?.init?.());
 
     safe("theme.init", () => window.SDC_THEME?.init?.("dark"));
@@ -93,6 +123,7 @@
     safe("count", () => window.SDC_STORE?.updateCartCountUI?.());
     safe("results.refresh", () => window.SDC_RESULTS?.refresh?.());
 
+    // badges/favs
     safe("badges.init", () => window.SDC_BADGES?.init?.(window.SDC_STORE.getProducts?.() || []));
     safe("fav_section.init", () => window.SDC_FAV_SECTION?.init?.());
 
@@ -102,10 +133,11 @@
     safe("store_extras", () => window.SDC_STORE_EXTRAS?.init?.());
     safe("shop_polish", () => window.SDC_SHOP_POLISH?.init?.());
 
-    /* ✅ NUEVO */
+    /* ✅ PAQUETE 1 init */
+    safe("p1_sales", () => window.SDC_P1?.init?.());
     safe("ship_quote", () => window.SDC_SHIP_QUOTE?.init?.());
     safe("top_offers", () => window.SDC_TOP_OFFERS?.render?.());
-    safe("wa_enhanced", () => window.SDC_WA_PLUS?.init?.());
+    safe("wa_plus", () => window.SDC_WA_PLUS?.init?.());
   }
 
   init().catch(err => {
