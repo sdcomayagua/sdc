@@ -10,15 +10,19 @@ window.SDC_VOICE = (() => {
     const wrap = q.closest(".search");
     if (!wrap) return;
 
+    // si no soporta, no mostramos
+    if (!supported()) return;
+
+    // si ya existe, listo
     if (document.getElementById("voiceBtn")) return;
 
     const b = document.createElement("button");
     b.id = "voiceBtn";
     b.type = "button";
-    b.className = "searchClear show";
-    b.style.right = "46px";
+    b.className = "voiceIn";
     b.textContent = "🎤";
     b.title = "Buscar por voz";
+
     wrap.appendChild(b);
 
     b.onclick = () => start();
@@ -49,7 +53,6 @@ window.SDC_VOICE = (() => {
   }
 
   function init(){
-    if (!supported()) return;
     injectBtn();
   }
 
