@@ -1,61 +1,27 @@
-// p2_ux.js
-window.SDC_P2 = (() => {
-  function isMobile(){ return window.matchMedia("(max-width: 720px)").matches; }
+(() => {
+  const header = document.querySelector("header");
+  let lastScroll = 0;
 
-  function closeSuggest(){
-    const box = document.getElementById("suggestBox");
-    if (!box) return;
-    box.style.display = "none";
-    box.innerHTML = "";
-  }
-
-  function hookCloseSuggestOnScroll(){
-    window.addEventListener("scroll", () => {
-      if (!isMobile()) return;
-      closeSuggest();
-    }, { passive:true });
-  }
-
-  // Scroll a inicio del grid (más natural que top 0)
-  function scrollToGrid(){
-    const grid = document.getElementById("grid");
-    if (!grid) return;
-    const y = grid.getBoundingClientRect().top + window.scrollY - 12;
-    window.scrollTo({ top: Math.max(0, y), behavior: "smooth" });
-  }
-
-  function hookTabsScroll(){
-    const cat = document.getElementById("catTabs");
-    const sub = document.getElementById("subTabs");
-    function onClick(e){
-      const t = e.target;
-      if (!(t instanceof HTMLElement)) return;
-      if (!t.classList.contains("tab")) return;
-      if (!isMobile()) return;
-      // deja que renderice y luego sube al grid
-      setTimeout(scrollToGrid, 80);
+  window.addEventListener("scroll", () => {
+    const current = window.scrollY;
+    if (current > lastScroll && current > 80) {
+      header.classList.add("compact");
+    } else {
+      header.classList.remove("compact");
     }
-    cat?.addEventListener("click", onClick);
-    sub?.addEventListener("click", onClick);
-  }
+    lastScroll = current;
+  });
 
-  // Status pill safe
-  function ensureStatusPill(){
-    if (document.getElementById("statusPill")) return;
-    const headerWrap = document.querySelector("header .wrap");
-    if (!headerWrap) return;
-    const p = document.createElement("div");
-    p.className = "pill";
-    p.id = "statusPill";
-    p.textContent = "Cargando catálogo...";
-    headerWrap.appendChild(p);
-  }
-
-  function init(){
-    ensureStatusPill();
-    hookCloseSuggestOnScroll();
-    hookTabsScroll();
-  }
-
-  return { init };
+  // Mini carrito
+  window.addEventListener("SDC_CART_UPDATE", e => {
+    const mini = document.getElementById("miniCart");
+    if (!mini) return;
+    if (e.detail.count > 0) {
+      mini.classList.add("show");
+      mini.querySelector(".count").textContent = e.detail.count;
+      mini.querySelector(".total").textContent = e.detail.total;
+    } else {
+      mini.classList.remove("show");
+    }
+  });
 })();
