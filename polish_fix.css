@@ -1,0 +1,66 @@
+/* polish_fix.css — Pulido final PRO */
+
+/* Evita huecos raros en header */
+header .headerTop{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  flex-wrap:wrap;
+}
+
+/* El carrito NO debe inflarse */
+#cartBtn{
+  max-width: 180px;
+  min-width: 120px;
+  height:44px;
+  border-radius:16px;
+  font-weight:1000;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  white-space:nowrap;
+}
+
+/* En móvil: no metas “(0)” raro ni lo hagas gigante */
+@media (max-width:720px){
+  #cartBtn{
+    max-width: 150px;
+    min-width: 110px;
+    padding:0 14px;
+  }
+}
+
+/* Quita cualquier “caja fantasma” que empuje el layout */
+.headerTop .ghostBox,
+.headerTop .spacerGhost{
+  display:none !important;
+}
+
+/* Trust footer + cotizador SIEMPRE al final */
+.trustFooter{
+  margin-top:18px;
+}
+#shipAcc{
+  margin-top:12px;
+}
+
+/* Si por error se insertan arriba, los ocultamos hasta que JS los mueva */
+body.is-moving-footer #trustFooter,
+body.is-moving-footer #shipAcc{
+  display:none !important;
+}
+
+/* Modo noche/ día base (fallback) */
+html[data-theme="dark"] body{
+  background:#0b0f14;
+  color:#e8eef7;
+}
+html[data-theme="light"] body{
+  background:#f6f8fb;
+  color:#0f172a;
+}
+
+/* Evita que el loader deje la UI a medias */
+body.is-loading #cartBtn{
+  visibility:hidden !important;
+}
