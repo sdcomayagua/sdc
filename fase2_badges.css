@@ -1,0 +1,65 @@
+/* fase2_badges.css */
+
+/* Ribbons arriba en imagen */
+.ribbonRow{
+  position:absolute;
+  top:10px;
+  left:10px;
+  right:10px;
+  display:flex;
+  justify-content:space-between;
+  gap:8px;
+  z-index:2;
+  pointer-events:none;
+}
+
+.ribbon{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  padding:6px 10px;
+  border-radius:999px;
+  font-weight:1000;
+  font-size:11px;
+  border:1px solid var(--line);
+  background:color-mix(in oklab, var(--card) 82%, transparent);
+  color:var(--txt);
+  box-shadow: var(--shadow);
+}
+
+/* NUEVO */
+.ribbon.new{
+  border-color: rgba(120,170,255,.45);
+  background: rgba(120,170,255,.14);
+  color: #cfe2ff;
+}
+html[data-theme="light"] .ribbon.new{
+  color:#153a75;
+}
+
+/* OFERTA */
+.ribbon.offer{
+  border-color: rgba(255,204,102,.55);
+  background: rgba(255,204,102,.16);
+  color: var(--warn);
+}
+
+/* Precio anterior tachado */
+.strike{
+  margin-left:8px;
+  font-size:12px;
+  color:var(--mut);
+  text-decoration:line-through;
+  font-weight:900;
+}
+
+/* Ahorras debajo del precio */
+.saveLine{
+  margin-top:6px;
+  font-size:12px;
+  color:var(--mut);
+}
+.saveLine b{
+  color: var(--warn);
+  font-weight:1000;
+}
