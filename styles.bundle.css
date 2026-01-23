@@ -1,4 +1,4 @@
-/* styles.bundle.css?v=20260124p7 */
+/* styles.bundle.css?v=20260124p7b */
 
 @import url("./theme.css");
 @import url("./base.css");
@@ -37,5 +37,8 @@
 /* Paquete 6 */
 @import url("./p6_promo.css");
 
-/* ✅ Paquete 7 */
+/* Paquete 7 */
 @import url("./p7_checkout.css");
+
+/* ✅ Extra carrito: oferta/ahorro dentro del carrito */
+@import url("./p7_cart_offer.css");
