@@ -1,0 +1,44 @@
+/* shop_polish.css */
+
+/* 1) Más “tienda” en general */
+.card{
+  transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease;
+}
+.card:hover{
+  transform: translateY(-2px);
+  box-shadow: 0 18px 40px rgba(0,0,0,.18);
+  border-color: color-mix(in oklab, var(--line) 70%, #2a3a52);
+}
+html[data-theme="light"] .card:hover{
+  box-shadow: 0 18px 40px rgba(12,20,45,.12);
+}
+
+/* 2) Título + precio más “comercial” */
+.name{font-size:14px}
+.price{font-size:14px;letter-spacing:.2px}
+
+/* 3) Botón CTA más “grande” */
+.card .btn{height:50px;border-radius:16px;font-weight:1000}
+
+/* 4) Chips y tabs más alineados */
+.tab,.chip{border-radius:999px}
+
+/* 5) Mejor separación de secciones */
+.section{margin-top:12px}
+.sectionHead{margin:12px 0}
+
+/* 6) “Carrusel” de destacados/ofertas más bonito */
+.hCard{border-radius:18px}
+.hCard img{border-bottom:1px solid var(--line)}
+
+/* 7) Mejor modal de producto: acciones arriba siempre visibles */
+.pmTabs{position:sticky; top:0; z-index:4; background:color-mix(in oklab, var(--card) 94%, transparent); padding:10px 0 6px 0}
+
+/* 8) En móvil: tarjetas más “premium” */
+@media (max-width:720px){
+  .grid{gap:12px}
+  .card{border-radius:24px}
+  .p{padding:12px}
+  .name{font-size:14px}
+  .price{font-size:14px}
+}
