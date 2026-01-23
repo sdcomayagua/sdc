@@ -1,0 +1,216 @@
+/* product_modal.css */
+
+/* Layout pro */
+.pmWrap{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:12px;
+}
+@media (min-width:900px){
+  .pmWrap{
+    grid-template-columns: 1.05fr .95fr;
+    gap:14px;
+    align-items:start;
+  }
+}
+
+/* imagen principal controlada */
+.pmImageWrap{position:relative}
+.pmMainImg{
+  width:100%;
+  max-height:42vh;
+  object-fit:contain !important;
+  border-radius:16px;
+  border:1px solid var(--line);
+  background:color-mix(in oklab, var(--card2) 70%, #000);
+  cursor:zoom-in;
+}
+@media (max-width:720px){
+  .pmMainImg{max-height:30vh;}
+}
+
+/* thumbs compactas y ordenadas */
+.pmThumbs{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  margin-top:10px;
+}
+.pmThumb{
+  width:54px;height:54px;
+  border-radius:12px;
+  border:1px solid var(--line);
+  object-fit:cover;
+  cursor:pointer;
+  opacity:.9;
+  background:color-mix(in oklab, var(--card2) 70%, #0a0f17);
+}
+.pmThumb.active{outline:2px solid var(--acc);opacity:1}
+@media (max-width:720px){
+  .pmThumb{width:50px;height:50px}
+}
+
+/* Header de info */
+.pmName{font-weight:1000;font-size:18px;line-height:1.15}
+.pmPrice{font-weight:1000;font-size:18px;margin-top:8px}
+.pmBadges{margin-top:8px}
+.pmChips{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+
+/* Tabs */
+.pmTabs{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  margin-top:12px;
+}
+.pmTabs button{
+  padding:8px 10px;
+  border-radius:999px;
+  border:1px solid var(--line);
+  background:transparent;
+  color:var(--mut);
+  font-weight:1000;
+  font-size:12px;
+  cursor:pointer;
+}
+.pmTabs button.active{
+  background:color-mix(in oklab, var(--card) 80%, transparent);
+  color:var(--txt);
+}
+
+/* Panel de contenido */
+.pmPanel{
+  margin-top:10px;
+  border:1px solid var(--line);
+  background:color-mix(in oklab, var(--card) 92%, transparent);
+  border-radius:14px;
+  padding:10px;
+}
+.pmDesc{
+  color:var(--mut);
+  font-size:13px;
+  line-height:1.45;
+  white-space:pre-wrap;
+}
+
+/* Ver más / Ver menos */
+.pmDescClamp{
+  overflow:hidden;
+  display:-webkit-box;
+  -webkit-line-clamp:6;
+  -webkit-box-orient:vertical;
+}
+.pmMoreRow{
+  display:flex;
+  justify-content:flex-end;
+  margin-top:10px;
+}
+.pmMoreBtn{
+  padding:8px 10px;
+  border-radius:12px;
+}
+
+/* Videos bien alineados */
+.pmActions{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+}
+.pmIconBtn{
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+
+/* Calc row */
+.pmCalc{
+  margin-top:10px;
+  border:1px solid var(--line);
+  background:color-mix(in oklab, var(--card) 92%, transparent);
+  border-radius:14px;
+  padding:10px;
+}
+.pmCalcRow{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  justify-content:space-between;
+  align-items:center;
+}
+.pmCalcItem b{font-weight:1000}
+
+/* Sticky buy area */
+.pmBuySticky{
+  position:sticky;
+  bottom:0;
+  z-index:6;
+  margin-top:12px;
+  padding-top:10px;
+  background:linear-gradient(to top,
+    color-mix(in oklab, var(--card) 96%, transparent) 60%,
+    transparent 100%
+  );
+}
+
+/* Qty bonito */
+.pmQtyRow{
+  display:flex;
+  gap:12px;
+  align-items:center;
+  flex-wrap:wrap;
+}
+.pmQty{
+  display:flex;
+  gap:8px;
+  align-items:center;
+  border:1px solid var(--line);
+  background:color-mix(in oklab, var(--card) 92%, transparent);
+  padding:6px;
+  border-radius:14px;
+}
+.pmQty .mini{
+  width:44px;height:44px;
+  border-radius:12px;
+  font-size:18px;
+  font-weight:1000;
+  border:1px solid var(--line);
+  background:var(--card2);
+  color:var(--txt);
+  cursor:pointer;
+}
+.pmQtyNum{
+  min-width:34px;
+  text-align:center;
+  font-size:16px;
+  font-weight:1000;
+}
+
+/* Botones Add / BuyNow */
+.pmBtnRow{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  width:100%;
+}
+@media (max-width:720px){
+  .pmBtnRow{grid-template-columns:1fr;}
+}
+#pmAddBtn,#pmBuyNowBtn{
+  height:46px;
+  border-radius:14px;
+  font-weight:1000;
+  width:100%;
+}
+
+/* Nota agotado */
+.pmOutNote{
+  margin-top:10px;
+  padding:10px 12px;
+  border-radius:14px;
+  border:1px solid rgba(255,107,107,.35);
+  background:rgba(255,107,107,.10);
+  color:#ffb3b3;
+  font-weight:1000;
+  font-size:12px;
+  display:none;
+}
