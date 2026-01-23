@@ -1,4 +1,8 @@
-// p5_analytics.js
+// p5_analytics.js (FIX ESTRUCTURA)
+// - No duplica secciones
+// - No duplica “Más vistos”
+// - Mueve Tendencias al FINAL (debajo del catálogo)
+
 window.SDC_ANALYTICS = (() => {
   const KEY = "SDC_ANALYTICS_V1";
   const MAX = 80;
@@ -7,26 +11,22 @@ window.SDC_ANALYTICS = (() => {
     try { return JSON.parse(localStorage.getItem(KEY) || "{}"); }
     catch { return {}; }
   }
-
   function write(obj){
     try { localStorage.setItem(KEY, JSON.stringify(obj)); } catch {}
   }
 
-  function pid(p){
-    return String(p?.id || p?.nombre || "").trim();
-  }
+  function pid(p){ return String(p?.id || p?.nombre || "").trim(); }
 
   function bump(type, p){
     const id = pid(p);
     if (!id) return;
+
     const db = read();
     db[type] = db[type] || {};
     db[type][id] = (db[type][id] || 0) + 1;
 
-    // recorta
     const entries = Object.entries(db[type]).sort((a,b)=>b[1]-a[1]).slice(0, MAX);
     db[type] = Object.fromEntries(entries);
-
     write(db);
   }
 
@@ -41,12 +41,13 @@ window.SDC_ANALYTICS = (() => {
     if (document.getElementById("statsSection")) return;
 
     const main = document.querySelector("main.wrap");
-    const grid = document.getElementById("grid");
-    if (!main || !grid) return;
+    if (!main) return;
 
     const sec = document.createElement("section");
     sec.id = "statsSection";
     sec.className = "section";
+    sec.style.display = "none";
+
     sec.innerHTML = `
       <div class="sectionHead">
         <div>
@@ -70,7 +71,8 @@ window.SDC_ANALYTICS = (() => {
       </div>
     `;
 
-    grid.insertAdjacentElement("beforebegin", sec);
+    // ✅ Al FINAL del main (para que no se meta arriba)
+    main.appendChild(sec);
   }
 
   function renderRow(rowId, pairs){
@@ -108,19 +110,18 @@ window.SDC_ANALYTICS = (() => {
 
   function render(){
     ensureUI();
-
     const sec = document.getElementById("statsSection");
     if (!sec) return;
 
-    const viewed = top("view", 12);
-    const added = top("add", 12);
+    const viewed = top("view", 10);
+    const added  = top("add", 10);
 
     if (!viewed.length && !added.length){
-      sec.classList.remove("show");
+      sec.style.display = "none";
       return;
     }
 
-    sec.classList.add("show");
+    sec.style.display = "block";
     renderRow("mostViewedRow", viewed);
     renderRow("mostAddedRow", added);
   }
@@ -148,30 +149,4 @@ window.SDC_ANALYTICS = (() => {
     const st = window.SDC_STORE;
     if (!st?.addToCart) return;
 
-    const old = st.addToCart.bind(st);
-    st.addToCart = function(p, qty){
-      const ok = old(p, qty);
-      if (ok){
-        bump("add", p);
-        setTimeout(render, 0);
-      }
-      return ok;
-    };
-  }
-
-  function init(){
-    ensureUI();
-    hookProductOpen();
-    hookAddToCart();
-
-    // Render después de que cargue el catálogo
-    const t = setInterval(() => {
-      const ok = (window.SDC_STORE?.getProducts?.() || []).length > 0;
-      if (!ok) return;
-      clearInterval(t);
-      render();
-    }, 250);
-  }
-
-  return { init, render };
-})();
+    const old
