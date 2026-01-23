@@ -1,0 +1,31 @@
+:root{
+  --bg:#0b0f14; --card:#121823; --txt:#e8eef7; --mut:#9fb0c6;
+  --acc:#25D366; --line:#1f2a3a; --danger:#ff6b6b;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui;background:var(--bg);color:var(--txt)}
+
+.aHeader{position:sticky;top:0;background:rgba(11,15,20,.95);border-bottom:1px solid var(--line)}
+.aWrap{max-width:1200px;margin:0 auto;padding:12px}
+.aTitle{font-weight:1000}
+.aActions{display:flex;gap:8px}
+
+.btn{padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:#1a2433;color:var(--txt);cursor:pointer}
+.btn.acc{background:var(--acc);color:#05210f;font-weight:1000}
+.btn.ghost{background:transparent}
+.btn.danger{background:var(--danger);color:#2b0a0a;border:0}
+
+.panel{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:12px;margin-top:14px}
+.panelTitle{font-weight:1000;margin-bottom:10px}
+
+.aTools{display:flex;gap:8px;margin-bottom:10px}
+.tableWrap{overflow:auto}
+.aTable{width:100%;border-collapse:collapse}
+.aTable th,.aTable td{padding:8px;border-bottom:1px solid var(--line);text-align:left;font-size:13px}
+
+.formGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.formGrid .full{grid-column:1/-1}
+label{font-size:12px;color:var(--mut)}
+input,textarea,select{width:100%;padding:10px;border-radius:12px;border:1px solid var(--line);background:#0f1520;color:var(--txt)}
+textarea{min-height:90px}
+.aRow{display:flex;gap:8px}
