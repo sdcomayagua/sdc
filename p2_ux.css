@@ -1,0 +1,106 @@
+/* p2_ux.css */
+
+/* ===== UX APP: Header siempre bien, sin cortarse ===== */
+
+/* Evita transforms que cortan el header */
+header{
+  transform:none !important;
+}
+
+/* Stack sticky perfecto: ticker arriba + header debajo */
+.newsTicker{
+  position:sticky;
+  top:0;
+  z-index:9000;
+}
+header{
+  position:sticky;
+  top:38px; /* altura ticker */
+  z-index:8000;
+}
+
+/* Si el ticker no está visible, header vuelve a top 0 */
+.newsTicker:not(.show) ~ header{ top:0; }
+
+/* Fondo “app” cuando se queda sticky */
+header .wrap{
+  background:color-mix(in oklab, var(--bg) 92%, transparent);
+  backdrop-filter: blur(14px);
+}
+
+/* Separadores suaves */
+header .headerTop{
+  border-bottom:1px solid color-mix(in oklab, var(--line) 55%, transparent);
+  padding-bottom:10px;
+}
+
+/* Tabs y filtros se quedan visibles siempre (lo importante) */
+.tabsUnified,
+#quickFilters{
+  position:sticky;
+  z-index:8050;
+  background:color-mix(in oklab, var(--bg) 92%, transparent);
+  backdrop-filter: blur(14px);
+}
+
+/* Top de tabs/filtros debajo del headerTop */
+.tabsUnified{ top: calc(38px + 60px); }
+#quickFilters{ top: calc(38px + 60px + 58px); }
+
+/* En PC no hace falta offsets grandes */
+@media (min-width:900px){
+  header{ top:0; }
+  .tabsUnified, #quickFilters{ top:0; position:relative; }
+}
+
+/* Mejor estética del buscador */
+.search{position:relative;}
+#q{
+  border-radius:18px;
+  padding:14px 14px;
+  font-size:14px;
+  border:1px solid color-mix(in oklab, var(--line) 65%, transparent);
+  background:color-mix(in oklab, var(--card) 92%, transparent);
+  box-shadow: 0 12px 24px rgba(0,0,0,.10);
+}
+html[data-theme="light"] #q{ box-shadow: 0 12px 24px rgba(12,20,45,.10); }
+
+/* Más espacio arriba para que no se sienta apretado */
+main.wrap{ padding-top:12px; }
+
+/* Botón CTA visible siempre en móvil */
+@media (max-width:720px){
+  .card .btn{
+    height:52px !important;
+    border-radius:16px !important;
+    font-weight:1000 !important;
+  }
+  .btn.acc{
+    background: var(--acc) !important;
+    color:#05210f !important;
+    box-shadow: 0 14px 26px rgba(37,211,102,.22) !important;
+    border:0 !important;
+  }
+  .btn.consultBtn,.btn.danger,.dangerBtn{
+    background: rgba(255,107,107,.18) !important;
+    border: 1px solid rgba(255,107,107,.45) !important;
+    color:#8b1010 !important;
+    box-shadow: 0 12px 22px rgba(255,107,107,.12) !important;
+  }
+}
+
+/* Corrige cortes en iOS (sticky + overflow) */
+body{
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Sugerencias siempre por encima */
+.suggestBox{
+  position:relative;
+  z-index:9001;
+}
+
+/* Trust bar (paquete 1) más compacta y app */
+.trustBar{
+  border-radius:18px;
+}
