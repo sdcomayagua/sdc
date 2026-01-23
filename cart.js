@@ -3,6 +3,8 @@ window.SDC_CART = (() => {
   const U = window.SDC_UTILS;
   const S = window.SDC_STORE;
 
+  const FALLBACK = window.SDC_FALLBACK_IMG?.url || "";
+
   function syncBottomCount(){
     const el = U.$("bottomCartCount");
     if (el) el.textContent = String(S.cartCount());
@@ -10,17 +12,22 @@ window.SDC_CART = (() => {
 
   function openCart() {
     U.$("cartModal").classList.add("open");
+
     window.SDC_WATCH?.checkCartChanges?.();
+
     renderCart();
     computeSummary();
     window.SDC_UI_BADGES?.updateCheckoutBadge?.();
+
     window.SDC_CHECKOUT?.showStep?.(1);
     window.SDC_STEPPER?.render?.();
     window.SDC_GUARD?.syncNextDisabled?.();
     window.SDC_GUARD?.showErr?.("");
   }
 
-  function closeCart() { U.$("cartModal").classList.remove("open"); }
+  function closeCart() {
+    U.$("cartModal").classList.remove("open");
+  }
 
   function clearCart(){
     const ok = confirm("¿Vaciar todo el carrito?");
@@ -34,27 +41,12 @@ window.SDC_CART = (() => {
     window.SDC_GUARD?.syncNextDisabled?.();
   }
 
-  function ensureFab(){
-    const stepConfirm = document.getElementById("stepConfirm");
-    if (!stepConfirm) return;
-
-    if (document.getElementById("cartFab")) return;
-
-    const fab = document.createElement("div");
-    fab.id = "cartFab";
-    fab.className = "cartFab";
-    fab.innerHTML = `<button class="btn acc" id="fabSendBtn" type="button">Enviar por WhatsApp</button>`;
-    stepConfirm.appendChild(fab);
-
-    document.getElementById("fabSendBtn").onclick = () => window.SDC_WA?.send?.();
-  }
-
   function renderCart() {
     const el = U.$("cartItems");
     const emptyNote = U.$("cartEmptyNote");
     const cart = S.getCart();
-    el.innerHTML = "";
 
+    el.innerHTML = "";
     syncBottomCount();
 
     if (cart.size === 0) {
@@ -66,58 +58,106 @@ window.SDC_CART = (() => {
 
     for (const [id, it] of cart.entries()) {
       const p = it.p;
-      const unit = Number(p.precio||0);
+      const unit = Number(p.precio || 0);
       const sub = unit * it.qty;
 
       const row = document.createElement("div");
       row.className = "cartItem";
-      row.innerHTML = `
-        <img src="${U.escAttr(p.imagen || "")}" alt="">
-        <div style="flex:1">
-          <div class="cartTitle">${U.esc(p.nombre || "")}</div>
-          <div class="mut">${U.esc(p.categoria || "")}${p.subcategoria ? (" • " + U.esc(p.subcategoria)) : ""}</div>
-          <div class="cartMeta"><b>Unit:</b> ${U.money(unit, CFG.CURRENCY)} <span class="mut">•</span> <b>Sub:</b> ${U.money(sub, CFG.CURRENCY)}</div>
-        </div>
-        <div class="qty">
-          <button class="mini" data-act="minus" data-id="${U.escAttr(id)}">-</button>
-          <div style="min-width:22px;text-align:center;font-weight:1000">${it.qty}</div>
-          <button class="mini" data-act="plus" data-id="${U.escAttr(id)}">+</button>
-          <button class="mini" data-act="del" data-id="${U.escAttr(id)}">🗑</button>
-        </div>
-      `;
 
-      row.querySelector("img").onclick = () => window.SDC_PRODUCT_MODAL?.open?.(p, { setHash:false });
-      row.querySelector(".cartTitle").onclick = () => window.SDC_PRODUCT_MODAL?.open?.(p, { setHash:false });
+      const img = document.createElement("img");
+      img.src = p.imagen || FALLBACK;
+      img.alt = p.nombre || "";
+      img.onerror = () => { img.src = FALLBACK; };
+      img.onclick = () => window.SDC_PRODUCT_MODAL?.open?.(p, { setHash:false });
 
-      row.querySelectorAll("button").forEach(b => {
-        b.onclick = () => {
-          const act = b.getAttribute("data-act");
-          const pid = b.getAttribute("data-id");
-          const item = cart.get(pid);
-          if (!item) return;
+      const info = document.createElement("div");
+      info.style.flex = "1";
 
-          const stock = Number(item.p.stock || 0);
+      const title = document.createElement("div");
+      title.className = "cartTitle";
+      title.textContent = p.nombre || "";
+      title.onclick = () => window.SDC_PRODUCT_MODAL?.open?.(p, { setHash:false });
 
-          if (act === "minus") item.qty = Math.max(1, item.qty - 1);
-          if (act === "plus") {
-            if (item.qty + 1 > stock) { U.toast("No hay stock suficiente"); return; }
-            item.qty += 1;
-          }
-          if (act === "del") { cart.delete(pid); }
+      const cat = document.createElement("div");
+      cat.className = "mut";
+      cat.textContent = `${p.categoria || ""}${p.subcategoria ? (" • " + p.subcategoria) : ""}`;
 
-          S.updateCartCountUI();
-          syncBottomCount();
-          renderCart();
-          computeSummary();
-          window.SDC_WATCH?.checkCartChanges?.();
-          window.SDC_GUARD?.syncNextDisabled?.();
-        };
-      });
+      const meta = document.createElement("div");
+      meta.className = "cartMeta";
+      meta.innerHTML = `<b>Unit:</b> ${U.money(unit, CFG.CURRENCY)} <span class="mut">•</span> <b>Sub:</b> ${U.money(sub, CFG.CURRENCY)}`;
+
+      info.appendChild(title);
+      info.appendChild(cat);
+      info.appendChild(meta);
+
+      // controls
+      const controls = document.createElement("div");
+      controls.className = "cartQty";
+
+      const pill = document.createElement("div");
+      pill.className = "qtyPill";
+
+      const minus = document.createElement("button");
+      minus.className = "qtyBtn";
+      minus.type = "button";
+      minus.textContent = "−";
+      minus.onclick = () => {
+        it.qty = Math.max(1, it.qty - 1);
+        S.updateCartCountUI();
+        window.SDC_CART_BADGE?.apply?.();
+        renderCart();
+        computeSummary();
+        window.SDC_WATCH?.checkCartChanges?.();
+        window.SDC_GUARD?.syncNextDisabled?.();
+      };
+
+      const num = document.createElement("div");
+      num.className = "qtyNum";
+      num.textContent = String(it.qty);
+
+      const plus = document.createElement("button");
+      plus.className = "qtyBtn";
+      plus.type = "button";
+      plus.textContent = "+";
+      plus.onclick = () => {
+        const stock = Number(p.stock || 0);
+        if (it.qty + 1 > stock) { U.toast("No hay stock suficiente"); return; }
+        it.qty += 1;
+        S.updateCartCountUI();
+        window.SDC_CART_BADGE?.apply?.();
+        renderCart();
+        computeSummary();
+        window.SDC_WATCH?.checkCartChanges?.();
+        window.SDC_GUARD?.syncNextDisabled?.();
+      };
+
+      pill.appendChild(minus);
+      pill.appendChild(num);
+      pill.appendChild(plus);
+
+      const del = document.createElement("button");
+      del.className = "delBtn";
+      del.type = "button";
+      del.textContent = "🗑";
+      del.onclick = () => {
+        cart.delete(id);
+        S.updateCartCountUI();
+        window.SDC_CART_BADGE?.apply?.();
+        renderCart();
+        computeSummary();
+        window.SDC_WATCH?.checkCartChanges?.();
+        window.SDC_GUARD?.syncNextDisabled?.();
+      };
+
+      controls.appendChild(pill);
+      controls.appendChild(del);
+
+      row.appendChild(img);
+      row.appendChild(info);
+      row.appendChild(controls);
 
       el.appendChild(row);
     }
-
-    ensureFab();
   }
 
   function computeSummary() {
