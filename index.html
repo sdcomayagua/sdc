@@ -5,15 +5,32 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Soluciones Digitales Comayagua | Catálogo</title>
 
-  <link rel="stylesheet" href="style.css?v=20260122i">
+  <link rel="stylesheet" href="style.css?v=20260122h">
+  <link rel="stylesheet" href="tanda3.css?v=20260122h">
+  <link rel="stylesheet" href="tanda4.css?v=20260122h">
+  <link rel="stylesheet" href="tanda5.css?v=20260122h">
+  <link rel="stylesheet" href="mobile_fix.css?v=20260122h">
+  <link rel="stylesheet" href="cart_fab.css?v=20260122h">
+  <link rel="stylesheet" href="modal_fx.css?v=20260122h">
+  <link rel="stylesheet" href="pc_list.css?v=20260122h">
+
+  <link rel="stylesheet" href="ui_polish.css?v=20260122h">
+  <link rel="stylesheet" href="header_polish.css?v=20260122h">
+  <link rel="stylesheet" href="store_appbar.css?v=20260122h">
+  <link rel="stylesheet" href="shop_polish.css?v=20260122h">
+
+  <!-- ✅ NUEVO: promos (OFERTA/NUEVO/DESTACADO/AHORRO) -->
+  <link rel="stylesheet" href="promo_ui.css?v=20260122h">
 </head>
 <body>
 
 <header>
   <div class="wrap">
+    <!-- AppBar/Drawer se inyecta con store_extras.js -->
+
     <div class="row headerTop">
       <div class="search headerSearch">
-        <input id="q" placeholder="Buscar producto..." autocomplete="off" />
+        <input id="q" placeholder="Buscar producto..." />
       </div>
 
       <div class="sortBox" id="sortBoxDesktop">
@@ -28,7 +45,10 @@
 
       <button class="btn ghost sortMobileBtn" id="sortBtnMobile" type="button" aria-label="Ordenar">⚙️</button>
       <button class="btn ghost viewBtn" id="viewBtn" type="button" aria-label="Modo catálogo">🧾 <span class="tText">Detalle</span></button>
-      <button class="btn ghost themeBtn" id="themeBtn" type="button" aria-label="Tema"><span class="tIcon">🌙</span><span class="tText">Modo</span></button>
+
+      <button class="btn ghost themeBtn" id="themeBtn" type="button" aria-label="Tema">
+        <span class="tIcon">🌙</span><span class="tText">Modo</span>
+      </button>
 
       <button class="btn acc cartMiniBtn" id="cartBtn" type="button" aria-label="Carrito">
         🛒 <span class="cartMiniText">Carrito</span> (<span id="cartCount">0</span>)
@@ -38,7 +58,9 @@
     <div class="pill" id="statusPill">Cargando catálogo...</div>
 
     <div class="tabsUnified">
-      <button class="btn ghost tabsToggle" id="tabsToggleBtn" type="button"><span id="tabsToggleLabel">Categorías</span></button>
+      <button class="btn ghost tabsToggle" id="tabsToggleBtn" type="button">
+        <span id="tabsToggleLabel">Categorías</span>
+      </button>
       <div class="tabsLine">
         <div class="tabs" id="catTabs"></div>
         <div class="tabs" id="subTabs"></div>
@@ -48,26 +70,17 @@
     <div class="filtersBar" id="quickFilters"></div>
 
     <select id="brandFilter" class="btn ghost" style="width:100%;margin-top:10px"></select>
-
-    <!-- Banner (8) -->
-    <div id="topBanner" class="topBanner" style="display:none"></div>
-
-    <!-- sugerencias búsqueda (10) -->
-    <div id="suggestBox" class="suggestBox" style="display:none"></div>
   </div>
 </header>
 
+<div class="wrap" style="padding-top:10px;padding-bottom:0">
+  <div id="topBanner"></div>
+</div>
+
 <main class="wrap">
-  <!-- Favoritos (si hay) -->
-  <section id="favSection" class="section" style="display:none">
-    <div class="sectionHead">
-      <div>
-        <div class="sectionTitle">Favoritos</div>
-        <div class="mut">Tus productos guardados</div>
-      </div>
-    </div>
-    <div class="hScroll" id="favRow"></div>
-  </section>
+
+  <!-- ✅ FAVORITOS: se inyecta arriba del grid por favorites_section.js -->
+  <!-- Sección se crea automáticamente -->
 
   <section id="featuredSection" class="section" style="display:none">
     <div class="sectionHead">
@@ -96,8 +109,7 @@
 <div class="toast" id="toast"></div>
 <button class="toTop" id="toTop" type="button" aria-label="Ir arriba">↑</button>
 
-<!-- MODALES (mínimos necesarios y completos) -->
-
+<!-- THANKS -->
 <div class="modal" id="thanksModal" aria-hidden="true">
   <div class="sheet">
     <div class="head row" style="justify-content:space-between">
@@ -108,16 +120,19 @@
       <div class="thanksBox">
         <div class="thanksTitle">Gracias por tu pedido ✅</div>
         <div class="thanksText">Te contactaremos pronto para confirmar disponibilidad y envío.</div>
+
         <label class="note" style="display:flex;gap:10px;align-items:center;margin-top:10px;justify-content:center">
           <input type="checkbox" id="clearAfterSend">
           Limpiar carrito después de enviar
         </label>
+
         <button class="btn acc" id="thanksContinue" type="button" style="margin-top:12px;width:100%">Seguir comprando</button>
       </div>
     </div>
   </div>
 </div>
 
+<!-- ORDENAR -->
 <div class="modal" id="sortModal" aria-hidden="true">
   <div class="sheet">
     <div class="head row" style="justify-content:space-between">
@@ -136,6 +151,7 @@
   </div>
 </div>
 
+<!-- ZOOM -->
 <div class="modal" id="zoomModal" aria-hidden="true">
   <div class="sheet zoomSheet">
     <div class="head row" style="justify-content:space-between">
@@ -148,6 +164,7 @@
   </div>
 </div>
 
+<!-- PRODUCTO -->
 <div class="modal" id="productModal" aria-hidden="true">
   <div class="sheet">
     <div class="head row" style="justify-content:space-between">
@@ -156,6 +173,7 @@
     </div>
     <div class="body">
       <div class="pmWrap">
+
         <div>
           <img id="pmMainImg" class="pmMainImg" alt="">
           <div id="pmThumbs" class="pmThumbs"></div>
@@ -167,7 +185,6 @@
 
           <div class="mut" id="pmCat"></div>
           <div class="pmPrice" id="pmPrice"></div>
-          <div id="pmSave" class="pmSave" style="display:none"></div>
 
           <div class="pmBadges">
             <span class="badge off" id="pmStockOk" style="display:none"></span>
@@ -210,11 +227,13 @@
 
           <div class="note" id="pmNote" style="margin-top:10px"></div>
         </div>
+
       </div>
     </div>
   </div>
 </div>
 
+<!-- CARRITO -->
 <div class="modal" id="cartModal" aria-hidden="true">
   <div class="sheet">
     <div class="head row" style="justify-content:space-between">
@@ -239,10 +258,12 @@
 
         <div class="panel" id="stepDelivery" style="display:none">
           <div class="panelTitle">Entrega y pago</div>
+
           <div class="two">
             <div><label class="mut">Departamento</label><select id="dep"></select></div>
             <div><label class="mut">Municipio</label><select id="mun"></select></div>
           </div>
+
           <div class="two" style="margin-top:10px">
             <div>
               <label class="mut">Tipo de entrega</label>
@@ -272,24 +293,31 @@
 
         <div class="panel" id="stepConfirm" style="display:none">
           <div class="panelTitle">Datos del cliente</div>
+
           <div class="two">
             <div><label class="mut">Nombre</label><input id="name" placeholder="Tu nombre" /></div>
             <div><label class="mut">Teléfono</label><input id="phone" placeholder="Ej: 9xxx-xxxx" /></div>
           </div>
+
           <div style="margin-top:10px">
             <label class="mut">Dirección / Referencia</label>
             <textarea id="addr" placeholder="Colonia, barrio, referencias..."></textarea>
           </div>
+
           <div style="margin-top:10px">
             <label class="mut">Instrucciones de entrega (opcional)</label>
             <textarea id="clientNote" placeholder="Ej: llamar antes / dejar en portón..."></textarea>
           </div>
+
           <div class="hr"></div>
+
           <div class="two">
             <button class="btn ghost" id="copyOrderBtn" type="button">Copiar pedido</button>
             <button class="btn ghost" id="shareOrderBtn" type="button">Compartir</button>
           </div>
+
           <button class="btn acc" id="sendWA" style="width:100%;margin-top:10px" type="button">Enviar pedido por WhatsApp</button>
+
           <div class="panel" id="orderHistory" style="margin-top:12px"></div>
         </div>
       </div>
@@ -304,9 +332,96 @@
   </div>
 </div>
 
-<!-- Boot mínimo -->
-<script src="boot_list.js?v=20260122i"></script>
-<script src="boot.js?v=20260122i"></script>
+<!-- SCRIPTS -->
+<script src="config.js?v=20260122h"></script>
+<script src="utils.js?v=20260122h"></script>
+
+<script src="features.js?v=20260122h"></script>
+<script src="voice_search.js?v=20260122h"></script>
+<script src="favorites.js?v=20260122h"></script>
+<script src="swipe_images.js?v=20260122h"></script>
+<script src="features_boot.js?v=20260122h"></script>
+
+<script src="fallback_image.js?v=20260122h"></script>
+<script src="mobile_cart_badge.js?v=20260122h"></script>
+<script src="smart_defaults.js?v=20260122h"></script>
+
+<script src="theme.js?v=20260122h"></script>
+<script src="motion.js?v=20260122h"></script>
+<script src="ux.js?v=20260122h"></script>
+<script src="header_compact.js?v=20260122h"></script>
+
+<script src="banner.js?v=20260122h"></script>
+<script src="filters.js?v=20260122h"></script>
+<script src="pagination.js?v=20260122h"></script>
+<script src="cart_mini.js?v=20260122h"></script>
+<script src="sort_menu.js?v=20260122h"></script>
+<script src="tabs_unified.js?v=20260122h"></script>
+
+<script src="search_ui.js?v=20260122h"></script>
+<script src="results_counter.js?v=20260122h"></script>
+
+<script src="checkout_steps.js?v=20260122h"></script>
+<script src="customer_profile.js?v=20260122h"></script>
+<script src="product_reco.js?v=20260122h"></script>
+
+<script src="image_zoom.js?v=20260122h"></script>
+<script src="cart_tools.js?v=20260122h"></script>
+<script src="add_to_cart_fx.js?v=20260122h"></script>
+<script src="ui_badges.js?v=20260122h"></script>
+
+<script src="continue_state.js?v=20260122h"></script>
+<script src="stepper_pro.js?v=20260122h"></script>
+<script src="price_stock_watch.js?v=20260122h"></script>
+
+<script src="add_confirm.js?v=20260122h"></script>
+
+<script src="live_refresh.js?v=20260122h"></script>
+<script src="view_mode3.js?v=20260122h"></script>
+<script src="brand_filter.js?v=20260122h"></script>
+<script src="order_history_pro.js?v=20260122h"></script>
+<script src="post_purchase_plus.js?v=20260122h"></script>
+
+<script src="continue_state_plus.js?v=20260122h"></script>
+<script src="checkout_guard.js?v=20260122h"></script>
+
+<script src="mobile_fix.js?v=20260122h"></script>
+<script src="cart_persist.js?v=20260122h"></script>
+<script src="eta.js?v=20260122h"></script>
+
+<script src="product_tabs.js?v=20260122h"></script>
+<script src="modal_swipe.js?v=20260122h"></script>
+
+<script src="product_modal_ui.js?v=20260122h"></script>
+
+<script src="store_extras.js?v=20260122h"></script>
+<script src="shop_polish.js?v=20260122h"></script>
+
+<!-- ✅ NUEVO: badges + favoritos sección -->
+<script src="badges_logic.js?v=20260122h"></script>
+<script src="favorites_section.js?v=20260122h"></script>
+
+<script src="store.js?v=20260122h"></script>
+<script src="media.js?v=20260122h"></script>
+<script src="gallery.js?v=20260122h"></script>
+<script src="share.js?v=20260122h"></script>
+<script src="product_modal.js?v=20260122h"></script>
+
+<script src="catalog_data.js?v=20260122h"></script>
+<script src="catalog_ui.js?v=20260122h"></script>
+<script src="catalog.js?v=20260122h"></script>
+
+<script src="cart.js?v=20260122h"></script>
+<script src="delivery.js?v=20260122h"></script>
+<script src="wa.js?v=20260122h"></script>
+
+<script src="mobile_nav_v2.js?v=20260122h"></script>
+<script src="app.js?v=20260122h"></script>
+
+<script>
+  window.SDC_STORE_EXTRAS?.init?.();
+  window.SDC_SHOP_POLISH?.init?.();
+</script>
 
 </body>
 </html>
