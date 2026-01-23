@@ -1,0 +1,108 @@
+/* store_appbar.css */
+
+/* AppBar superior tipo app */
+.appBar{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  padding:10px 12px;
+  border:1px solid color-mix(in oklab, var(--line) 70%, transparent);
+  background:color-mix(in oklab, var(--card) 92%, transparent);
+  border-radius:18px;
+  box-shadow: var(--shadow);
+  margin-bottom:10px;
+}
+
+.appBarTitle{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  font-weight:1000;
+  font-size:14px;
+}
+
+.appBarDot{
+  width:10px;height:10px;border-radius:999px;
+  background:var(--acc);
+  box-shadow:0 0 0 4px rgba(37,211,102,.12);
+}
+
+.appBarBtns{
+  display:flex;
+  gap:8px;
+  align-items:center;
+}
+
+.appIconBtn{
+  width:44px;height:44px;
+  border-radius:14px;
+  border:1px solid var(--line);
+  background:color-mix(in oklab, var(--card2) 88%, transparent);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  font-size:18px;
+}
+
+/* Drawer (categorías) */
+.drawerOverlay{
+  position:fixed;inset:0;
+  background:rgba(0,0,0,.55);
+  z-index:9998;
+  display:none;
+}
+.drawerOverlay.open{display:block;}
+
+.drawer{
+  position:fixed;
+  top:0;left:0;
+  height:100%;
+  width:min(340px, 88vw);
+  background:var(--card);
+  border-right:1px solid var(--line);
+  box-shadow: 0 18px 40px rgba(0,0,0,.30);
+  z-index:9999;
+  transform:translateX(-105%);
+  transition:transform .22s ease;
+  display:flex;
+  flex-direction:column;
+}
+.drawer.open{transform:translateX(0);}
+
+.drawerHead{
+  padding:14px;
+  border-bottom:1px solid var(--line);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+}
+.drawerTitle{font-weight:1000}
+.drawerClose{
+  width:40px;height:40px;border-radius:14px;
+  border:1px solid var(--line);
+  background:color-mix(in oklab, var(--card2) 88%, transparent);
+  cursor:pointer;
+}
+
+.drawerBody{
+  padding:12px;
+  overflow:auto;
+}
+
+/* Fade-in para cards */
+.fadeIn{
+  opacity:0;
+  transform:translateY(8px);
+  animation:fadeInUp .22s ease forwards;
+}
+@keyframes fadeInUp{
+  to{opacity:1;transform:translateY(0)}
+}
+
+/* En móvil: ocultar headerBrand viejo (ya tienes appbar) */
+@media (max-width:720px){
+  .headerBrand{display:none !important;}
+}
