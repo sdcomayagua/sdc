@@ -5,15 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Soluciones Digitales Comayagua | Catálogo</title>
 
-  <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="tanda3.css">
-  <link rel="stylesheet" href="tanda4.css">
-  <link rel="stylesheet" href="tanda5.css">
-  <link rel="stylesheet" href="mobile_fix.css">
-  <link rel="stylesheet" href="cart_fab.css">
-
-  <link rel="stylesheet" href="soldout.css">
-  <link rel="stylesheet" href="mobile_opt.css">
+  <!-- CSS (cache-bust) -->
+  <link rel="stylesheet" href="style.css?v=20260122a">
+  <link rel="stylesheet" href="tanda3.css?v=20260122a">
+  <link rel="stylesheet" href="tanda4.css?v=20260122a">
+  <link rel="stylesheet" href="tanda5.css?v=20260122a">
+  <link rel="stylesheet" href="mobile_fix.css?v=20260122a">
+  <link rel="stylesheet" href="cart_fab.css?v=20260122a">
+  <link rel="stylesheet" href="modal_fx.css?v=20260122a">
+  <link rel="stylesheet" href="pc_list.css?v=20260122a">
 </head>
 <body>
 
@@ -39,7 +39,6 @@
       </div>
 
       <button class="btn ghost sortMobileBtn" id="sortBtnMobile" type="button" aria-label="Ordenar">⚙️</button>
-
       <button class="btn ghost viewBtn" id="viewBtn" type="button" aria-label="Modo catálogo">🧾 <span class="tText">Detalle</span></button>
 
       <button class="btn ghost themeBtn" id="themeBtn" type="button" aria-label="Tema">
@@ -100,78 +99,310 @@
 <div class="toast" id="toast"></div>
 <button class="toTop" id="toTop" type="button" aria-label="Ir arriba">↑</button>
 
-<!-- El resto de modales queda EXACTAMENTE igual que Tanda 1 -->
-<!-- No lo repito para no saturar: usa el mismo index.html completo de Tanda 1 (que ya tienes) -->
-<!-- y solo asegúrate de mantener los modales existentes. -->
+<!-- THANKS -->
+<div class="modal" id="thanksModal" aria-hidden="true">
+  <div class="sheet">
+    <div class="head row" style="justify-content:space-between">
+      <div style="font-weight:1000">Listo</div>
+      <button class="btn" id="thanksClose">Cerrar</button>
+    </div>
+    <div class="body">
+      <div class="thanksBox">
+        <div class="thanksTitle">Gracias por tu pedido ✅</div>
+        <div class="thanksText">Te contactaremos pronto para confirmar disponibilidad y envío.</div>
 
-<script src="config.js"></script>
-<script src="utils.js"></script>
+        <label class="note" style="display:flex;gap:10px;align-items:center;margin-top:10px;justify-content:center">
+          <input type="checkbox" id="clearAfterSend">
+          Limpiar carrito después de enviar
+        </label>
 
-<script src="fallback_image.js"></script>
-<script src="mobile_cart_badge.js"></script>
-<script src="smart_defaults.js"></script>
+        <button class="btn acc" id="thanksContinue" type="button" style="margin-top:12px;width:100%">Seguir comprando</button>
+      </div>
+    </div>
+  </div>
+</div>
 
-<script src="theme.js"></script>
-<script src="motion.js"></script>
-<script src="ux.js"></script>
-<script src="header_compact.js"></script>
+<!-- ORDENAR -->
+<div class="modal" id="sortModal" aria-hidden="true">
+  <div class="sheet">
+    <div class="head row" style="justify-content:space-between">
+      <div style="font-weight:1000">Ordenar</div>
+      <button class="btn" id="sortClose">Cerrar</button>
+    </div>
+    <div class="body">
+      <div class="panel" style="padding:12px">
+        <button class="btn ghost sortItem" data-sort="relevancia" type="button">Relevancia</button>
+        <button class="btn ghost sortItem" data-sort="stock_first" type="button">Disponibles primero</button>
+        <button class="btn ghost sortItem" data-sort="precio_asc" type="button">Precio menor</button>
+        <button class="btn ghost sortItem" data-sort="precio_desc" type="button">Precio mayor</button>
+        <button class="btn ghost sortItem" data-sort="orden_desc" type="button">Más nuevos</button>
+      </div>
+    </div>
+  </div>
+</div>
 
-<script src="banner.js"></script>
-<script src="filters.js"></script>
-<script src="pagination.js"></script>
-<script src="cart_mini.js"></script>
-<script src="sort_menu.js"></script>
-<script src="tabs_unified.js"></script>
+<!-- ZOOM -->
+<div class="modal" id="zoomModal" aria-hidden="true">
+  <div class="sheet zoomSheet">
+    <div class="head row" style="justify-content:space-between">
+      <div style="font-weight:1000">Zoom</div>
+      <button class="btn" id="zoomClose">Cerrar</button>
+    </div>
+    <div class="body">
+      <img id="zoomImg" class="zoomImg" alt="zoom">
+    </div>
+  </div>
+</div>
 
-<script src="search_ui.js"></script>
-<script src="results_counter.js"></script>
+<!-- PRODUCTO -->
+<div class="modal" id="productModal" aria-hidden="true">
+  <div class="sheet">
+    <div class="head row" style="justify-content:space-between">
+      <div style="font-weight:1000" id="pmTitle">Producto</div>
+      <button class="btn" id="pmClose">Cerrar</button>
+    </div>
+    <div class="body">
+      <div class="pmWrap">
 
-<script src="checkout_steps.js"></script>
-<script src="customer_profile.js"></script>
-<script src="product_reco.js"></script>
+        <div>
+          <img id="pmMainImg" class="pmMainImg" alt="">
+          <div id="pmThumbs" class="pmThumbs"></div>
+        </div>
 
-<script src="image_zoom.js"></script>
-<script src="cart_tools.js"></script>
-<script src="add_to_cart_fx.js"></script>
-<script src="ui_badges.js"></script>
+        <div>
+          <div class="pmName" id="pmName"></div>
+          <div class="pmChips" id="pmChips"></div>
 
-<script src="continue_state.js"></script>
-<script src="stepper_pro.js"></script>
-<script src="price_stock_watch.js"></script>
+          <div class="mut" id="pmCat"></div>
+          <div class="pmPrice" id="pmPrice"></div>
 
-<script src="add_confirm.js"></script>
+          <div class="pmBadges">
+            <span class="badge off" id="pmStockOk" style="display:none"></span>
+            <span class="badge low" id="pmStockLow" style="display:none">POCO STOCK</span>
+            <span class="badge out" id="pmStockOut" style="display:none">AGOTADO</span>
+          </div>
 
-<script src="live_refresh.js"></script>
-<script src="view_mode3.js"></script>
-<script src="brand_filter.js"></script>
-<script src="order_history_pro.js"></script>
-<script src="post_purchase_plus.js"></script>
+          <div class="pmTabs">
+            <button id="pmTabBtn_desc" class="active" type="button">Descripción</button>
+            <button id="pmTabBtn_specs" type="button">Especificaciones</button>
+            <button id="pmTabBtn_videos" type="button">Videos</button>
+          </div>
 
-<script src="continue_state_plus.js"></script>
-<script src="checkout_guard.js"></script>
+          <div id="pmTab_desc" class="pmPanel">
+            <div class="pmDesc" id="pmDesc"></div>
+          </div>
 
-<script src="mobile_fix.js"></script>
-<script src="cart_persist.js"></script>
-<script src="eta.js"></script>
+          <div id="pmTab_specs" class="pmPanel" style="display:none">
+            <div class="pmSpecs" id="pmSpecs"></div>
+          </div>
 
-<script src="product_tabs.js"></script>
-<script src="modal_swipe.js"></script>
+          <div id="pmTab_videos" class="pmPanel" style="display:none">
+            <div class="pmActions" id="pmActions"></div>
+          </div>
 
-<script src="product_modal_ui.js"></script>
+          <div id="recoBox"></div>
 
-<script src="store.js"></script>
-<script src="media.js"></script>
-<script src="gallery.js"></script>
-<script src="share.js"></script>
-<script src="product_modal.js"></script>
-<script src="catalog_data.js"></script>
-<script src="catalog_ui.js"></script>
-<script src="catalog.js"></script>
+          <div class="pmQtyRow">
+            <div class="pmQty">
+              <button class="mini" id="pmMinus" type="button">-</button>
+              <div class="pmQtyNum" id="pmQtyNum">1</div>
+              <button class="mini" id="pmPlus" type="button">+</button>
+            </div>
 
-<script src="cart.js"></script>
-<script src="delivery.js"></script>
-<script src="wa.js"></script>
-<script src="app.js"></script>
+            <div class="pmBtnRow">
+              <button class="btn acc" id="pmAddBtn" type="button">Añadir al carrito</button>
+              <button class="btn ghost" id="pmBuyNowBtn" type="button">Comprar ahora</button>
+            </div>
+          </div>
+
+          <div class="note" id="pmNote" style="margin-top:10px"></div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CARRITO -->
+<div class="modal" id="cartModal" aria-hidden="true">
+  <div class="sheet">
+    <div class="head row" style="justify-content:space-between">
+      <div style="font-weight:1000">Carrito</div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <button class="btn danger" id="clearCartBtn" type="button">Vaciar</button>
+        <button class="btn" id="closeCart" type="button">Cerrar</button>
+      </div>
+    </div>
+
+    <div class="body">
+      <div id="checkoutBar" class="checkoutBar"></div>
+      <div id="cartAlert" class="cartAlert"></div>
+      <div id="checkoutBadge" class="checkoutBadge"></div>
+
+      <div class="cartLayout">
+        <div class="panel" id="stepProducts">
+          <div class="panelTitle">Productos</div>
+          <div id="cartItems"></div>
+          <div class="note" id="cartEmptyNote" style="display:none">Tu carrito está vacío.</div>
+        </div>
+
+        <div class="panel" id="stepDelivery" style="display:none">
+          <div class="panelTitle">Entrega y pago</div>
+          <div class="two">
+            <div><label class="mut">Departamento</label><select id="dep"></select></div>
+            <div><label class="mut">Municipio</label><select id="mun"></select></div>
+          </div>
+
+          <div class="two" style="margin-top:10px">
+            <div>
+              <label class="mut">Tipo de entrega</label>
+              <select id="deliveryType"></select>
+              <div class="note" id="deliveryNote" style="margin-top:6px"></div>
+            </div>
+            <div>
+              <label class="mut">Forma de pago</label>
+              <select id="payType">
+                <option value="pagar_al_recibir">PAGAR AL RECIBIR</option>
+                <option value="prepago">PREPAGO (depósito)</option>
+              </select>
+              <div class="note" id="payNote" style="margin-top:6px"></div>
+            </div>
+          </div>
+
+          <div id="cashBox" style="display:none;margin-top:10px">
+            <label class="mut">¿Con cuánto pagará? (para calcular cambio)</label>
+            <input id="cashAmount" inputmode="numeric" placeholder="Ej: 500" />
+          </div>
+
+          <div class="hr"></div>
+          <div class="panelTitle">Resumen</div>
+          <div id="summary"></div>
+          <div class="cartMini" id="cartMiniSummary" style="margin-top:10px"></div>
+        </div>
+
+        <div class="panel" id="stepConfirm" style="display:none">
+          <div class="panelTitle">Datos del cliente</div>
+
+          <div class="two">
+            <div><label class="mut">Nombre</label><input id="name" placeholder="Tu nombre" /></div>
+            <div><label class="mut">Teléfono</label><input id="phone" placeholder="Ej: 9xxx-xxxx" /></div>
+          </div>
+
+          <div style="margin-top:10px">
+            <label class="mut">Dirección / Referencia</label>
+            <textarea id="addr" placeholder="Colonia, barrio, referencias..."></textarea>
+          </div>
+
+          <div style="margin-top:10px">
+            <label class="mut">Instrucciones de entrega (opcional)</label>
+            <textarea id="clientNote" placeholder="Ej: llamar antes / dejar en portón..."></textarea>
+          </div>
+
+          <div class="hr"></div>
+
+          <div class="two">
+            <button class="btn ghost" id="copyOrderBtn" type="button">Copiar pedido</button>
+            <button class="btn ghost" id="shareOrderBtn" type="button">Compartir</button>
+          </div>
+
+          <button class="btn acc" id="sendWA" style="width:100%;margin-top:10px" type="button">Enviar pedido por WhatsApp</button>
+
+          <div class="panel" id="orderHistory" style="margin-top:12px"></div>
+        </div>
+      </div>
+
+      <div class="wizardNav">
+        <button class="btn ghost" id="prevStepBtn" type="button">Atrás</button>
+        <button class="btn acc" id="nextStepBtn" type="button">Continuar</button>
+      </div>
+
+      <div class="wizardErr" id="wizardErr"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Mobile bar -->
+<div class="mobileBar" id="mobileBar">
+  <button class="btn" id="bottomCartBtn" type="button">🛒 <span class="miniCount" id="bottomCartCount">0</span></button>
+  <button class="btn ghost viewBtn" id="bottomViewBtn" type="button" aria-label="Modo catálogo">🧾</button>
+  <button class="btn ghost themeBtn" id="bottomThemeBtn" type="button" aria-label="Tema"><span class="tIcon">🌙</span></button>
+  <button class="btn acc" id="bottomSendBtn" type="button">💬</button>
+</div>
+
+<script src="config.js?v=20260122b"></script>
+<script src="utils.js?v=20260122b"></script>
+
+<script src="features.js?v=20260122b"></script>
+<script src="voice_search.js?v=20260122b"></script>
+<script src="favorites.js?v=20260122b"></script>
+<script src="swipe_images.js?v=20260122b"></script>
+<script src="features_boot.js?v=20260122b"></script>
+
+<script src="fallback_image.js?v=20260122b"></script>
+<script src="mobile_cart_badge.js?v=20260122b"></script>
+<script src="smart_defaults.js?v=20260122b"></script>
+
+<script src="theme.js?v=20260122b"></script>
+<script src="motion.js?v=20260122b"></script>
+<script src="ux.js?v=20260122b"></script>
+<script src="header_compact.js?v=20260122b"></script>
+
+<script src="banner.js?v=20260122b"></script>
+<script src="filters.js?v=20260122b"></script>
+<script src="pagination.js?v=20260122b"></script>
+<script src="cart_mini.js?v=20260122b"></script>
+<script src="sort_menu.js?v=20260122b"></script>
+<script src="tabs_unified.js?v=20260122b"></script>
+
+<script src="search_ui.js?v=20260122b"></script>
+<script src="results_counter.js?v=20260122b"></script>
+
+<script src="checkout_steps.js?v=20260122b"></script>
+<script src="customer_profile.js?v=20260122b"></script>
+<script src="product_reco.js?v=20260122b"></script>
+
+<script src="image_zoom.js?v=20260122b"></script>
+<script src="cart_tools.js?v=20260122b"></script>
+<script src="add_to_cart_fx.js?v=20260122b"></script>
+<script src="ui_badges.js?v=20260122b"></script>
+
+<script src="continue_state.js?v=20260122b"></script>
+<script src="stepper_pro.js?v=20260122b"></script>
+<script src="price_stock_watch.js?v=20260122b"></script>
+
+<script src="add_confirm.js?v=20260122b"></script>
+
+<script src="live_refresh.js?v=20260122b"></script>
+<script src="view_mode3.js?v=20260122b"></script>
+<script src="brand_filter.js?v=20260122b"></script>
+<script src="order_history_pro.js?v=20260122b"></script>
+<script src="post_purchase_plus.js?v=20260122b"></script>
+
+<script src="continue_state_plus.js?v=20260122b"></script>
+<script src="checkout_guard.js?v=20260122b"></script>
+
+<script src="mobile_fix.js?v=20260122b"></script>
+<script src="cart_persist.js?v=20260122b"></script>
+<script src="eta.js?v=20260122b"></script>
+
+<script src="product_tabs.js?v=20260122b"></script>
+<script src="modal_swipe.js?v=20260122b"></script>
+
+<script src="product_modal_ui.js?v=20260122b"></script>
+
+<script src="store.js?v=20260122b"></script>
+<script src="media.js?v=20260122b"></script>
+<script src="gallery.js?v=20260122b"></script>
+<script src="share.js?v=20260122b"></script>
+<script src="product_modal.js?v=20260122b"></script>
+<script src="catalog_data.js?v=20260122b"></script>
+<script src="catalog_ui.js?v=20260122b"></script>
+<script src="catalog.js?v=20260122b"></script>
+
+<script src="cart.js?v=20260122b"></script>
+<script src="delivery.js?v=20260122b"></script>
+<script src="wa.js?v=20260122b"></script>
+<script src="app.js?v=20260122b"></script>
 
 </body>
 </html>
