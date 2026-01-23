@@ -1,6 +1,6 @@
-// loader.js?v=20260123c
+// loader.js?v=20260123mega
 (() => {
-  const V = "20260123c";
+  const V = "20260123mega";
 
   const SCRIPTS = [
     "config.js","utils.js",
@@ -29,11 +29,12 @@
 
     "extras_store.js",
     "pro_pack.js",
+    "news_ticker.js",
 
     "catalog_ui.js","catalog.js","cart.js","delivery.js","wa.js",
 
-    /* ✅ ticker arriba de todo */
-    "news_ticker.js",
+    /* ✅ TODO LO PRO */
+    "mega_plus.js",
 
     "app.js",
   ];
