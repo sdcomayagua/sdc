@@ -2,11 +2,10 @@
   const U = window.SDC_UTILS;
 
   function safe(name, fn) {
-    try { fn(); }
+    try { fn && fn(); }
     catch (e) {
-      console.error("[SDC] Error en:", name, e);
-      // no detenemos la tienda por cosas opcionales
-      U?.toast?.("Aviso: se desactivó una función opcional");
+      console.error("[SDC] Módulo opcional falló:", name, e);
+      // ✅ NO mostramos toast (para que no moleste)
     }
   }
 
@@ -57,7 +56,7 @@
     // carrito badge
     safe("cart_badge.init", () => window.SDC_CART_BADGE?.init?.());
 
-    // features on/off (voz, favoritos, swipe, etc.)
+    // features on/off
     safe("features_boot", () => window.SDC_BOOT_FEATURES?.());
 
     // skeleton
@@ -72,14 +71,13 @@
     safe("productModal.bind", () => window.SDC_PRODUCT_MODAL?.bindEvents?.());
     safe("catalog.bind", () => window.SDC_CATALOG?.bindProductModalEvents?.());
 
-    // ✅ CARGA CATALOGO (esto debe correr sí o sí)
+    // ✅ carga catálogo
     const json = await window.SDC_CATALOG.load();
 
     safe("delivery.init", () => window.SDC_DELIVERY?.initSelectors?.());
     safe("cartCountUI", () => window.SDC_STORE?.updateCartCountUI?.());
     safe("results.refresh", () => window.SDC_RESULTS?.refresh?.());
 
-    // mini por defecto si aplica
     safe("smartMini", () => window.SDC_SMART?.applyMiniIfNeeded?.((window.SDC_STORE.getProducts()||[]).length));
     safe("cartBadge.apply", () => window.SDC_CART_BADGE?.apply?.());
 
