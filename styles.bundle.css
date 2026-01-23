@@ -1,4 +1,4 @@
-/* styles.bundle.css?v=20260124p5 */
+/* styles.bundle.css?v=20260124p6 */
 
 @import url("./theme.css");
 @import url("./base.css");
@@ -31,5 +31,8 @@
 /* Paquete 3 */
 @import url("./p3_product.css");
 
-/* ✅ Paquete 5 */
+/* Paquete 5 */
 @import url("./p5_analytics.css");
+
+/* ✅ Paquete 6 */
+@import url("./p6_promo.css");
