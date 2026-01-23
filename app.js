@@ -1,7 +1,32 @@
 (() => {
   const U = window.SDC_UTILS;
-
   function safe(_name, fn){ try { fn && fn(); } catch {} }
+
+  // -----------------------------
+  // Helpers storage para envío
+  // -----------------------------
+  const LS = {
+    dep: "SDC_LAST_DEP",
+    mun: "SDC_LAST_MUN",
+    pay: "SDC_LAST_PAY"
+  };
+
+  function saveShipSelection(){
+    const dep = document.getElementById("dep")?.value || "";
+    const mun = document.getElementById("mun")?.value || "";
+    const pay = document.getElementById("payType")?.value || "";
+    if (dep) localStorage.setItem(LS.dep, dep);
+    if (mun) localStorage.setItem(LS.mun, mun);
+    if (pay) localStorage.setItem(LS.pay, pay);
+  }
+
+  function readShipSelection(){
+    return {
+      dep: localStorage.getItem(LS.dep) || "",
+      mun: localStorage.getItem(LS.mun) || "",
+      pay: localStorage.getItem(LS.pay) || "pagar_al_recibir"
+    };
+  }
 
   // -----------------------------
   // 1) HEADER INTELIGENTE (APP)
@@ -18,13 +43,10 @@
       const down = y > lastY;
       lastY = y;
 
-      // en la parte de arriba siempre normal
       if (y < 80){
         header.classList.remove("compact");
         return;
       }
-
-      // si baja: compacta, si sube: normal
       if (down) header.classList.add("compact");
       else header.classList.remove("compact");
     }
@@ -37,7 +59,7 @@
   }
 
   // -----------------------------
-  // 2) MINI CARRITO ELEGANTE
+  // 2) MINI CARRITO (TOTAL + ENVÍO)
   // -----------------------------
   function ensureMiniCart(){
     if (document.getElementById("miniCart")) return;
@@ -64,7 +86,8 @@
     mini.innerHTML = `
       <div style="display:flex;flex-direction:column;gap:2px">
         <div style="font-weight:1000">🛒 <span id="mcCount">0</span> producto(s)</div>
-        <div style="font-size:12px;opacity:.8" id="mcTotal">Total: --</div>
+        <div style="font-size:12px;opacity:.85" id="mcTotal">Total: --</div>
+        <div style="font-size:11px;opacity:.75" id="mcHint"></div>
       </div>
       <button id="mcBtn" style="
         height:44px;
@@ -81,7 +104,6 @@
     document.body.appendChild(mini);
 
     document.getElementById("mcBtn").onclick = () => {
-      // abrir carrito (según tu cart.js)
       window.SDC_CART?.openCart?.();
     };
   }
@@ -89,7 +111,7 @@
   function computeMiniCartTotals(){
     const CFG = window.SDC_CONFIG;
     const store = window.SDC_STORE;
-    if (!CFG || !store) return { count:0, totalNow:0 };
+    if (!CFG || !store) return { count:0, subtotal:0, totalNow:0, hint:"" };
 
     const cart = store.getCart?.() || new Map();
     let count = 0;
@@ -100,21 +122,52 @@
       subtotal += Number(it.p?.precio||0) * Number(it.qty||0);
     }
 
-    // Total “ahora” (respeta tu lógica de prepago)
-    const dep = document.getElementById("dep")?.value || "";
-    const mun = document.getElementById("mun")?.value || "";
-    const pay = document.getElementById("payType")?.value || "pagar_al_recibir";
+    // Intentar leer selección de envío desde el carrito (si está abierto) o desde localStorage
+    let dep = document.getElementById("dep")?.value || "";
+    let mun = document.getElementById("mun")?.value || "";
+    let pay = document.getElementById("payType")?.value || "";
+
+    if (!dep || !mun || !pay){
+      const saved = readShipSelection();
+      dep = dep || saved.dep;
+      mun = mun || saved.mun;
+      pay = pay || saved.pay;
+    }
 
     let localAllowed = false;
     try { localAllowed = !!store.isLocalAllowed?.(dep, mun); } catch {}
 
     let ship = 0;
-    if (!localAllowed){
-      ship = (pay === "prepago") ? Number(CFG.NATIONAL_PREPAGO||0) : Number(CFG.NATIONAL_CONTRA_ENTREGA||0);
+    if (dep && mun){
+      if (!localAllowed){
+        ship = (pay === "prepago") ? Number(CFG.NATIONAL_PREPAGO||0) : Number(CFG.NATIONAL_CONTRA_ENTREGA||0);
+      }
     }
 
-    const totalNow = (!localAllowed && pay === "prepago") ? (subtotal + ship) : subtotal;
-    return { count, totalNow };
+    // Total “ahora”
+    // - Si NO hay selección de municipio aún => totalNow = subtotal (sin inventar)
+    // - Si local => subtotal
+    // - Si nacional prepago => subtotal + ship
+    // - Si nacional contra entrega => subtotal (envío se paga a empresa)
+    let totalNow = subtotal;
+    let hint = "";
+
+    if (dep && mun){
+      if (localAllowed){
+        totalNow = subtotal;
+        hint = "Entrega local: pagar al recibir";
+      } else if (pay === "prepago"){
+        totalNow = subtotal + ship;
+        hint = `Incluye envío prepago: ${window.SDC_UTILS?.money?.(ship, CFG.CURRENCY) || ""}`;
+      } else {
+        totalNow = subtotal;
+        hint = `Envío contra entrega se paga a empresa: ${window.SDC_UTILS?.money?.(ship, CFG.CURRENCY) || ""}`;
+      }
+    } else {
+      hint = "Elige tu municipio en el carrito para ver envío";
+    }
+
+    return { count, subtotal, totalNow, hint };
   }
 
   function updateMiniCart(){
@@ -123,8 +176,9 @@
     const mini = document.getElementById("miniCart");
     const countEl = document.getElementById("mcCount");
     const totalEl = document.getElementById("mcTotal");
+    const hintEl  = document.getElementById("mcHint");
 
-    if (!mini || !countEl || !totalEl) return;
+    if (!mini || !countEl || !totalEl || !hintEl) return;
 
     const t = computeMiniCartTotals();
     if (t.count <= 0){
@@ -134,6 +188,7 @@
 
     countEl.textContent = String(t.count);
     totalEl.textContent = "Total: " + (window.SDC_UTILS?.money?.(t.totalNow, window.SDC_CONFIG?.CURRENCY) || "");
+    hintEl.textContent  = t.hint || "";
     mini.style.display = "flex";
   }
 
@@ -145,125 +200,35 @@
       obs.observe(cc, { childList:true, subtree:true });
     }
 
-    // cuando cambie forma de pago/ubicación en carrito, recalcula
+    // cuando cambie forma de pago/ubicación en carrito, guarda y recalcula
     ["dep","mun","payType","deliveryType"].forEach(id=>{
-      document.getElementById(id)?.addEventListener("change", updateMiniCart);
-      document.getElementById(id)?.addEventListener("input", updateMiniCart);
+      document.addEventListener("change", (e) => {
+        if (e.target && e.target.id === id){
+          saveShipSelection();
+          updateMiniCart();
+        }
+      }, true);
+      document.addEventListener("input", (e) => {
+        if (e.target && e.target.id === id){
+          saveShipSelection();
+          updateMiniCart();
+        }
+      }, true);
     });
 
     // primera vez
-    setTimeout(updateMiniCart, 800);
+    setTimeout(updateMiniCart, 900);
   }
 
   // -----------------------------
-  // 3) BADGES NUEVO / OFERTA + AHORRAS
+  // 3) BADGES (si ya los tienes por otros módulos, esto no estorba)
   // -----------------------------
-  function ensureBadgeStylesIfMissing(){
-    // si ya tienes promo_ui.css, esto no estorba.
-    // aquí solo garantizamos que exista ribbonRow / ribbon / saveLine.
-    // (si ya están, no hacemos nada)
-  }
-
-  function computeNewThreshold(){
-    const list = window.SDC_STORE?.getProducts?.() || [];
-    const ords = list.map(p => Number(p.orden||0)).filter(n => Number.isFinite(n) && n>0).sort((a,b)=>a-b);
-    if (!ords.length) return 0;
-    return ords[Math.floor(ords.length * 0.85)] || 0; // top 15%
-  }
-
-  function decorateCard(card, newMinOrden){
-    const pid = card.getAttribute("data-pid");
-    const products = window.SDC_STORE?.getProducts?.() || [];
-    const p = products.find(x => String(x.id||x.nombre||"") === String(pid||""));
-    if (!p) return;
-
-    const cur = Number(p.precio||0);
-    const prev = Number(p.precio_anterior||0);
-    const isOffer = prev > 0 && prev > cur;
-    const saveAmt = isOffer ? (prev - cur) : 0;
-    const savePct = isOffer ? Math.round((saveAmt / prev) * 100) : 0;
-
-    const isNew = Number(p.orden||0) >= newMinOrden && Number(p.orden||0) > 0;
-
-    // --- ribbons ---
-    const wrap = card.querySelector(".imgWrap");
-    if (wrap){
-      let rr = wrap.querySelector(".ribbonRow");
-      if (!rr){
-        rr = document.createElement("div");
-        rr.className = "ribbonRow";
-        wrap.appendChild(rr);
-      }
-      rr.innerHTML = "";
-
-      if (isNew){
-        const r = document.createElement("div");
-        r.className = "ribbon new";
-        r.textContent = "NUEVO";
-        rr.appendChild(r);
-      }
-
-      if (isOffer && savePct > 0){
-        const r = document.createElement("div");
-        r.className = "ribbon offer";
-        r.textContent = `OFERTA -${savePct}%`;
-        rr.appendChild(r);
-      }
-
-      if (!rr.childElementCount) rr.remove();
-    }
-
-    // --- tachado + ahorro ---
-    card.querySelectorAll(".saveLine").forEach(x => x.remove());
-
-    const priceEl = card.querySelector(".price");
-    if (priceEl){
-      // quitar strike viejo si ya no hay oferta
-      const oldStrike = priceEl.querySelector(".strike");
-      if (!isOffer && oldStrike) oldStrike.remove();
-
-      if (isOffer && !priceEl.querySelector(".strike")){
-        const s = document.createElement("span");
-        s.className = "strike";
-        s.textContent = window.SDC_UTILS?.money?.(prev, window.SDC_CONFIG?.CURRENCY) || "";
-        priceEl.appendChild(s);
-      }
-    }
-
-    if (isOffer && saveAmt > 0){
-      const save = document.createElement("div");
-      save.className = "saveLine";
-      save.innerHTML = `Ahorras <b>${window.SDC_UTILS?.money?.(saveAmt, window.SDC_CONFIG?.CURRENCY) || ""}</b>`;
-      card.querySelector(".p")?.appendChild(save);
-    }
-  }
-
-  function decorateAllCards(){
-    const grid = document.getElementById("grid");
-    if (!grid) return;
-
-    const thr = computeNewThreshold();
-    grid.querySelectorAll(".card").forEach(c => decorateCard(c, thr));
-  }
-
   function hookBadges(){
-    const grid = document.getElementById("grid");
-    if (!grid) return;
-
-    ensureBadgeStylesIfMissing();
-    decorateAllCards();
-
-    if (!window.__SDC_BADGE_OBS__){
-      window.__SDC_BADGE_OBS__ = true;
-      const obs = new MutationObserver(() => {
-        decorateAllCards();
-      });
-      obs.observe(grid, { childList:true, subtree:true });
-    }
+    // Si ya lo manejas con badges_logic + catalog_ui, no hacemos nada extra.
   }
 
   // -----------------------------
-  // INIT GENERAL
+  // Init base
   // -----------------------------
   function ensureBasics(){
     const headerWrap = document.querySelector("header .wrap");
@@ -284,7 +249,6 @@
   async function init(){
     ensureBasics();
 
-    // Mantén tu inicialización actual
     safe("store_extras.early", () => window.SDC_STORE_EXTRAS?.init?.());
 
     safe("theme.init", () => window.SDC_THEME?.init?.("dark"));
@@ -331,30 +295,30 @@
     safe("product.bind", () => window.SDC_PRODUCT_MODAL?.bindEvents?.());
     safe("catalog.bind", () => window.SDC_CATALOG?.bindProductModalEvents?.());
 
+    safe("p5_perf", () => window.SDC_PERF?.init?.());
+
     await window.SDC_CATALOG.load();
 
     safe("delivery", () => window.SDC_DELIVERY?.initSelectors?.());
     safe("count", () => window.SDC_STORE?.updateCartCountUI?.());
     safe("results.refresh", () => window.SDC_RESULTS?.refresh?.());
 
-    // Inicializa tus paquetes ya instalados
+    // paquetes ya instalados (si existen)
     safe("p1_sales", () => window.SDC_P1?.init?.());
     safe("p2_ux", () => window.SDC_P2?.init?.());
     safe("p3_product", () => window.SDC_P3?.init?.());
-    safe("p5_perf", () => window.SDC_PERF?.init?.());
     safe("p5_analytics", () => window.SDC_ANALYTICS?.init?.());
     safe("p6_promo", () => window.SDC_P6_PROMO?.init?.());
     safe("p7_checkout", () => window.SDC_P7?.init?.());
     safe("p7_cart_offer", () => window.SDC_P7_CART_OFFER?.init?.());
 
-    // ✅ (1) Header inteligente
+    // ✅ NUEVO: 1,2
     initSmartHeader();
-
-    // ✅ (2) Mini carrito
     hookMiniCart();
-
-    // ✅ (3) Badges + ahorros
     hookBadges();
+
+    // refresco final
+    setTimeout(updateMiniCart, 600);
   }
 
   init().catch(err => {
