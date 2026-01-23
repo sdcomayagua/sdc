@@ -113,7 +113,7 @@
     safe("product.bind", () => window.SDC_PRODUCT_MODAL?.bindEvents?.());
     safe("catalog.bind", () => window.SDC_CATALOG?.bindProductModalEvents?.());
 
-    /* Paquete 5 performance wrapper */
+    /* Paquete 5 perf wrapper */
     safe("p5_perf", () => window.SDC_PERF?.init?.());
 
     await window.SDC_CATALOG.load();
@@ -146,8 +146,11 @@
     /* Paquete 5 */
     safe("p5_analytics", () => window.SDC_ANALYTICS?.init?.());
 
-    /* ✅ Paquete 6 */
+    /* Paquete 6 */
     safe("p6_promo", () => window.SDC_P6_PROMO?.init?.());
+
+    /* ✅ Paquete 7 */
+    safe("p7_checkout", () => window.SDC_P7?.init?.());
   }
 
   init().catch(err => {
