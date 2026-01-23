@@ -1,6 +1,6 @@
-// loader.js?v=20260123mega
+// loader.js?v=20260123final
 (() => {
-  const V = "20260123mega";
+  const V = "20260123final";
 
   const SCRIPTS = [
     "config.js","utils.js",
@@ -8,7 +8,8 @@
 
     "theme.js","motion.js","ux.js","header_compact.js",
 
-    "store.js","catalog_data.js","filters.js","pagination.js","sort_menu.js","tabs_unified.js",
+    "store.js","catalog_data.js",
+    "filters.js","pagination.js","sort_menu.js","tabs_unified.js",
     "search_ui.js","results_counter.js",
 
     "checkout_steps.js","checkout_guard.js","customer_profile.js",
@@ -26,15 +27,15 @@
     "features.js","voice_search.js","favorites.js","favorites_section.js","badges_logic.js","features_boot.js",
 
     "store_extras.js","shop_polish.js",
-
     "extras_store.js",
-    "pro_pack.js",
     "news_ticker.js",
 
     "catalog_ui.js","catalog.js","cart.js","delivery.js","wa.js",
 
-    /* ✅ TODO LO PRO */
-    "mega_plus.js",
+    /* ✅ Nuevos módulos pro */
+    "shipping_quote.js",
+    "top_offers.js",
+    "wa_enhanced.js",
 
     "app.js",
   ];
