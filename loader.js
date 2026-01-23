@@ -1,6 +1,6 @@
-// loader.js?v=20260124_fase4
+// loader.js?v=20260124ABCD
 (() => {
-  const V = "20260124_fase4";
+  const V = "20260124ABCD";
 
   const SCRIPTS = [
     "config.js","utils.js",
@@ -53,9 +53,12 @@
     "p1_app_mobile.js",
     "fase2_badges.js",
     "fase3_ui.js",
-
-    /* ✅ FASE 4 */
     "fase4_checkout.js",
+
+    /* ✅ A,B,C,D extras */
+    "a_close_sale.js",
+    "c_health_check.js",
+    "d_delivery_bus_presets.js",
 
     "app.js",
   ];
