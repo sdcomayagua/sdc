@@ -1,4 +1,4 @@
-/* styles.bundle.css?v=20260124_fase4 */
+/* styles.bundle.css?v=20260124ABCD */
 
 @import url("./theme.css");
 @import url("./base.css");
@@ -26,6 +26,7 @@
 
 @import url("./p2_ux.css");
 @import url("./p3_product.css");
+
 @import url("./p5_analytics.css");
 @import url("./p6_promo.css");
 
@@ -35,6 +36,4 @@
 @import url("./p1_app_mobile.css");
 @import url("./fase2_badges.css");
 @import url("./fase3_ui.css");
-
-/* ✅ FASE 4 */
 @import url("./fase4_checkout.css");
