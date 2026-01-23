@@ -1,0 +1,93 @@
+/* cart_modal.css */
+
+/* item del carrito (bonito y compacto) */
+.cartItem{
+  display:flex;
+  gap:12px;
+  align-items:center;
+  border:1px solid var(--line);
+  border-radius:16px;
+  padding:12px;
+  margin-bottom:12px;
+  background:color-mix(in oklab, var(--card) 86%, transparent);
+}
+
+.cartItem img{
+  width:72px;
+  height:72px;
+  border-radius:14px;
+  object-fit:cover;
+  border:1px solid var(--line);
+  background:color-mix(in oklab, var(--card2) 70%, #0a0f17);
+  flex:0 0 72px;
+  cursor:pointer;
+}
+
+.cartTitle{
+  font-weight:1000;
+  font-size:14px;
+  line-height:1.15;
+  cursor:pointer;
+}
+
+.cartMeta{
+  margin-top:6px;
+  font-size:12px;
+  color:var(--mut);
+}
+.cartMeta b{color:var(--txt)}
+
+/* Controles de cantidad (pill pro) */
+.cartQty{
+  margin-left:auto;
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+
+.qtyPill{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  border:1px solid var(--line);
+  background:color-mix(in oklab, var(--card) 92%, transparent);
+  border-radius:14px;
+  padding:6px;
+}
+
+.qtyBtn{
+  width:40px;
+  height:40px;
+  border-radius:12px;
+  border:1px solid var(--line);
+  background:var(--card2);
+  color:var(--txt);
+  font-weight:1000;
+  font-size:18px;
+  cursor:pointer;
+}
+
+.qtyNum{
+  min-width:28px;
+  text-align:center;
+  font-weight:1000;
+  font-size:15px;
+}
+
+.delBtn{
+  width:40px;
+  height:40px;
+  border-radius:12px;
+  border:1px solid var(--line);
+  background:rgba(255,107,107,.12);
+  color:color-mix(in oklab, var(--danger) 70%, var(--txt));
+  cursor:pointer;
+  font-size:16px;
+}
+
+/* móvil: más compacto */
+@media (max-width:720px){
+  .cartItem{padding:10px}
+  .cartItem img{width:64px;height:64px;flex:0 0 64px}
+  .qtyBtn,.delBtn{width:38px;height:38px}
+}
