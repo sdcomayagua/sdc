@@ -1,4 +1,4 @@
-/* styles.bundle.css?v=20260123mega */
+/* styles.bundle.css?v=20260123final */
 
 @import url("./theme.css");
 @import url("./base.css");
@@ -18,8 +18,8 @@
 
 @import url("./extras_store.css");
 @import url("./news_ticker.css");
-@import url("./pro_pack.css");
 @import url("./sticky_shop.css");
 
-/* ✅ TODO LO PRO (12/12) */
-@import url("./mega_plus.css");
+/* ✅ Nuevos estilos (cotizador + top ofertas + wa pro) */
+@import url("./shipping_quote.css");
+@import url("./top_offers.css");
