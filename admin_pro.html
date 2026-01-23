@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Admin • Soluciones Digitales Comayagua</title>
+  <link rel="stylesheet" href="admin_pro.css?v=20260124p4"/>
+</head>
+<body>
+
+<header class="aHeader">
+  <div class="aWrap">
+    <div class="aTitle">Admin PRO</div>
+    <div class="aActions">
+      <input id="pinInput" type="password" placeholder="PIN" />
+      <button class="btn acc" id="loginBtn">Entrar</button>
+      <button class="btn ghost" id="logoutBtn" style="display:none">Salir</button>
+    </div>
+  </div>
+</header>
+
+<main class="aWrap" id="adminApp" style="display:none">
+  <section class="panel">
+    <div class="panelTitle">Productos</div>
+
+    <div class="aTools">
+      <input id="searchAdmin" placeholder="Buscar producto..." />
+      <button class="btn ghost" id="reloadBtn">Recargar</button>
+    </div>
+
+    <div class="tableWrap">
+      <table class="aTable">
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Precio</th>
+            <th>Stock</th>
+            <th>Disponible</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="panel">
+    <div class="panelTitle">Editar producto</div>
+
+    <div class="formGrid">
+      <input id="f_id" type="hidden"/>
+      <div>
+        <label>Nombre</label>
+        <input id="f_nombre"/>
+      </div>
+      <div>
+        <label>Precio</label>
+        <input id="f_precio" type="number"/>
+      </div>
+      <div>
+        <label>Stock</label>
+        <input id="f_stock" type="number"/>
+      </div>
+      <div>
+        <label>Disponible</label>
+        <select id="f_disp">
+          <option value="1">Sí</option>
+          <option value="0">No</option>
+        </select>
+      </div>
+
+      <div class="full">
+        <label>Descripción</label>
+        <textarea id="f_desc"></textarea>
+      </div>
+
+      <div class="full aRow">
+        <button class="btn acc" id="saveBtn">Guardar</button>
+        <button class="btn ghost" id="dupBtn">Duplicar</button>
+        <button class="btn danger" id="clearBtn">Limpiar</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel">
+    <div class="panelTitle">Subir imagen</div>
+    <input type="file" id="imgFile" accept="image/*"/>
+    <button class="btn ghost" id="uploadImgBtn">Subir a Drive</button>
+    <input id="imgUrl" readonly placeholder="URL resultante"/>
+  </section>
+</main>
+
+<script src="admin_pro.js?v=20260124p4"></script>
+</body>
+</html>
