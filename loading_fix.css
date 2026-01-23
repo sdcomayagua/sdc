@@ -1,90 +1,58 @@
-/* loading_fix.css — PRO Skeleton (igual a la tienda) */
+/* loading_fix.css — FIX: overlay arriba del grid + header limpio en carga */
+
+/* Mientras carga: ocultar UI real que se ve rara */
+body.is-loading #topOffersSection,
+body.is-loading #featuredSection,
+body.is-loading #offersSection,
+body.is-loading #statsSection,
+body.is-loading #grid,
+body.is-loading #loadMoreWrap,
+body.is-loading #catTabs,
+body.is-loading #subTabs,
+body.is-loading #quickFilters,
+body.is-loading #brandFilter{
+  display:none !important;
+}
+
+/* Oculta el botón verde del carrito (si tu store_extras lo muestra) */
+body.is-loading #cartBtn{
+  visibility:hidden !important;
+}
 
 /* Estado de carga */
 body.is-loading main.wrap{
   min-height: 70vh;
 }
 
-/* Oculta el contenido real mientras carga (evita saltos feos) */
-body.is-loading #topOffersSection,
-body.is-loading #featuredSection,
-body.is-loading #offersSection,
-body.is-loading #statsSection,
-body.is-loading #grid,
-body.is-loading #loadMoreWrap{
-  display:none !important;
-}
-
-/* Mantén header visible pero "tranquilo" */
-body.is-loading #catTabs,
-body.is-loading #subTabs,
-body.is-loading #quickFilters,
-body.is-loading #brandFilter{
-  opacity:.35;
-  pointer-events:none;
-}
-
-/* Shell */
+/* ===== Skeleton como contenido principal ===== */
 .loadingShell{
   display:none;
-  margin-top:12px;
+  margin-top:14px;
 }
 body.is-loading .loadingShell{
   display:block;
 }
 
-/* ===== Skeleton de “Top Ofertas” ===== */
-.ldSection{
-  margin-top:14px;
-}
-.ldTitleRow{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:10px;
-  margin-bottom:10px;
-}
-.ldTitle{
-  height:14px;
-  width:140px;
-  border-radius:999px;
-  background: color-mix(in oklab, var(--mut) 12%, transparent);
-}
-.ldSub{
-  height:12px;
-  width:140px;
-  border-radius:999px;
-  background: color-mix(in oklab, var(--mut) 10%, transparent);
-}
-
-/* Row horizontal tipo hScroll */
-.ldHRow{
+/* Bloque skeleton de categorías */
+.ldRow{
   display:flex;
   gap:10px;
   overflow:hidden;
-  padding:4px 2px;
+  padding:8px 2px;
 }
-.ldHCard{
-  min-width:160px;
-  max-width:160px;
-  border-radius:18px;
+.ldPill{
+  height:42px;
+  width:120px;
+  border-radius:999px;
   border:1px solid var(--line);
-  background: color-mix(in oklab, var(--card) 92%, transparent);
-  overflow:hidden;
+  background: color-mix(in oklab, var(--card) 88%, transparent);
   position:relative;
+  overflow:hidden;
 }
-.ldHImg{
-  width:100%;
-  height:150px;
-  background: color-mix(in oklab, var(--mut) 10%, transparent);
-}
-.ldHP{
-  padding:10px;
-}
-.ldHL1{height:10px;width:90%;border-radius:999px;background: color-mix(in oklab, var(--mut) 11%, transparent);}
-.ldHL2{height:10px;width:60%;margin-top:8px;border-radius:999px;background: color-mix(in oklab, var(--mut) 10%, transparent);}
+.ldPill.sm{width:90px;}
+.ldPill.lg{width:170px;}
 
-/* ===== Skeleton del grid real (2 columnas en móvil, 4 en PC) ===== */
+/* Skeleton del grid real */
 .ldGrid{
   display:grid;
   grid-template-columns:repeat(2,1fr);
@@ -102,15 +70,6 @@ body.is-loading .loadingShell{
   overflow:hidden;
   position:relative;
 }
-
-/* Imagen cuadrada */
-.ldImg{
-  width:100%;
-  aspect-ratio:1/1;
-  background: color-mix(in oklab, var(--mut) 10%, transparent);
-}
-
-/* Ribbons tipo NUEVO/OFERTA (placeholder) */
 .ldRibbonRow{
   position:absolute;
   top:10px;
@@ -129,7 +88,11 @@ body.is-loading .loadingShell{
   background: color-mix(in oklab, var(--mut) 10%, transparent);
 }
 
-/* Texto/Precio/Botón */
+.ldImg{
+  width:100%;
+  aspect-ratio:1/1;
+  background: color-mix(in oklab, var(--mut) 10%, transparent);
+}
 .ldBody{padding:12px}
 .ldLine{
   height:10px;
@@ -140,8 +103,6 @@ body.is-loading .loadingShell{
 .ldLine.lg{width:92%}
 .ldLine.md{width:74%}
 .ldLine.sm{width:48%}
-
-/* Botón como el tuyo */
 .ldBtn{
   height:52px;
   border-radius:16px;
