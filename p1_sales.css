@@ -1,26 +1,5 @@
 /* p1_sales.css */
 
-/* Barra confianza */
-.trustBar{
-  margin-top:10px;
-  padding:10px 12px;
-  border-radius:18px;
-  border:1px solid var(--line);
-  background:color-mix(in oklab, var(--card) 92%, transparent);
-  box-shadow: var(--shadow);
-  display:flex;
-  gap:10px;
-  flex-wrap:wrap;
-  align-items:center;
-  justify-content:space-between;
-}
-.trustItem{
-  display:flex; gap:8px; align-items:center;
-  font-weight:1000; font-size:12px;
-  color:var(--txt);
-}
-.trustItem span{color:var(--mut); font-weight:700}
-
 /* Urgencia stock */
 .urgent{ border-color: rgba(255,204,102,.55) !important; }
 .urgentTag{
@@ -36,6 +15,38 @@
   z-index:2;
 }
 
-/* Compactar trustBar */
-.trustBar{padding:8px 10px; gap:8px;}
-.trustItem{font-size:11.5px;}
+/* Footer de confianza */
+.trustFooter{
+  margin-top:16px;
+  padding:14px;
+  border-radius:18px;
+  border:1px solid var(--line);
+  background:color-mix(in oklab, var(--card) 92%, transparent);
+  box-shadow: var(--shadow);
+}
+.trustFooterTitle{
+  font-weight:1000;
+  margin-bottom:10px;
+}
+.trustFooterRow{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+}
+.trustFooterItem{
+  display:flex;
+  gap:8px;
+  align-items:center;
+  padding:8px 10px;
+  border-radius:999px;
+  border:1px solid color-mix(in oklab, var(--line) 60%, transparent);
+  background:color-mix(in oklab, var(--card2) 88%, transparent);
+  font-weight:1000;
+  font-size:12px;
+}
+.trustFooterItem span{color:var(--mut);font-weight:800;}
+.trustFooterNote{
+  margin-top:10px;
+  color:var(--mut);
+  font-size:12px;
+}
