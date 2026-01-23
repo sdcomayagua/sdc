@@ -49,7 +49,6 @@ window.SDC_PRODUCT_MODAL = (() => {
     wrap = document.createElement("div");
     wrap.id = "pmImageWrap";
     wrap.className = "pmImageWrap";
-
     img.parentElement.insertBefore(wrap, img);
     wrap.appendChild(img);
     return wrap;
@@ -74,16 +73,45 @@ window.SDC_PRODUCT_MODAL = (() => {
     return wrap;
   }
 
+  function ensureDescMoreUI() {
+    const desc = document.getElementById("pmDesc");
+    if (!desc) return;
+
+    if (!document.getElementById("pmMoreBtn")) {
+      const row = document.createElement("div");
+      row.className = "pmMoreRow";
+      row.innerHTML = `<button class="btn ghost pmMoreBtn" id="pmMoreBtn" type="button">Ver más</button>`;
+      desc.parentElement.appendChild(row);
+
+      document.getElementById("pmMoreBtn").onclick = () => {
+        desc.classList.toggle("pmDescClamp");
+        document.getElementById("pmMoreBtn").textContent = desc.classList.contains("pmDescClamp") ? "Ver más" : "Ver menos";
+      };
+    }
+
+    // por defecto clamp si es largo
+    const text = (desc.textContent || "").trim();
+    if (text.length > 240) {
+      desc.classList.add("pmDescClamp");
+      document.getElementById("pmMoreBtn").textContent = "Ver más";
+    } else {
+      desc.classList.remove("pmDescClamp");
+      document.getElementById("pmMoreBtn").textContent = "Ver menos";
+      // si es corto, ocultamos botón
+      document.getElementById("pmMoreBtn").style.display = "none";
+    }
+  }
+
   function setMainImage(src) {
-    const main = U.$("pmMainImg");
+    const main = document.getElementById("pmMainImg");
     if (!main) return;
     main.src = src || FALLBACK;
     main.onerror = () => { main.src = FALLBACK; };
   }
 
   function renderImages() {
-    const main = U.$("pmMainImg");
-    const thumbs = U.$("pmThumbs");
+    const main = document.getElementById("pmMainImg");
+    const thumbs = document.getElementById("pmThumbs");
     if (!thumbs) return;
 
     thumbs.innerHTML = "";
@@ -106,10 +134,16 @@ window.SDC_PRODUCT_MODAL = (() => {
       t.onclick = () => { pmMainIndex = idx; renderImages(); };
       thumbs.appendChild(t);
     });
+
+    // Hook global para swipe_images.js (siguiente/prev)
+    window.SDC_GALLERY_NAV = {
+      next: () => { pmMainIndex = (pmMainIndex + 1) % Math.max(1, list.length); renderImages(); },
+      prev: () => { pmMainIndex = (pmMainIndex - 1 + Math.max(1, list.length)) % Math.max(1, list.length); renderImages(); }
+    };
   }
 
   function updateQtyUI() {
-    const num = U.$("pmQtyNum");
+    const num = document.getElementById("pmQtyNum");
     if (num) num.textContent = String(pmQty);
 
     const calc = ensureCalcUI();
@@ -159,85 +193,88 @@ window.SDC_PRODUCT_MODAL = (() => {
 
     document.title = `${p.nombre} | SDC`;
 
-    // reset tabs al abrir
     window.SDC_PRODUCT_TABS?.setActive?.("desc");
 
-    U.$("pmTitle").textContent = p.nombre || "Producto";
-    U.$("pmName").textContent = p.nombre || "";
-    U.$("pmCat").textContent = `${p.categoria || ""}${p.subcategoria ? (" • " + p.subcategoria) : ""}`;
-    U.$("pmPrice").textContent = U.money(p.precio, CFG.CURRENCY);
+    document.getElementById("pmTitle").textContent = p.nombre || "Producto";
+    document.getElementById("pmName").textContent = p.nombre || "";
+    document.getElementById("pmCat").textContent = `${p.categoria || ""}${p.subcategoria ? (" • " + p.subcategoria) : ""}`;
+    document.getElementById("pmPrice").textContent = U.money(p.precio, CFG.CURRENCY);
 
     const stock = Number(p.stock || 0);
     const inStock = stock > 0;
     const low = inStock && stock <= 3;
 
-    U.$("pmStockOk").style.display = inStock && !low ? "inline-block" : "none";
-    U.$("pmStockLow").style.display = low ? "inline-block" : "none";
-    U.$("pmStockOut").style.display = inStock ? "none" : "inline-block";
-    if (inStock && !low) U.$("pmStockOk").textContent = `Stock: ${stock}`;
-    if (low) U.$("pmStockLow").textContent = `POCO STOCK (${stock})`;
+    const okBadge = document.getElementById("pmStockOk");
+    const lowBadge = document.getElementById("pmStockLow");
+    const outBadge = document.getElementById("pmStockOut");
 
-    U.$("pmDesc").textContent = String(p.descripcion || "").trim() || "Sin descripción por ahora.";
+    okBadge.style.display = inStock && !low ? "inline-block" : "none";
+    lowBadge.style.display = low ? "inline-block" : "none";
+    outBadge.style.display = inStock ? "none" : "inline-block";
+
+    if (inStock && !low) okBadge.textContent = `Stock: ${stock}`;
+    if (low) lowBadge.textContent = `POCO STOCK (${stock})`;
+
+    document.getElementById("pmDesc").textContent = String(p.descripcion || "").trim() || "Sin descripción por ahora.";
 
     UI.setChips(p);
     UI.setSpecs(p);
     UI.setActions({ p, video: MEDIA.bestVideo(p) });
 
-    const imgWrap = ensureImageWrap();
-    if (imgWrap) imgWrap.classList.toggle("out", !inStock);
-
+    ensureImageWrap();
     renderImages();
     updateQtyUI();
     ensureBuySticky();
+    ensureDescMoreUI();
 
-    const addBtn = U.$("pmAddBtn");
-    const buyBtn = U.$("pmBuyNowBtn");
+    // favoritos (si está activo)
+    window.SDC_FAV?.syncModalFav?.(p);
+
+    const addBtn = document.getElementById("pmAddBtn");
+    const buyBtn = document.getElementById("pmBuyNowBtn");
     const outNote = ensureOutNote();
 
     if (!inStock) {
-      if (addBtn) {
-        addBtn.classList.remove("acc");
-        addBtn.classList.add("dangerBtn");
-        addBtn.textContent = "Consultar disponibilidad";
-        addBtn.onclick = () => consultWA();
-      }
-      if (buyBtn) {
-        buyBtn.textContent = "Comprar ahora";
-        buyBtn.onclick = () => consultWA();
-      }
+      addBtn.classList.remove("acc");
+      addBtn.classList.add("dangerBtn");
+      addBtn.textContent = "Consultar disponibilidad";
+      addBtn.onclick = () => consultWA();
+
+      buyBtn.textContent = "Comprar ahora";
+      buyBtn.onclick = () => consultWA();
+
       outNote.style.display = "block";
       outNote.textContent = "Este producto aparece agotado. Puedes consultar disponibilidad por WhatsApp.";
-      U.$("pmNote").textContent = "Producto agotado.";
+      document.getElementById("pmNote").textContent = "Producto agotado.";
     } else {
-      if (addBtn) {
-        addBtn.classList.remove("dangerBtn");
-        addBtn.classList.add("acc");
-        addBtn.textContent = "Añadir al carrito";
-        addBtn.onclick = () => {
-          const ok = S.addToCart(currentProduct, pmQty);
-          if (ok) {
-            window.SDC_ADD_CONFIRM?.notify?.("Agregado ✅");
-            window.SDC_CART?.renderCart?.();
-            window.SDC_CART_BADGE?.apply?.();
-            close();
-          }
-        };
-      }
-      if (buyBtn) {
-        buyBtn.textContent = "Comprar ahora";
-        buyBtn.onclick = () => buyNow();
-      }
+      addBtn.classList.remove("dangerBtn");
+      addBtn.classList.add("acc");
+      addBtn.textContent = "Añadir al carrito";
+      addBtn.onclick = () => {
+        const ok = S.addToCart(currentProduct, pmQty);
+        if (ok) {
+          window.SDC_ADD_CONFIRM?.notify?.("Agregado ✅");
+          window.SDC_CART?.renderCart?.();
+          window.SDC_CART_BADGE?.apply?.();
+          close();
+        }
+      };
+
+      buyBtn.textContent = "Comprar ahora";
+      buyBtn.onclick = () => buyNow();
+
       outNote.style.display = "none";
       outNote.textContent = "";
-      U.$("pmNote").textContent = "Selecciona cantidad y añade al carrito.";
+      document.getElementById("pmNote").textContent = "Selecciona cantidad y añade al carrito.";
     }
 
     window.SDC_RECO?.render?.(p, S.getProducts());
-    U.$("productModal").classList.add("open");
+
+    document.getElementById("productModal").classList.add("open");
   }
 
   function close() {
-    U.$("productModal").classList.remove("open");
+    document.getElementById("productModal").classList.remove("open");
     currentProduct = null;
     document.title = originalTitle;
 
@@ -247,15 +284,15 @@ window.SDC_PRODUCT_MODAL = (() => {
   }
 
   function bindEvents() {
-    U.$("pmClose").onclick = close;
-    U.$("productModal").onclick = (e) => { if (e.target.id === "productModal") close(); };
+    document.getElementById("pmClose").onclick = close;
+    document.getElementById("productModal").onclick = (e) => { if (e.target.id === "productModal") close(); };
 
-    U.$("pmMinus").onclick = () => {
+    document.getElementById("pmMinus").onclick = () => {
       pmQty = Math.max(1, pmQty - 1);
       updateQtyUI();
     };
 
-    U.$("pmPlus").onclick = () => {
+    document.getElementById("pmPlus").onclick = () => {
       const stock = Number(currentProduct?.stock || 0);
       pmQty = pmQty + 1;
       if (stock > 0) pmQty = Math.min(pmQty, stock);
