@@ -1,0 +1,56 @@
+/* fase3_ui.css — Pulido final (móvil + PC) */
+
+/* Layout general más “tienda” */
+.wrap{max-width:1200px;margin:0 auto;}
+main.wrap{padding-bottom:20px;}
+
+/* Mejor equilibrio de cards */
+.card{
+  border-radius:22px;
+  overflow:hidden;
+  border-color: color-mix(in oklab, var(--line) 70%, transparent);
+  box-shadow: 0 14px 34px rgba(0,0,0,.14);
+}
+html[data-theme="light"] .card{
+  box-shadow: 0 14px 34px rgba(12,20,45,.10);
+}
+
+.img{background:color-mix(in oklab, var(--card2) 60%, #0a0f17);}
+
+/* Texto más legible */
+.name{font-size:13.8px;line-height:1.15;}
+.price{font-size:14px;font-weight:1000;}
+
+/* Mejor separación de secciones */
+.sectionHead{margin:14px 0 10px 0;}
+.sectionTitle{font-size:14px;}
+
+/* Tabs más cómodos en móvil */
+@media (max-width:720px){
+  .tabs{gap:8px;}
+  .tab{padding:10px 14px;border-radius:999px;font-size:13px;}
+  .chip{padding:8px 12px;border-radius:999px;}
+
+  /* Mantener 2 columnas estable */
+  .grid{grid-template-columns:repeat(2,1fr) !important; gap:12px !important;}
+
+  /* Botón más visible */
+  .card .btn{height:52px !important;}
+}
+
+/* Reduce ruido visual: pill status más discreto */
+#statusPill{
+  font-size:12px;
+  opacity:.85;
+}
+
+/* Modal producto más usable */
+.pmMainImg{max-height:34vh !important;}
+@media (min-width:900px){
+  .pmMainImg{max-height:46vh !important;}
+}
+
+/* Footer confianza (si existe) */
+.trustFooter{
+  margin-top:18px;
+}
