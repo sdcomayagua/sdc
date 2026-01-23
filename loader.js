@@ -1,6 +1,6 @@
-// loader.js?v=20260124p6
+// loader.js?v=20260124p7
 (() => {
-  const V = "20260124p6";
+  const V = "20260124p7";
 
   const SCRIPTS = [
     "config.js","utils.js",
@@ -48,8 +48,11 @@
     "p5_perf.js",
     "p5_analytics.js",
 
-    /* ✅ Paquete 6 */
+    /* Paquete 6 */
     "p6_promo.js",
+
+    /* ✅ Paquete 7 */
+    "p7_checkout.js",
 
     "app.js",
   ];
