@@ -1,39 +1,6 @@
 (() => {
   const U = window.SDC_UTILS;
-
   function safe(_name, fn){ try { fn && fn(); } catch {} }
-
-  // ✅ Fix tema robusto (si theme.js falla, esto igual funciona)
-  function themeFix(){
-    const html = document.documentElement;
-
-    function setTheme(t){
-      html.setAttribute("data-theme", t);
-      try{ localStorage.setItem("SDC_THEME", t); }catch{}
-    }
-    function getTheme(){
-      const t = html.getAttribute("data-theme");
-      if (t) return t;
-      try{ return localStorage.getItem("SDC_THEME") || "light"; }catch{ return "light"; }
-    }
-
-    // inicial
-    setTheme(getTheme());
-
-    const btn = document.getElementById("themeBtn") || document.getElementById("bottomThemeBtn");
-    if (!btn) return;
-
-    if (btn.dataset.bound) return;
-    btn.dataset.bound = "1";
-
-    btn.addEventListener("click", () => {
-      // intenta theme.js
-      try{ window.SDC_THEME?.toggle?.(); }catch{}
-      // fallback seguro
-      const cur = getTheme();
-      setTheme(cur === "dark" ? "light" : "dark");
-    });
-  }
 
   function ensureBasics(){
     const headerWrap = document.querySelector("header .wrap");
@@ -54,28 +21,38 @@
   async function init(){
     ensureBasics();
 
-    // ✅ activa loader visual inmediatamente
+    // ✅ Loader visual
+    safe("loading.ensure", () => window.SDC_LOADING?.ensureShell?.());
     safe("loading.start", () => window.SDC_LOADING?.start?.());
 
-    // ✅ tema robusto (arregla “modo noche no sirve”)
-    themeFix();
+    // ✅ Header/menú (si existe)
+    safe("store_extras.early", () => window.SDC_STORE_EXTRAS?.init?.());
 
-    // ✅ bind esenciales
+    // ✅ Tema base (y polish_fix lo refuerza)
+    safe("theme.init", () => window.SDC_THEME?.init?.("dark"));
+
+    // ✅ Eventos base
     safe("cart.bind", () => window.SDC_CART?.bindEvents?.());
     safe("wa.bind", () => window.SDC_WA?.bind?.());
     safe("delivery.base", () => window.SDC_DELIVERY?.initSelectors?.());
 
-    // ✅ Carga catálogo lo más pronto posible
+    // ✅ Perf cache si existe
+    safe("p5_perf", () => window.SDC_PERF?.init?.());
+
+    // ✅ Cargar catálogo lo antes posible
     await window.SDC_CATALOG.load();
 
-    // ✅ apaga loader cuando ya hay productos
+    // ✅ Apagar loader
     safe("loading.stop", () => window.SDC_LOADING?.stop?.());
 
-    // ✅ actualiza contador carrito
+    // ✅ Contador carrito
     safe("count", () => window.SDC_STORE?.updateCartCountUI?.());
 
-    // ✅ ahora sí carga extras según internet (no frena a los lentos)
+    // ✅ Extras diferidos (si existe defer_extras.js)
     safe("defer_extras", () => window.SDC_DEFER_EXTRAS?.init?.());
+
+    // ✅ Pulido final: tema robusto, header compact, quitar buscador duplicado, carrito estable
+    safe("polish_fix", () => window.SDC_POLISH?.init?.());
   }
 
   init().catch(err => {
