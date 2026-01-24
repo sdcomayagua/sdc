@@ -1,16 +1,17 @@
-// polish_fix.js — Arreglo definitivo:
-// 1) Repara botón carrito (no reescribir innerHTML)
-// 2) Mueve Trust + Cotiza al final real
-// 3) Modo noche: fallback 100% funcional
+// polish_fix.js (COMPLETO) — Fix final del header:
+// ✅ Modo noche no se pega
+// ✅ Elimina buscador duplicado
+// ✅ Carrito NO se deforma
+// ✅ Compacta header al scrollear (como app)
 
 window.SDC_POLISH = (() => {
   const isMobile = () => window.matchMedia("(max-width:720px)").matches;
 
-  function setTheme(theme){
-    document.documentElement.setAttribute("data-theme", theme);
-    try{ localStorage.setItem("SDC_THEME", theme); }catch{}
+  // ---------- THEME FIX (no se pega) ----------
+  function setTheme(t){
+    document.documentElement.setAttribute("data-theme", t);
+    try{ localStorage.setItem("SDC_THEME", t); }catch{}
   }
-
   function getTheme(){
     const t = document.documentElement.getAttribute("data-theme");
     if (t) return t;
@@ -24,39 +25,74 @@ window.SDC_POLISH = (() => {
     if (btn.dataset.bound) return;
     btn.dataset.bound = "1";
 
-    // Inicializa desde storage si theme.js no lo hace
+    // init
     setTheme(getTheme());
 
-    btn.addEventListener("click", () => {
-      // usa theme.js si existe, si no fallback
-      if (window.SDC_THEME?.toggle){
-        try{ window.SDC_THEME.toggle(); }catch{}
-      }
-      // fallback robusto (por si toggle no cambia data-theme)
+    btn.addEventListener("click", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+
+      // intenta theme.js si existe
+      try{ window.SDC_THEME?.toggle?.(); }catch{}
+
+      // fallback SIEMPRE (por si toggle no cambia nada)
       const cur = getTheme();
       const next = (cur === "dark") ? "light" : "dark";
       setTheme(next);
 
-      // cambia iconito si existe en el botón
-      const icon = btn.querySelector(".tIcon");
-      if (icon) icon.textContent = (next === "dark") ? "🌙" : "☀️";
-    });
+      // fuerza repaint (evita “se queda pegado”)
+      requestAnimationFrame(() => {
+        document.body.style.transform = "translateZ(0)";
+        setTimeout(() => { document.body.style.transform = ""; }, 30);
+      });
+    }, { passive:false });
   }
 
-  // Reparar carrito: NO tocar innerHTML nunca
+  // ---------- HEADER SMART COMPACT ----------
+  function smartHeader(){
+    const header = document.querySelector("header");
+    if (!header) return;
+
+    let lastY = window.scrollY || 0;
+    let ticking = false;
+
+    function run(){
+      const y = window.scrollY || 0;
+      const down = y > lastY;
+      lastY = y;
+
+      if (!isMobile()){
+        header.classList.remove("compact");
+        return;
+      }
+
+      if (y < 80){
+        header.classList.remove("compact");
+        return;
+      }
+
+      if (down) header.classList.add("compact");
+      else header.classList.remove("compact");
+    }
+
+    window.addEventListener("scroll", () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => { run(); ticking = false; });
+    }, { passive:true });
+
+    run();
+  }
+
+  // ---------- FIX CARRITO (no deformar / no reescribir raro) ----------
   function fixCartBtn(){
     const btn = document.getElementById("cartBtn");
     const countEl = document.getElementById("cartCount");
     if (!btn || !countEl) return;
 
-    // si algún script lo reescribió, lo restauramos a formato estable
-    if (!btn.dataset.stable){
-      btn.dataset.stable = "1";
-      btn.innerHTML = `🛒 <span class="cartMiniText">Carrito</span> (<span id="cartCount">${countEl.textContent||"0"}</span>)`;
-    }
-
-    // en móvil lo queremos tipo “🛒 2”
     const count = Number(countEl.textContent||"0") || 0;
+
+    // móvil: “🛒 2”
     if (isMobile()){
       btn.innerHTML = `🛒 <span id="cartCount">${count}</span>`;
     } else {
@@ -67,46 +103,47 @@ window.SDC_POLISH = (() => {
   function hookCartCount(){
     const countEl = document.getElementById("cartCount");
     if (!countEl) return;
+
     if (window.__SDC_CARTBTN_OBS__) return;
     window.__SDC_CARTBTN_OBS__ = true;
 
     const obs = new MutationObserver(() => fixCartBtn());
     obs.observe(countEl, { childList:true, subtree:true });
+
     fixCartBtn();
-
-    // también al cambiar tamaño pantalla
-    window.addEventListener("resize", () => fixCartBtn(), { passive:true });
+    window.addEventListener("resize", fixCartBtn, { passive:true });
   }
 
-  // Mover trustFooter y shipAcc al final real (abajo del todo)
-  function moveFooterBlocks(){
-    const main = document.querySelector("main.wrap");
-    if (!main) return;
+  // ---------- ELIMINAR BUSCADOR DUPLICADO ----------
+  function removeDuplicateSearch(){
+    // En tu captura aparece “Buscar producto…” dos veces
+    const inputs = Array.from(document.querySelectorAll('input[placeholder="Buscar producto..."]'));
+    if (inputs.length <= 1) return;
 
-    document.body.classList.add("is-moving-footer");
-
-    const trust = document.getElementById("trustFooter");
-    const ship = document.getElementById("shipAcc");
-
-    // si existen, los movemos al final
-    if (trust) main.appendChild(trust);
-    if (ship) main.appendChild(ship);
-
-    document.body.classList.remove("is-moving-footer");
+    // Mantener SOLO el que tiene id="q"
+    inputs.forEach(inp => {
+      if (inp.id !== "q") {
+        const box = inp.closest(".search") || inp.parentElement;
+        if (box) box.style.display = "none";
+        else inp.style.display = "none";
+      }
+    });
   }
 
-  // reintenta después de render
-  function scheduleFooterMove(){
-    moveFooterBlocks();
-    setTimeout(moveFooterBlocks, 400);
-    setTimeout(moveFooterBlocks, 1200);
+  // reintenta porque algunos scripts lo crean después
+  function scheduleDupFix(){
+    removeDuplicateSearch();
+    setTimeout(removeDuplicateSearch, 200);
+    setTimeout(removeDuplicateSearch, 700);
+    setTimeout(removeDuplicateSearch, 1400);
   }
 
   function init(){
     bindTheme();
+    smartHeader();
     hookCartCount();
-    scheduleFooterMove();
+    scheduleDupFix();
   }
 
-  return { init, fixCartBtn, moveFooterBlocks };
+  return { init };
 })();
