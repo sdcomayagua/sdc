@@ -1,6 +1,39 @@
 (() => {
   const U = window.SDC_UTILS;
+
   function safe(_name, fn){ try { fn && fn(); } catch {} }
+
+  // ✅ Fix tema robusto (si theme.js falla, esto igual funciona)
+  function themeFix(){
+    const html = document.documentElement;
+
+    function setTheme(t){
+      html.setAttribute("data-theme", t);
+      try{ localStorage.setItem("SDC_THEME", t); }catch{}
+    }
+    function getTheme(){
+      const t = html.getAttribute("data-theme");
+      if (t) return t;
+      try{ return localStorage.getItem("SDC_THEME") || "light"; }catch{ return "light"; }
+    }
+
+    // inicial
+    setTheme(getTheme());
+
+    const btn = document.getElementById("themeBtn") || document.getElementById("bottomThemeBtn");
+    if (!btn) return;
+
+    if (btn.dataset.bound) return;
+    btn.dataset.bound = "1";
+
+    btn.addEventListener("click", () => {
+      // intenta theme.js
+      try{ window.SDC_THEME?.toggle?.(); }catch{}
+      // fallback seguro
+      const cur = getTheme();
+      setTheme(cur === "dark" ? "light" : "dark");
+    });
+  }
 
   function ensureBasics(){
     const headerWrap = document.querySelector("header .wrap");
@@ -8,7 +41,7 @@
       const p = document.createElement("div");
       p.className = "pill";
       p.id = "statusPill";
-      p.textContent = "Cargando catálogo...";
+      p.textContent = "Cargando catálogo…";
       headerWrap.appendChild(p);
     }
     if (!document.getElementById("templatesMount")){
@@ -18,60 +51,31 @@
     }
   }
 
-  async function init() {
+  async function init(){
     ensureBasics();
 
-    safe("loading.ensure", () => window.SDC_LOADING?.ensureShell?.());
+    // ✅ activa loader visual inmediatamente
+    safe("loading.start", () => window.SDC_LOADING?.start?.());
 
-    safe("store_extras.early", () => window.SDC_STORE_EXTRAS?.init?.());
+    // ✅ tema robusto (arregla “modo noche no sirve”)
+    themeFix();
 
-    safe("theme.init", () => window.SDC_THEME?.init?.("dark"));
-    safe("theme.top", () => document.getElementById("themeBtn")?.addEventListener("click", () => window.SDC_THEME.toggle()));
-
-    safe("filters", () => window.SDC_FILTERS?.init?.());
-    safe("pager", () => window.SDC_PAGER?.setPageSize?.(24));
-    safe("sort_menu", () => window.SDC_SORT_MENU?.init?.());
-    safe("tabs", () => window.SDC_TABS?.init?.());
-    safe("search_ui", () => window.SDC_SEARCH_UI?.init?.());
-    safe("results", () => window.SDC_RESULTS?.init?.());
-
+    // ✅ bind esenciales
     safe("cart.bind", () => window.SDC_CART?.bindEvents?.());
     safe("wa.bind", () => window.SDC_WA?.bind?.());
-    safe("product.bind", () => window.SDC_PRODUCT_MODAL?.bindEvents?.());
-    safe("catalog.bind", () => window.SDC_CATALOG?.bindProductModalEvents?.());
+    safe("delivery.base", () => window.SDC_DELIVERY?.initSelectors?.());
 
-    safe("p5_perf", () => window.SDC_PERF?.init?.());
-
-    safe("loading.start", () => window.SDC_LOADING?.start?.());
+    // ✅ Carga catálogo lo más pronto posible
     await window.SDC_CATALOG.load();
+
+    // ✅ apaga loader cuando ya hay productos
     safe("loading.stop", () => window.SDC_LOADING?.stop?.());
 
-    safe("delivery", () => window.SDC_DELIVERY?.initSelectors?.());
+    // ✅ actualiza contador carrito
     safe("count", () => window.SDC_STORE?.updateCartCountUI?.());
 
-    safe("p1_sales", () => window.SDC_P1?.init?.());
-    safe("ship_quote", () => window.SDC_SHIP_QUOTE?.init?.());
-    safe("top_offers", () => window.SDC_TOP_OFFERS?.render?.());
-    safe("wa_plus", () => window.SDC_WA_PLUS?.init?.());
-
-    safe("p2_ux", () => window.SDC_P2?.init?.());
-    safe("p3_product", () => window.SDC_P3?.init?.());
-
-    safe("p5_analytics", () => window.SDC_ANALYTICS?.init?.());
-    safe("p6_promo", () => window.SDC_P6_PROMO?.init?.());
-
-    safe("p7_checkout", () => window.SDC_P7?.init?.());
-    safe("p7_cart_offer", () => window.SDC_P7_CART_OFFER?.init?.());
-
-    safe("delivery_plus", () => window.SDC_DELIVERY_PLUS?.init?.());
-
-    safe("fase1_mobile_app", () => window.SDC_APP_MOBILE?.init?.());
-    safe("fase2_badges", () => window.SDC_FASE2_BADGES?.init?.());
-    safe("fase3_ui", () => window.SDC_FASE3_UI?.init?.());
-    safe("fase4", () => window.SDC_FASE4?.init?.());
-
-    /* ✅ Pulido final */
-    safe("polish_fix", () => window.SDC_POLISH?.init?.());
+    // ✅ ahora sí carga extras según internet (no frena a los lentos)
+    safe("defer_extras", () => window.SDC_DEFER_EXTRAS?.init?.());
   }
 
   init().catch(err => {
