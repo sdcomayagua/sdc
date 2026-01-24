@@ -1,4 +1,4 @@
-/* styles.bundle.css?v=20260124_polish */
+/* styles.bundle.css?v=20260124_fast */
 
 @import url("./theme.css");
 @import url("./base.css");
@@ -16,30 +16,16 @@
 @import url("./pc_list.css");
 @import url("./promo_ui.css");
 
-@import url("./extras_store.css");
-@import url("./news_ticker.css");
-@import url("./sticky_shop.css");
-
-@import url("./p1_sales.css");
-@import url("./shipping_quote.css");
-@import url("./top_offers.css");
-
-@import url("./p2_ux.css");
-@import url("./p3_product.css");
-
-@import url("./p5_analytics.css");
-@import url("./p6_promo.css");
-
-@import url("./p7_checkout.css");
-@import url("./p7_cart_offer.css");
-
-@import url("./p1_app_mobile.css");
-@import url("./fase2_badges.css");
-@import url("./fase3_ui.css");
-@import url("./fase4_checkout.css");
-
-/* Loader */
+/* Loader pro */
 @import url("./loading_fix.css");
 
-/* ✅ Pulido final */
-@import url("./polish_fix.css");
+/* UI base */
+@import url("./p2_ux.css");
+@import url("./p1_app_mobile.css");
+
+/* Badges visual (ligero) */
+@import url("./fase2_badges.css");
+
+/* Pulido */
+@import url("./fase3_ui.css");
+@import url("./fase4_checkout.css");
